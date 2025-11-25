@@ -264,7 +264,7 @@ class UsersTest extends Base
         $matrix->TermsAndConditionsAccepted = true;
         $matrix->LegalRepresentative = $legalRepresentative;
         $matrix->CompanyNumber = "12345678";
-        $matrix->ScaContext = "USER_NOT_PRESENT";
+        $matrix->ScaContext = "USER_PRESENT";
 
         // transition from Payer to Owner
         $matrixOwner = $this->_api->Users->Categorize($matrix);

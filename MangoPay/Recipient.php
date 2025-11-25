@@ -99,6 +99,12 @@ class Recipient extends Libraries\EntityBase
     public $RecipientVerificationOfPayee;
 
     /**
+     * @var string|null
+     * If provided, possible values: USER_PRESENT, USER_NOT_PRESENT.
+     */
+    public $ScaContext;
+
+    /**
      * Get array with mapping which property is object and what type of object
      * @return array
      */

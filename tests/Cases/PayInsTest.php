@@ -1382,12 +1382,8 @@ class PayInsTest extends Base
     {
         $intent = $this->getNewPayInIntentAuthorization();
         $split = $this->createNewSplits($intent)->Splits[0];
-        try {
-            $this->_api->PayIns->ReversePayInIntentSplit($intent->Id, $split->Id);
-        } catch (\MangoPay\Libraries\Exception $exc) {
-            // expect error. A success use case can't be automatically tested since a manual payin needs to be created
-            $this->assertSame('Bad request. One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.', $exc->getMessage());
-        }
+        $reversed = $this->_api->PayIns->ReversePayInIntentSplit($intent->Id, $split->Id);
+        $this->assertEquals('REVERSED', $reversed->Status);
     }
 
     public function test_GetPayInIntentSplit()

@@ -24,9 +24,19 @@ class RecipientsTest extends Base
         $this->assertNull($recipient->RecipientVerificationOfPayee);
     }
 
+    public function test_Recipient_Create_With_Sca_Context()
+    {
+        $john = $this->getJohnSca(UserCategory::Owner, false);
+        $recipient = $this->getNewRecipientObject($john->Id);
+        $recipient->ScaContext = "USER_PRESENT";
+
+        $created = $this->_api->Recipients->Create($recipient, $john->Id);
+        $this->assertNotNull($created->PendingUserAction);
+    }
+
     public function test_Recipient_Create_Vop_Not_Null()
     {
-        $john = $this->getJohnSca(UserCategory::Payer, false);
+        $john = $this->getJohnSca(UserCategory::Owner, false);
 
         $localBankTransfer = [];
         $gbpDetails = [];
@@ -62,7 +72,7 @@ class RecipientsTest extends Base
 
     public function test_Recipient_GetUserRecipients()
     {
-        $john = $this->getJohnSca(UserCategory::Payer, false);
+        $john = $this->getJohnSca(UserCategory::Owner, false);
         $this->getNewRecipient();
         $userRecipients = $this->_api->Recipients->GetUserRecipients($john->Id);
         self::assertTrue(sizeof($userRecipients) > 0);
@@ -70,7 +80,7 @@ class RecipientsTest extends Base
 
     public function test_Recipient_GetUserRecipients_Payout()
     {
-        $john = $this->getJohnSca(UserCategory::Payer, false);
+        $john = $this->getJohnSca(UserCategory::Owner, false);
         $this->getNewRecipient();
         $filter = new FilterRecipients();
         $filter->RecipientScope = "PAYOUT";
@@ -203,30 +213,36 @@ class RecipientsTest extends Base
     private function getNewRecipient()
     {
         if (self::$recipient == null) {
-            $john = $this->getJohnSca(UserCategory::Payer, false);
-
-            $localBankTransfer = [];
-            $gbpDetails = [];
-            $gbpDetails["SortCode"] = "010039";
-            $gbpDetails["AccountNumber"] = "11696419";
-            $localBankTransfer["GBP"] = $gbpDetails;
-
-            $individualRecipient = new IndividualRecipient();
-            $individualRecipient->FirstName = "Payout";
-            $individualRecipient->LastName = "Team";
-            $individualRecipient->Address = $this->getNewAddress();
-
-            $recipient = new Recipient();
-            $recipient->DisplayName = "My GB account";
-            $recipient->PayoutMethodType = "LocalBankTransfer";
-            $recipient->RecipientType = "Individual";
-            $recipient->Currency = CurrencyIso::GBP;
-            $recipient->IndividualRecipient = $individualRecipient;
-            $recipient->LocalBankTransfer = $localBankTransfer;
-            $recipient->Country = "GB";
+            $john = $this->getJohnSca(UserCategory::Owner, false);
+            $recipient = $this->getNewRecipientObject($john->Id);
 
             self::$recipient = $this->_api->Recipients->Create($recipient, $john->Id);
         }
         return self::$recipient;
+    }
+
+    private function getNewRecipientObject($userId)
+    {
+        $localBankTransfer = [];
+        $gbpDetails = [];
+        $gbpDetails["SortCode"] = "010039";
+        $gbpDetails["AccountNumber"] = "11696419";
+        $localBankTransfer["GBP"] = $gbpDetails;
+
+        $individualRecipient = new IndividualRecipient();
+        $individualRecipient->FirstName = "Payout";
+        $individualRecipient->LastName = "Team";
+        $individualRecipient->Address = $this->getNewAddress();
+
+        $recipient = new Recipient();
+        $recipient->DisplayName = "My GB account";
+        $recipient->PayoutMethodType = "LocalBankTransfer";
+        $recipient->RecipientType = "Individual";
+        $recipient->Currency = CurrencyIso::GBP;
+        $recipient->IndividualRecipient = $individualRecipient;
+        $recipient->LocalBankTransfer = $localBankTransfer;
+        $recipient->Country = "GB";
+
+        return $recipient;
     }
 }

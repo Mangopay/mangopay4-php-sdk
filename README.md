@@ -21,7 +21,7 @@ To use this SDK, you will need (as a minimum):
 Installation with Composer
 -------------------------------------------------
 You can use Mangopay SDK library as a dependency in your project with [Composer](https://getcomposer.org/) (which is the preferred technique). Follow [these installation instructions](https://getcomposer.org/doc/00-intro.md) if you do not already have Composer installed.
-A composer.json file is available in the repository and it has been referenced from [Packagist](https://packagist.org/packages/mangopay/php-sdk-v2).
+A composer.json file is available in the repository, and it has been referenced from [Packagist](https://packagist.org/packages/mangopay/php-sdk-v2).
 
 The installation with Composer is easy and reliable:
 

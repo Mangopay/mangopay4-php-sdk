@@ -1,4 +1,4 @@
-name: mangopay2-php-sdk-cd
+name: mangopay4-php-sdk-cd
 
 on:
   push:

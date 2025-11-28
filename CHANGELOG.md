@@ -1,3 +1,7 @@
+## [3.48.0] - 2025-11-28
+### Changed
+- Migrated to V4 naming convention
+
 ## [3.47.1] - 2025-11-25
 ### Added
 - Support for `ScaContext` on [POST Create a Recipient](https://docs.mangopay.com/api-reference/recipients/create-recipient) for platforms taking action by [proxy with consent](https://docs.mangopay.com/guides/sca/proxy-management) from the user ([API release note](https://docs.mangopay.com/release-notes/api/2025-11-17), #753)

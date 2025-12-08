@@ -214,35 +214,10 @@ class RecipientsTest extends Base
     {
         if (self::$recipient == null) {
             $john = $this->getJohnSca(UserCategory::Owner, false);
-            $recipient = $this->getNewRecipientObject($john->Id);
+            $recipient = $this->getNewRecipientObject();
 
             self::$recipient = $this->_api->Recipients->Create($recipient, $john->Id);
         }
         return self::$recipient;
-    }
-
-    private function getNewRecipientObject($userId)
-    {
-        $localBankTransfer = [];
-        $gbpDetails = [];
-        $gbpDetails["SortCode"] = "010039";
-        $gbpDetails["AccountNumber"] = "11696419";
-        $localBankTransfer["GBP"] = $gbpDetails;
-
-        $individualRecipient = new IndividualRecipient();
-        $individualRecipient->FirstName = "Payout";
-        $individualRecipient->LastName = "Team";
-        $individualRecipient->Address = $this->getNewAddress();
-
-        $recipient = new Recipient();
-        $recipient->DisplayName = "My GB account";
-        $recipient->PayoutMethodType = "LocalBankTransfer";
-        $recipient->RecipientType = "Individual";
-        $recipient->Currency = CurrencyIso::GBP;
-        $recipient->IndividualRecipient = $individualRecipient;
-        $recipient->LocalBankTransfer = $localBankTransfer;
-        $recipient->Country = "GB";
-
-        return $recipient;
     }
 }

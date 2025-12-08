@@ -21,6 +21,24 @@ class PayOutsTest extends Base
         $this->assertInstanceOf('\MangoPay\PayOutPaymentDetailsBankWire', $payOut->MeanOfPaymentDetails);
     }
 
+    public function test_PayOut_Create_WithRecipientId()
+    {
+        $john = $this->getJohn();
+        $wallet = $this->getJohnsWallet();
+
+        $recipientDto = $this->getNewRecipientObject();
+        $recipient = $this->_api->Recipients->Create($recipientDto, $john->Id);
+
+        $payOutDto = $this->getNewPayOutDto($john->Id, $wallet->Id);
+        $payOutDto->RecipientId = $recipient->Id;
+        $payOut = $this->_api->PayOuts->Create($payOutDto);
+
+        $this->assertNotNull($payOut->Id);
+        $this->assertNotNull($payOut->MeanOfPaymentDetails->RecipientId);
+        $this->assertSame(\MangoPay\PayOutPaymentType::BankWire, $payOut->PaymentType);
+        $this->assertInstanceOf('\MangoPay\PayOutPaymentDetailsBankWire', $payOut->MeanOfPaymentDetails);
+    }
+
     public function test_PayOut_CheckEligibility()
     {
         $payOut = $this->getJohnsPayOutForCardDirect();

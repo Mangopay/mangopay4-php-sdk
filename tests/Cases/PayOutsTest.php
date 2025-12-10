@@ -27,6 +27,13 @@ class PayOutsTest extends Base
         $wallet = $this->getJohnsWallet();
 
         $recipientDto = $this->getNewRecipientObject();
+        $localBankTransfer = [];
+        $details = [];
+        $details["IBAN"] = "DE75512108001245126199";
+        $localBankTransfer["EUR"] = $details;
+        $recipientDto->LocalBankTransfer = $localBankTransfer;
+        $recipientDto->Country = "DE";
+        $recipientDto->Currency = CurrencyIso::EUR;
         $recipient = $this->_api->Recipients->Create($recipientDto, $john->Id);
 
         $payOutDto = $this->getNewPayOutDto($john->Id, $wallet->Id);

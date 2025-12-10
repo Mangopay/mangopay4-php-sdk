@@ -8,13 +8,13 @@ class VirtualAccountCapabilities extends Libraries\Dto
      * Whether local bank wires can be made to this account.
      * @var bool
      */
-    public $LocalPayInAvailable;
+    public $LocalPayinAvailable;
 
     /**
      * Whether international bank wires can be made to this account
      * @var bool
      */
-    public $InternationalPayInAvailable;
+    public $InternationalPayinAvailable;
 
     /**
      * List of currencies supported by the account

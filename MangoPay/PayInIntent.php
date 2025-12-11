@@ -89,6 +89,12 @@ class PayInIntent extends Libraries\EntityBase
      * @var string
      */
     public $SettlementId;
+
+    /**
+     * @var int|null
+     */
+    public $UnfundedAmount;
+
     /**
      * Get array with mapping which property is object and what type of object
      * @return array

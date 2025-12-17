@@ -73,6 +73,11 @@ class PayInIntent extends Libraries\EntityBase
     public $Refunds;
 
     /**
+     * @var PayInIntentRefund | null
+     */
+    public $Refund;
+
+    /**
      * Information about the amounts refunded against the intent
      * @var PayInIntentDispute[]
      */

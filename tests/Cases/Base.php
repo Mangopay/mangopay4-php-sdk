@@ -2275,4 +2275,36 @@ abstract class Base extends TestCase
 
         return $this->_api->PayIns->CreatePayInIntentAuthorization($toCreate);
     }
+
+    protected function getNewPayInIntentFullCapture() {
+        $intentAuthorization = $this->getNewPayInIntentAuthorization();
+
+        $externalData = new PayInIntentExternalData();
+        $externalData->ExternalProcessingDate = "01-10-2024";
+        $externalData->ExternalProviderReference = strval(rand(0, 999));
+        $externalData->ExternalMerchantReference = "Order-xyz-35e8490e-2ec9-4c82-978e-c712a3f5ba16";
+        $externalData->ExternalProviderName = "Stripe";
+        $externalData->ExternalProviderPaymentMethod = "PAYPAL";
+
+        $fullCapture = new PayInIntent();
+        $fullCapture->ExternalData = $externalData;
+
+        return $this->_api->PayIns->CreatePayInIntentCapture($intentAuthorization->Id, $fullCapture);
+    }
+
+    protected function getNewFullPayInIntentRefund() {
+        $fullCapture = $this->getNewPayInIntentFullCapture();
+
+        $externalData = new PayInIntentExternalData();
+        $externalData->ExternalProcessingDate = 1728133765;
+        $externalData->ExternalProviderReference = strval(round(microtime(true) * 1000));
+        $externalData->ExternalMerchantReference = "Order-xyz-35e8490e-2ec9-4c82-978e-c712a3f5ba16";
+        $externalData->ExternalProviderName = "Stripe";
+        $externalData->ExternalProviderPaymentMethod = "PAYPAL";
+
+        $refundDto = new PayInIntent();
+        $refundDto->ExternalData = $externalData;
+
+        return $this->_api->PayIns->CreatePayInIntentRefund($fullCapture->Id, $refundDto);
+    }
 }

@@ -112,6 +112,8 @@ abstract class ApiBase
         'payins_intent_reverse_split' => ['/payins/intents/%s/splits/%s/reverse', RequestType::POST, 'V3.0'],
         'payins_intent_get_split' => ['/payins/intents/%s/splits/%s', RequestType::GET, 'V3.0'],
         'payins_intent_update_split' => ['/payins/intents/%s/splits/%s', RequestType::PUT, 'V3.0'],
+        'payins_intent_create_refund' => ['/payins/intents/%s/refunds', RequestType::POST, 'V3.0'],
+        'payins_intent_reverse_refund' => ['/payins/intents/%s/refunds/%s/reverse', RequestType::POST, 'V3.0'],
 
         'repudiation_get' => ['/repudiations/%s', RequestType::GET],
 

@@ -1394,14 +1394,16 @@ class PayInsTest extends Base
         $this->assertEquals('updated description', $updated->Description);
     }
 
-    public function test_CreateFullPayInIntentRefund() {
+    public function test_CreateFullPayInIntentRefund()
+    {
         $intentRefund = $this->getNewFullPayInIntentRefund();
 
         $this->assertNotNull($intentRefund);
         $this->assertEquals("REFUNDED", $intentRefund->Status);
     }
 
-    public function test_CreatePartialPayInIntentRefund() {
+    public function test_CreatePartialPayInIntentRefund()
+    {
         $fullCapture = $this->getNewPayInIntentFullCapture();
 
         $externalData = new PayInIntentExternalData();
@@ -1426,7 +1428,8 @@ class PayInsTest extends Base
         $this->assertEquals("REFUNDED", $intentRefund->Status);
     }
 
-    public function test_FullyReversePayInIntentRefund() {
+    public function test_FullyReversePayInIntentRefund()
+    {
         $intentRefund = $this->getNewFullPayInIntentRefund();
 
         $externalData = new PayInIntentExternalData();
@@ -1445,7 +1448,8 @@ class PayInsTest extends Base
         $this->assertEquals("REFUND_REVERSED", $reversed->Status);
     }
 
-    public function test_PartiallyReversePayInIntentRefund() {
+    public function test_PartiallyReversePayInIntentRefund()
+    {
         $intentRefund = $this->getNewFullPayInIntentRefund();
 
         $externalData = new PayInIntentExternalData();

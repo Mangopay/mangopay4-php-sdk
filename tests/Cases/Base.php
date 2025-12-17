@@ -2276,7 +2276,8 @@ abstract class Base extends TestCase
         return $this->_api->PayIns->CreatePayInIntentAuthorization($toCreate);
     }
 
-    protected function getNewPayInIntentFullCapture() {
+    protected function getNewPayInIntentFullCapture()
+    {
         $intentAuthorization = $this->getNewPayInIntentAuthorization();
 
         $externalData = new PayInIntentExternalData();
@@ -2292,7 +2293,8 @@ abstract class Base extends TestCase
         return $this->_api->PayIns->CreatePayInIntentCapture($intentAuthorization->Id, $fullCapture);
     }
 
-    protected function getNewFullPayInIntentRefund() {
+    protected function getNewFullPayInIntentRefund()
+    {
         $fullCapture = $this->getNewPayInIntentFullCapture();
 
         $externalData = new PayInIntentExternalData();

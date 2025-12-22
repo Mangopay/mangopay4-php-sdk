@@ -472,4 +472,23 @@ class ApiPayIns extends Libraries\ApiBase
     {
         return $this->GetObject('payins_paypal_data_collection_get', null, $dataCollectionId);
     }
+
+    /**
+     * Create a PayInIntentCapture (full or partial)
+     * @param string $intentId The identifier of the PayInIntent
+     * @param string $captureId The identifier of the PayInIntentCapture
+     * @param \MangoPay\PayInIntent $payInIntentCapture The Capture to be reversed
+     * @return \MangoPay\PayInIntent Object returned from API
+     */
+    public function CreatePayInIntentDispute($intentId, $captureId, $payInIntentCapture, $idempotencyKey = null)
+    {
+        return $this->CreateObject(
+            'payins_intent_create_dispute',
+            $payInIntentCapture,
+            '\MangoPay\PayInIntent',
+            $intentId,
+            $captureId,
+            $idempotencyKey
+        );
+    }
 }

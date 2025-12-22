@@ -67,6 +67,11 @@ class PayInIntent extends Libraries\EntityBase
     public $Captures;
 
     /**
+     * @var PayInIntentCapture
+     */
+    public $Capture;
+
+    /**
      * Information about the amounts refunded against the intent
      * @var PayInIntentRefund[]
      */
@@ -82,6 +87,11 @@ class PayInIntent extends Libraries\EntityBase
      * @var PayInIntentDispute[]
      */
     public $Disputes;
+
+    /**
+     * @var PayInIntentDispute
+     */
+    public $Dispute;
 
     /**
      * Information about the amounts split against the intent

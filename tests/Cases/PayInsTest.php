@@ -1551,4 +1551,50 @@ class PayInsTest extends Base
         $this->assertEquals("Jane", $fetched->sender_first_name);
         $this->assertEquals("Doe", $fetched->sender_last_name);
     }
+
+    public function test_createFullPayInIntentDispute()
+    {
+        $fullCapture = $this->getNewPayInIntentFullCapture();
+
+        $externalData = new PayInIntentExternalData();
+        $externalData->ExternalProcessingDate = 1728133765;
+        $externalData->ExternalProviderReference = strval(round(microtime(true) * 1000));
+        $externalData->ExternalMerchantReference = "Order-xyz-35e8490e-2ec9-4c82-978e-c712a3f5ba16";
+        $externalData->ExternalProviderName = "Stripe";
+        $externalData->ExternalProviderPaymentMethod = "PAYPAL";
+
+        $disputeDto = new PayInIntent();
+        $disputeDto->ExternalData = $externalData;
+
+        $intentDispute = $this->_api->PayIns->CreatePayInIntentDispute($fullCapture->Id, $fullCapture->Capture->Id, $disputeDto);
+
+        $this->assertNotNull($intentDispute);
+        $this->assertEquals("DISPUTED", $intentDispute->Status);
+    }
+
+    public function test_createPartialPayInIntentDispute()
+    {
+        $fullCapture = $this->getNewPayInIntentFullCapture();
+
+        $externalData = new PayInIntentExternalData();
+        $externalData->ExternalProcessingDate = 1728133765;
+        $externalData->ExternalProviderReference = strval(round(microtime(true) * 1000));
+        $externalData->ExternalMerchantReference = "Order-xyz-35e8490e-2ec9-4c82-978e-c712a3f5ba16";
+        $externalData->ExternalProviderName = "Stripe";
+        $externalData->ExternalProviderPaymentMethod = "PAYPAL";
+
+        $disputeDto = new PayInIntent();
+        $disputeDto->ExternalData = $externalData;
+        $disputeDto->Amount = 1000;
+
+        $lineItem = new PayInIntentLineItem();
+        $lineItem->Id = $fullCapture->LineItems[0]->Id;
+        $lineItem->Amount = $fullCapture->LineItems[0]->TotalLineItemAmount;
+        $disputeDto->LineItems = [$lineItem];
+
+        $intentDispute = $this->_api->PayIns->CreatePayInIntentDispute($fullCapture->Id, $fullCapture->Capture->Id, $disputeDto);
+
+        $this->assertNotNull($intentDispute);
+        $this->assertEquals("DISPUTED", $intentDispute->Status);
+    }
 }

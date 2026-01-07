@@ -2,7 +2,6 @@
 
 namespace MangoPay;
 
-
 class ConsentScope extends Libraries\Dto
 {
     /**

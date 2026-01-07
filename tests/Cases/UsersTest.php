@@ -964,4 +964,16 @@ class UsersTest extends Base
         $closed = $this->_api->Users->Get($matrix->Id);
         $this->assertSame('CLOSED', $closed->UserStatus);
     }
+
+    public function test_Users_get_sca_status()
+    {
+        $activeUserId = "user_m_01JKZW095BFB2TRQMCZ8GE7M8D";
+        $scaStatus = $this->_api->Users->GetScaStatus($activeUserId);
+
+        $this->assertNotNull($scaStatus);
+        $this->assertNotNull($scaStatus->LastEnrollmentDate);
+        $this->assertNotNull($scaStatus->ConsentScope->ContactInformationUpdate);
+        $this->assertEquals("ACTIVE", $scaStatus->UserStatus);
+        $this->assertEquals(true, $scaStatus->IsEnrolled);
+    }
 }

@@ -105,9 +105,9 @@ abstract class ApiBase
         'payins_intent_get' => ['/payins/intents/%s', RequestType::GET, 'V3.0'],
         'payins_intent_cancel' => ['/payins/intents/%s/cancel', RequestType::POST, 'V3.0'],
         'payins_intent_create_splits' => ['/payins/intents/%s/splits', RequestType::POST, 'V3.0'],
-        'settlement_create' => ['/payins/intents/settlements', RequestType::POST, 'V3.0'],
+        'settlement_generate_upload_url' => ['/payins/intents/settlements', RequestType::POST, 'V3.0'],
         'settlement_get' => ['/payins/intents/settlements/%s', RequestType::GET, 'V3.0'],
-        'settlement_update' => ['/payins/intents/settlements/%s', RequestType::PUT, 'V3.0'],
+        'settlement_generate_new_upload_url' => ['/payins/intents/settlements/%s', RequestType::PUT, 'V3.0'],
         'payins_intent_execute_split' => ['/payins/intents/%s/splits/%s/execute', RequestType::POST, 'V3.0'],
         'payins_intent_reverse_split' => ['/payins/intents/%s/splits/%s/reverse', RequestType::POST, 'V3.0'],
         'payins_intent_get_split' => ['/payins/intents/%s/splits/%s', RequestType::GET, 'V3.0'],
@@ -884,7 +884,7 @@ abstract class ApiBase
             'payins_intent_create_splits' => '\MangoPay\IntentSplits',
             'payins_intent_create_authprization' => '\MangoPay\PayInIntent',
             'payins_intent_create_capture' => '\MangoPay\PayInIntent',
-            'settlement_create' => '\MangoPay\Settlement',
+            'settlement_generate_upload_url' => '\MangoPay\Settlement',
             'payins_intent_execute_split' => '\MangoPay\PayInIntentSplit',
             'payins_intent_reverse_split' => '\MangoPay\PayInIntentSplit'
         ];

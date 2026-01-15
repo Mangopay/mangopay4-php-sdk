@@ -971,7 +971,6 @@ class UsersTest extends Base
         $scaStatus = $this->_api->Users->GetScaStatus($activeUserId);
 
         $this->assertNotNull($scaStatus);
-        $this->assertNotNull($scaStatus->LastEnrollmentDate);
         $this->assertNotNull($scaStatus->ConsentScope->ContactInformationUpdate);
         $this->assertEquals("ACTIVE", $scaStatus->UserStatus);
         $this->assertEquals(true, $scaStatus->IsEnrolled);

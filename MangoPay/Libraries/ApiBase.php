@@ -172,6 +172,7 @@ abstract class ApiBase
         'users_categorizelegals_sca' => ['/sca/users/legal/%s/category', RequestType::PUT],
         'users_close_natural' => ['/users/natural/%s', RequestType::DELETE],
         'users_close_legal' => ['/users/legal/%s', RequestType::DELETE],
+        'users_get_sca_status' => ['/sca/users/%s/sca-status', RequestType::GET],
 
         'validate_the_format_of_user_data' => ['/users/data-formats/validation', RequestType::POST],
 

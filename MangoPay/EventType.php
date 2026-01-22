@@ -65,6 +65,8 @@ class EventType
     const UboDeclarationIncomplete = "UBO_DECLARATION_INCOMPLETE";
     const UserKycRegular = "USER_KYC_REGULAR";
     const UserKycLight = "USER_KYC_LIGHT";
+    const UserKycRenewalRequired = "USER_KYC_RENEWAL_REQUIRED";
+    const UserKycRenewed = "USER_KYC_RENEWED";
     const UserInflowsBlocked = "USER_INFLOWS_BLOCKED";
     const UserInflowsUnblocked = "USER_INFLOWS_UNBLOCKED";
     const UserOutflowsBlocked = "USER_OUTFLOWS_BLOCKED";
@@ -124,6 +126,16 @@ class EventType
     const ScaEnrollmentSucceeded = "SCA_ENROLLMENT_SUCCEEDED";
     const ScaEnrollmentFailed = "SCA_ENROLLMENT_FAILED";
     const ScaEnrollmentExpired = "SCA_ENROLLMENT_EXPIRED";
+    const ScaContactInformationUpdateConsentGiven = "SCA_CONTACT_INFORMATION_UPDATE_CONSENT_GIVEN";
+    const ScaContactInformationUpdateConsentRevoked = "SCA_CONTACT_INFORMATION_UPDATE_CONSENT_REVOKED";
+    const ScaTransferConsentGiven = "SCA_TRANSFER_CONSENT_GIVEN";
+    const ScaTransferConsentRevoked = "SCA_TRANSFER_CONSENT_REVOKED";
+    const ScaRecipientRegistrationConsentGiven = "SCA_RECIPIENT_REGISTRATION_CONSENT_GIVEN";
+    const ScaRecipientRegistrationConsentRevoked = "SCA_RECIPIENT_REGISTRATION_CONSENT_REVOKED";
+    const ScaViewAccountInformationConsentGiven = "SCA_VIEW_ACCOUNT_INFORMATION_CONSENT_GIVEN";
+    const ScaViewAccountInformationConsentRevoked = "SCA_VIEW_ACCOUNT_INFORMATION_CONSENT_REVOKED";
+    const ScaEmailVerified = "SCA_EMAIL_VERIFIED";
+    const ScaPhoneNumberVerified = "SCA_PHONE_NUMBER_VERIFIED";
 
     const UserCategoryUpdatedToOwner = "USER_CATEGORY_UPDATED_TO_OWNER";
     const UserCategoryUpdatedToPayer = "USER_CATEGORY_UPDATED_TO_PAYER";

@@ -7,8 +7,10 @@ use MangoPay\CreateClientWalletsInstantConversion;
 use MangoPay\CreateClientWalletsQuotedConversion;
 use MangoPay\CreateInstantConversion;
 use MangoPay\CreateQuotedConversion;
+use MangoPay\CustomFees;
 use MangoPay\Money;
 use MangoPay\TransactionType;
+use MangoPay\UserMargin;
 use function PHPUnit\Framework\assertNotNull;
 
 class ConversionsTest extends Base
@@ -32,6 +34,10 @@ class ConversionsTest extends Base
         $this->assertNotNull($response->Fees);
         $this->assertSame('SUCCEEDED', $response->Status);
         $this->assertSame(TransactionType::Conversion, $response->Type);
+        $this->assertNotNull($response->RequestedFees);
+        $this->assertSame("FIXED", $response->RequestedFees->Type);
+        $this->assertNotNull($response->MarginsResponse->Mangopay);
+        $this->assertNull($response->MarginsResponse->User);
     }
 
     public function test_getInstantConversion()
@@ -49,13 +55,20 @@ class ConversionsTest extends Base
 
     public function test_createConversionQuote()
     {
-        $response = $this->createConversionQuote();
+        $fees = new CustomFees();
+        $fees->Currency = 'EUR';
+        $fees->Amount = 100;
+        $fees->Type = "PERCENTAGE";
+        $response = $this->createConversionQuote($fees);
 
         $this->assertNotNull($response);
         $this->assertNotNull($response->DebitedFunds->Amount);
         $this->assertNotNull($response->CreditedFunds->Amount);
         $this->assertNotNull($response->ConversionRateResponse->ClientRate);
         $this->assertSame('ACTIVE', $response->Status);
+        $this->assertSame("PERCENTAGE", $response->RequestedFees->Type);
+        $this->assertNotNull($response->MarginsResponse->Mangopay);
+        $this->assertNotNull($response->MarginsResponse->User);
     }
 
     public function test_getConversionQuote()
@@ -165,7 +178,7 @@ class ConversionsTest extends Base
         $debitedFunds->Amount = 79;
         $instantConversion->DebitedFunds = $debitedFunds;
 
-        $fees = new Money();
+        $fees = new CustomFees();
         $fees->Currency = 'EUR';
         $fees->Amount = 9;
         $instantConversion->Fees = $fees;
@@ -195,7 +208,7 @@ class ConversionsTest extends Base
         return $this->_api->Conversions->CreateClientWalletsInstantConversion($instantConversion);
     }
 
-    private function createConversionQuote()
+    private function createConversionQuote($fees = null)
     {
         $quote = new ConversionQuote();
         $creditedFunds = new Money();
@@ -209,6 +222,12 @@ class ConversionsTest extends Base
 
         $quote->Duration = 300;
         $quote->Tag = "Created using the Mangopay PHP SDK";
+        $quote->Fees = $fees;
+
+        $userMargin = new UserMargin();
+        $userMargin->Type = "PERCENTAGE";
+        $userMargin->Value = 0.1;
+        $quote->UserMargin = $userMargin;
 
         return $this->_api->Conversions->CreateConversionQuote($quote);
     }

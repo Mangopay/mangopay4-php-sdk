@@ -949,7 +949,7 @@ class UsersTest extends Base
     public function test_Users_close_natural()
     {
         $john = $this->_api->Users->Create($this->buildJohn());
-        $this->assertSame('ACTIVE', $john->UserStatus);
+        $this->assertSame('PENDING_USER_ACTION', $john->UserStatus);
         $this->_api->Users->Close($john);
         $closed = $this->_api->Users->Get($john->Id);
         $this->assertSame('CLOSED', $closed->UserStatus);
@@ -959,7 +959,7 @@ class UsersTest extends Base
     {
         $john = $this->_api->Users->Create($this->buildJohn());
         $matrix = $this->_api->Users->Create($this->buildMatrix($john));
-        $this->assertSame('ACTIVE', $matrix->UserStatus);
+        $this->assertSame('PENDING_USER_ACTION', $matrix->UserStatus);
         $this->_api->Users->Close($matrix);
         $closed = $this->_api->Users->Get($matrix->Id);
         $this->assertSame('CLOSED', $closed->UserStatus);

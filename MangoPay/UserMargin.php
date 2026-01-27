@@ -21,7 +21,7 @@ class UserMargin extends Dto
     public $Value;
 
     /**
-     * @var double|null
+     * @var int|null
      */
     public $Amount;
 }

@@ -57,4 +57,22 @@ class ApiSettlements extends Libraries\ApiBase
             '\MangoPay\Settlement'
         );
     }
+
+    /**
+     * Returns all the possible errors that might have occurred with a Settlement File
+     *
+     * @param string $settlementId Settlement identifier
+     * @param Pagination $pagination Pagination object
+     * @return SettlementValidation Object returned by the API
+     */
+    public function GetValidations($settlementId, $pagination = null)
+    {
+        return $this->GetObjectWithPagination(
+            'settlement_get_validations',
+            '\MangoPay\SettlementValidation',
+            $pagination,
+            null,
+            $settlementId
+        );
+    }
 }

@@ -6,6 +6,7 @@ use MangoPay\BankAccount;
 use MangoPay\BankAccountDetailsOTHER;
 use MangoPay\Pagination;
 use MangoPay\Settlement;
+use function PHPUnit\Framework\assertEquals;
 
 /**
  * Tests basic methods for Banking Aliases
@@ -56,6 +57,14 @@ class SettlementsTest extends Base
         $pagination->Limit = 10;
         $validations = $this->_api->Settlements->GetValidations($settlement->SettlementId, $pagination);
         self::assertNotNull($validations);
+    }
+
+    public function test_CancelSettlement()
+    {
+        $settlement = $this->createNewSettlement();
+        $cancelled = $this->_api->Settlements->Cancel($settlement->SettlementId);
+        self::assertNotNull($cancelled);
+        assertEquals("CANCELLED", $cancelled->Status);
     }
 
     private function createNewSettlement()

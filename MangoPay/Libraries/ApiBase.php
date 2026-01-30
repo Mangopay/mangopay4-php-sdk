@@ -109,6 +109,7 @@ abstract class ApiBase
         'settlement_get' => ['/payins/intents/settlements/%s', RequestType::GET, 'V3.0'],
         'settlement_generate_new_upload_url' => ['/payins/intents/settlements/%s', RequestType::PUT, 'V3.0'],
         'settlement_get_validations' => ['/payins/intents/settlements/%s/validations', RequestType::GET, 'V3.0'],
+        'settlement_cancel' => ['/payins/intents/settlements/%s/cancel', RequestType::POST, 'V3.0'],
         'payins_intent_execute_split' => ['/payins/intents/%s/splits/%s/execute', RequestType::POST, 'V3.0'],
         'payins_intent_reverse_split' => ['/payins/intents/%s/splits/%s/reverse', RequestType::POST, 'V3.0'],
         'payins_intent_get_split' => ['/payins/intents/%s/splits/%s', RequestType::GET, 'V3.0'],

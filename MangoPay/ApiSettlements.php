@@ -75,4 +75,24 @@ class ApiSettlements extends Libraries\ApiBase
             $settlementId
         );
     }
+
+    /**
+     * Cancel settlement
+     *
+     * @param string $settlementId Settlement identifier
+     * @param string $idempotencyKey Idempotency key
+     * @return Settlement Object returned by the API
+     * @throws Libraries\Exception
+     */
+    public function Cancel($settlementId, $idempotencyKey = null)
+    {
+        return $this->CreateObject(
+            'settlement_cancel',
+            null,
+            '\MangoPay\Settlement',
+            $settlementId,
+            null,
+            $idempotencyKey
+        );
+    }
 }

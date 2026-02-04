@@ -287,6 +287,16 @@ class ApiPayIns extends Libraries\ApiBase
     }
 
     /**
+     * Update a pay in intent
+     * @param PayInIntent $intent The PayInIntent update object (must contain the Id)
+     * @return PayInIntent Object returned from API
+     */
+    public function UpdatePayInIntent($intent)
+    {
+        return $this->SaveObject('payins_intent_update', $intent, '\MangoPay\PayInIntent');
+    }
+
+    /**
      * Cancel a pay in intent
      * @param string $intentId The identifier of the PayInIntent
      * @param PayInIntent $details Intent details

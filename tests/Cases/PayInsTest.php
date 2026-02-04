@@ -1346,6 +1346,19 @@ class PayInsTest extends Base
         $this->assertEquals($intent->Status, $fetched->Status);
     }
 
+    public function test_UpdatePayInIntent()
+    {
+        $intent = $this->getNewPayInIntentAuthorization();
+        $updateObj = new PayInIntent();
+        $updateObj->Id = $intent->Id;
+        $externalData = new PayInIntentExternalData();
+        $externalData->ExternalProviderName = "UpdatedName";
+        $updateObj->ExternalData = $externalData;
+        $updated = $this->_api->PayIns->UpdatePayInIntent($updateObj);
+        $this->assertNotNull($updated);
+        $this->assertEquals("UpdatedName", $updated->ExternalData->ExternalProviderName);
+    }
+
     public function test_CancelPayInIntent()
     {
         $intent = $this->getNewPayInIntentAuthorization();

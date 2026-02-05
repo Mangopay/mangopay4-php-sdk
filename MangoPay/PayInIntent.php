@@ -67,16 +67,31 @@ class PayInIntent extends Libraries\EntityBase
     public $Captures;
 
     /**
+     * @var PayInIntentCapture
+     */
+    public $Capture;
+
+    /**
      * Information about the amounts refunded against the intent
      * @var PayInIntentRefund[]
      */
     public $Refunds;
 
     /**
+     * @var PayInIntentRefund | null
+     */
+    public $Refund;
+
+    /**
      * Information about the amounts refunded against the intent
      * @var PayInIntentDispute[]
      */
     public $Disputes;
+
+    /**
+     * @var PayInIntentDispute
+     */
+    public $Dispute;
 
     /**
      * Information about the amounts split against the intent
@@ -94,6 +109,8 @@ class PayInIntent extends Libraries\EntityBase
      * @var int|null
      */
     public $UnfundedAmount;
+
+    public $Decision;
 
     /**
      * Get array with mapping which property is object and what type of object

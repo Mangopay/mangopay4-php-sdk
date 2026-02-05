@@ -39,7 +39,7 @@ class CreateInstantConversion extends Dto
 
     /**
      * Information about the fees taken by the platform for this transaction (and hence transferred to the Fees Wallet).
-     * @var Money
+     * @var CustomFees
      */
     public $Fees;
 
@@ -48,4 +48,9 @@ class CreateInstantConversion extends Dto
      * @var string
      */
     public $Tag;
+
+    /**
+     * @var UserMargin|null
+     */
+    public $UserMargin;
 }

@@ -8,10 +8,18 @@ namespace MangoPay;
 class PayOutPaymentDetailsBankWire extends Libraries\Dto implements PayOutPaymentDetails
 {
     /**
-     * Bank account Id
-     * @var string
+     * Bank account identifier
+     * Null if $RecipientId is provided
+     * @var string|null
      */
     public $BankAccountId;
+
+    /**
+     * Recipient identifier
+     * Null if $BankAccountId is provided
+     * @var string|null
+     */
+    public $RecipientId;
 
     /**
      * A custom reference you wish to appear on the user’s bank statement

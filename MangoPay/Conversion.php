@@ -73,6 +73,12 @@ class Conversion extends Libraries\EntityBase
     public $Fees;
 
     /**
+     * The requested fees
+     * @var CustomFees|null
+     */
+    public $RequestedFees;
+
+    /**
      * The code indicates the result of the operation.
      * This information is mostly used to handle errors or for filtering purposes.
      * @var string
@@ -98,4 +104,9 @@ class Conversion extends Libraries\EntityBase
      * @var ConversionRate
      */
     public $ConversionRateResponse;
+
+    /**
+     * @var MarginsResponse|null
+     */
+    public $MarginsResponse;
 }

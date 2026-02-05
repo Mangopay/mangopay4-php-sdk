@@ -43,6 +43,7 @@ class EventsTest extends Base
         $pagination = new \MangoPay\Pagination();
         $pagination->ItemsPerPage = 100;// Increase the chance to find a result
 
+        sleep(10);
         $result = $this->_api->Events->GetAll($pagination, $filter);
 
         $this->assertTrue(count($result) > 0);
@@ -58,7 +59,7 @@ class EventsTest extends Base
         $filter->EventType = \MangoPay\EventType::PayoutNormalCreated;
         $pagination = new \MangoPay\Pagination();
 
-        sleep(5);
+        sleep(10);
         $result = $this->_api->Events->GetAll($pagination, $filter);
 
         $this->assertTrue(count($result) > 0);

@@ -39,12 +39,28 @@ class ConversionQuote extends EntityBase
     /**
      * Information about the fees taken by the platform for this transaction (and hence transferred to the Fees Wallet).
      * Note: For conversions between client wallets, the quote cannot have Fees specified.
-     * @var Money|null
+     * @var CustomFees|null
      */
     public $Fees;
+
+    /**
+     * The requested fees
+     * @var CustomFees|null
+     */
+    public $RequestedFees;
 
     /**
      * @var ConversionRate
      */
     public $ConversionRateResponse;
+
+    /**
+     * @var UserMargin|null
+     */
+    public $UserMargin;
+
+    /**
+     * @var MarginsResponse|null
+     */
+    public $MarginsResponse;
 }

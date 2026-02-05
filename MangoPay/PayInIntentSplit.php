@@ -44,4 +44,10 @@ class PayInIntentSplit extends Libraries\EntityBase
      * @var string The status of the split
      */
     public $Status;
+
+    /**
+     * The source wallet identifier
+     * @var string|null
+     */
+    public $SplitOriginWalletId;
 }

@@ -119,6 +119,11 @@ class PayInIntentLineItem extends Libraries\Dto
     public $SplitOriginWalletId;
 
     /**
+     * @var int|null
+     */
+    public $UnfundedSellerAmount;
+
+    /**
      * Get array with mapping which property is object and what type of object
      * @return array
      */

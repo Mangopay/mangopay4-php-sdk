@@ -1286,6 +1286,8 @@ class PayInsTest extends Base
         $intentAuthorization = $this->getNewPayInIntentAuthorization();
         $this->assertNotNull($intentAuthorization);
         $this->assertEquals("AUTHORIZED", $intentAuthorization->Status);
+        $this->assertNotNull($intentAuthorization->UnfundedAmount);
+        $this->assertNotNull($intentAuthorization->LineItems[0]->UnfundedSellerAmount);
     }
 
     public function test_CreatePayInIntentFullCapture()

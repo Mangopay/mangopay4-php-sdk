@@ -110,6 +110,8 @@ class PayInIntent extends Libraries\EntityBase
      */
     public $UnfundedAmount;
 
+    public $Decision;
+
     /**
      * Get array with mapping which property is object and what type of object
      * @return array

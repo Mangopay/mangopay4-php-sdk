@@ -117,6 +117,7 @@ abstract class ApiBase
         'payins_intent_create_refund' => ['/payins/intents/%s/refunds', RequestType::POST, 'V3.0'],
         'payins_intent_reverse_refund' => ['/payins/intents/%s/refunds/%s/reverse', RequestType::POST, 'V3.0'],
         'payins_intent_create_dispute' => ['/payins/intents/%s/captures/%s/disputes', RequestType::POST, 'V3.0'],
+        'payins_intent_update_dispute_outcome' => ['/payins/intents/%s/captures/%s/disputes/%s/decision', RequestType::PUT, 'V3.0'],
 
         'repudiation_get' => ['/repudiations/%s', RequestType::GET],
 
@@ -571,6 +572,33 @@ abstract class ApiBase
 
         $requestData = $this->BuildRequestData($entity);
 
+        $apiVersion = $this->GetApiVersion($methodKey);
+        $rest = new RestTool($this->_root, true);
+        $response = $rest->Request($urlMethod, $apiVersion, $this->GetRequestType($methodKey), $requestData);
+
+        if (!is_null($responseClassName)) {
+            return $this->CastResponseToEntity($response, $responseClassName);
+        }
+
+        return $response;
+    }
+
+    /**
+     * Does the same thing as SaveObject above, but keeps natural order of provided entity ids when building the URL
+     */
+    protected function UpdateObject($methodKey, $entity, $responseClassName = null, $firstEntityId = null, $secondEntityId = null, $thirdEntityId = null)
+    {
+        if (!is_null($thirdEntityId)) {
+            $urlMethod = sprintf($this->GetRequestUrl($methodKey), $firstEntityId, $secondEntityId, $thirdEntityId);
+        } elseif (!is_null($secondEntityId)) {
+            $urlMethod = sprintf($this->GetRequestUrl($methodKey), $firstEntityId, $secondEntityId);
+        } elseif (!is_null($firstEntityId)) {
+            $urlMethod = sprintf($this->GetRequestUrl($methodKey), $firstEntityId);
+        } else {
+            $urlMethod = $this->GetRequestUrl($methodKey);
+        }
+
+        $requestData = $this->BuildRequestData($entity);
         $apiVersion = $this->GetApiVersion($methodKey);
         $rest = new RestTool($this->_root, true);
         $response = $rest->Request($urlMethod, $apiVersion, $this->GetRequestType($methodKey), $requestData);

@@ -1600,4 +1600,30 @@ class PayInsTest extends Base
         $this->assertNotNull($intentDispute);
         $this->assertEquals("DISPUTED", $intentDispute->Status);
     }
+
+    public function test_updatePayInIntentDisputeOutcome()
+    {
+        $fullCapture = $this->getNewPayInIntentFullCapture();
+
+        $externalData = new PayInIntentExternalData();
+        $externalData->ExternalProcessingDate = 1728133765;
+        $externalData->ExternalProviderReference = strval(round(microtime(true) * 1000));
+        $externalData->ExternalMerchantReference = "Order-xyz-35e8490e-2ec9-4c82-978e-c712a3f5ba16";
+        $externalData->ExternalProviderName = "Stripe";
+        $externalData->ExternalProviderPaymentMethod = "PAYPAL";
+
+        $disputeDto = new PayInIntent();
+        $disputeDto->ExternalData = $externalData;
+
+        $intentDispute = $this->_api->PayIns->CreatePayInIntentDispute($fullCapture->Id, $fullCapture->Capture->Id, $disputeDto);
+
+        $outcomeDto = new PayInIntent();
+        $outcomeDto->Id = $fullCapture->Id;
+        $outcomeDto->Decision = "DEFENDED";
+
+        $result = $this->_api->PayIns->UpdatePayInIntentDisputeOutcome($fullCapture->Id, $fullCapture->Capture->Id, $intentDispute->Dispute->Id, $outcomeDto);
+
+        $this->assertNotNull($result);
+        $this->assertEquals("DEFENDED", $result->Decision);
+    }
 }

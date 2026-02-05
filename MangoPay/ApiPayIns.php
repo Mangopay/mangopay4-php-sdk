@@ -491,4 +491,24 @@ class ApiPayIns extends Libraries\ApiBase
             $idempotencyKey
         );
     }
+
+    /**
+     * Create a PayInIntentCapture (full or partial)
+     * @param string $intentId The identifier of the PayInIntent
+     * @param string $captureId The identifier of the PayInIntentCapture
+     * @param string $disputeId The identifier of the PayInIntentDispute
+     * @param \MangoPay\PayInIntent $disputeOutcome Object containing the 'decision' and intent id
+     * @return \MangoPay\PayInIntent Object returned from API
+     */
+    public function UpdatePayInIntentDisputeOutcome($intentId, $captureId, $disputeId, $disputeOutcome)
+    {
+        return $this->UpdateObject(
+            'payins_intent_update_dispute_outcome',
+            $disputeOutcome,
+            '\MangoPay\PayInIntent',
+            $intentId,
+            $captureId,
+            $disputeId
+        );
+    }
 }

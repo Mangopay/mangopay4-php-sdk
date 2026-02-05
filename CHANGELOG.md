@@ -1,3 +1,11 @@
+## [3.49.0] - 2026-01-27
+### Added
+- Support for new [GET View the SCA status of a User](https://docs.mangopay.com/api-reference/users/view-user-sca-status) endpoint ([API release note](https://docs.mangopay.com/release-notes/api/2026-01-15)) (#766)
+- Support for new [event types](https://docs.mangopay.com/webhooks/event-types#mangopay-sca-email-and-phone-number-verification) `SCA_CONTACT_INFORMATION_UPDATE_CONSENT_GIVEN`, `SCA_CONTACT_INFORMATION_UPDATE_CONSENT_REVOKED`, `SCA_TRANSFER_CONSENT_GIVEN`, `SCA_TRANSFER_CONSENT_REVOKED`, `SCA_RECIPIENT_REGISTRATION_CONSENT_GIVEN`, `SCA_RECIPIENT_REGISTRATION_CONSENT_REVOKED`, `SCA_VIEW_ACCOUNT_INFORMATION_CONSENT_GIVEN`, `SCA_VIEW_ACCOUNT_INFORMATION_CONSENT_REVOKED`, `SCA_EMAIL_VERIFIED`, `SCA_PHONE_NUMBER_VERIFIED` (#765) (thank you @williamdes)
+- Support for new `RecipientId` property on [payouts](https://docs.mangopay.com/api-reference/payouts/create-payout) ([API release note](https://docs.mangopay.com/release-notes/api/2026-01-27)) (#759)
+
+Release PR: #770
+
 ## [3.48.0] - 2025-11-28
 ### Changed
 - Migrated to V4 naming convention

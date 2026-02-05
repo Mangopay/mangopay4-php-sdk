@@ -11,6 +11,7 @@ use MangoPay\Birthplace;
 use MangoPay\BrowserInfo;
 use MangoPay\CreateDeposit;
 use MangoPay\CurrencyIso;
+use MangoPay\IndividualRecipient;
 use MangoPay\LegalPersonType;
 use MangoPay\LegalRepresentative;
 use MangoPay\Libraries\Exception;
@@ -21,6 +22,7 @@ use MangoPay\PayInIntentBuyer;
 use MangoPay\PayInIntentExternalData;
 use MangoPay\PayInIntentLineItem;
 use MangoPay\PayInIntentSeller;
+use MangoPay\Recipient;
 use MangoPay\ShippingPreference;
 use MangoPay\Tests\Mocks\MockStorageStrategy;
 use MangoPay\Ubo;
@@ -824,27 +826,34 @@ abstract class Base extends TestCase
             $payIn = $this->getNewPayInCardDirect();
             $account = $this->getJohnsAccount();
 
-            $payOut = new \MangoPay\PayOut();
-            $payOut->Tag = 'DefaultTag';
-            $payOut->AuthorId = $payIn->AuthorId;
-            $payOut->CreditedUserId = $payIn->AuthorId;
-            $payOut->DebitedFunds = new \MangoPay\Money();
-            $payOut->DebitedFunds->Currency = 'EUR';
-            $payOut->DebitedFunds->Amount = 10;
-            $payOut->Fees = new \MangoPay\Money();
-            $payOut->Fees->Currency = 'EUR';
-            $payOut->Fees->Amount = 5;
-
-            $payOut->DebitedWalletId = $payIn->CreditedWalletId;
-            $payOut->MeanOfPaymentDetails = new \MangoPay\PayOutPaymentDetailsBankWire();
+            $payOut = $this->getNewPayOutDto($payIn->AuthorId, $payIn->CreditedWalletId);
             $payOut->MeanOfPaymentDetails->BankAccountId = $account->Id;
-            $payOut->MeanOfPaymentDetails->BankWireRef = 'Johns payment';
-            $payOut->MeanOfPaymentDetails->PayoutModeRequested = 'STANDARD';
 
             self::$JohnsPayOutForCardDirect = $this->_api->PayOuts->Create($payOut);
         }
 
         return self::$JohnsPayOutForCardDirect;
+    }
+
+    protected function getNewPayOutDto($authorId, $walletId)
+    {
+        $payOut = new \MangoPay\PayOut();
+        $payOut->Tag = 'DefaultTag';
+        $payOut->AuthorId = $authorId;
+        $payOut->CreditedUserId = $authorId;
+        $payOut->DebitedFunds = new \MangoPay\Money();
+        $payOut->DebitedFunds->Currency = 'EUR';
+        $payOut->DebitedFunds->Amount = 10;
+        $payOut->Fees = new \MangoPay\Money();
+        $payOut->Fees->Currency = 'EUR';
+        $payOut->Fees->Amount = 5;
+
+        $payOut->DebitedWalletId = $walletId;
+        $payOut->MeanOfPaymentDetails = new \MangoPay\PayOutPaymentDetailsBankWire();
+        $payOut->MeanOfPaymentDetails->BankWireRef = 'Johns payment';
+        $payOut->MeanOfPaymentDetails->PayoutModeRequested = 'STANDARD';
+
+        return $payOut;
     }
 
     /**
@@ -2274,6 +2283,31 @@ abstract class Base extends TestCase
         $toCreate->LineItems = $lineItems;
 
         return $this->_api->PayIns->CreatePayInIntentAuthorization($toCreate);
+    }
+
+    protected function getNewRecipientObject()
+    {
+        $localBankTransfer = [];
+        $gbpDetails = [];
+        $gbpDetails["SortCode"] = "010039";
+        $gbpDetails["AccountNumber"] = "11696419";
+        $localBankTransfer["GBP"] = $gbpDetails;
+
+        $individualRecipient = new IndividualRecipient();
+        $individualRecipient->FirstName = "Payout";
+        $individualRecipient->LastName = "Team";
+        $individualRecipient->Address = $this->getNewAddress();
+
+        $recipient = new Recipient();
+        $recipient->DisplayName = "My GB account";
+        $recipient->PayoutMethodType = "LocalBankTransfer";
+        $recipient->RecipientType = "Individual";
+        $recipient->Currency = CurrencyIso::GBP;
+        $recipient->IndividualRecipient = $individualRecipient;
+        $recipient->LocalBankTransfer = $localBankTransfer;
+        $recipient->Country = "GB";
+
+        return $recipient;
     }
 
     protected function getNewPayInIntentFullCapture()

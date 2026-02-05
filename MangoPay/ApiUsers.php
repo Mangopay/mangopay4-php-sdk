@@ -602,4 +602,14 @@ class ApiUsers extends Libraries\ApiBase
 
         $this->DeleteObject($methodKey, $user);
     }
+
+    /**
+     * Get SCA status
+     * @param string $userId User identifier
+     * @return ScaStatus ScaStatus object returned from API
+     */
+    public function GetScaStatus($userId)
+    {
+        return $this->GetObject('users_get_sca_status', 'MangoPay\ScaStatus', $userId);
+    }
 }

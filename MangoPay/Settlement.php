@@ -54,4 +54,19 @@ class Settlement extends Libraries\EntityBase
      * @var int
      */
     public $FundsMissingAmount;
+
+    /**
+     * The FileName submitted to the POST Create a Settlement and generate upload URL endpoint,
+     * with a timestamp of the Settlement creation date automatically appended by Mangopay.
+     * @var string|null
+     */
+    public $FileName;
+
+    /**
+     * The unique temporary pre-signed URL to which to upload your CSV file.
+     * Use the full dynamic URL including the host, path, and all query parameters.
+     * The URL is already authenticated, so the call does not require an Authorization header.
+     * @var string|null
+     */
+    public $UploadUrl;
 }

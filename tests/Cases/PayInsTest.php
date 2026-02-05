@@ -1618,7 +1618,6 @@ class PayInsTest extends Base
         $intentDispute = $this->_api->PayIns->CreatePayInIntentDispute($fullCapture->Id, $fullCapture->Capture->Id, $disputeDto);
 
         $outcomeDto = new PayInIntent();
-        $outcomeDto->Id = $fullCapture->Id;
         $outcomeDto->Decision = "DEFENDED";
 
         $result = $this->_api->PayIns->UpdatePayInIntentDisputeOutcome($fullCapture->Id, $fullCapture->Capture->Id, $intentDispute->Dispute->Id, $outcomeDto);

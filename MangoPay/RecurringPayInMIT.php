@@ -28,4 +28,9 @@ class RecurringPayInMIT extends Libraries\Dto
      * @var string
      */
     public $Tag;
+
+    /**
+     * @var string|null
+     */
+    public $PaymentCategory;
 }

@@ -43,4 +43,9 @@ class RecurringPayInCIT extends Libraries\Dto
      * @var Money
      */
     public $Fees;
+
+    /**
+     * @var string|null
+     */
+    public $PaymentCategory;
 }

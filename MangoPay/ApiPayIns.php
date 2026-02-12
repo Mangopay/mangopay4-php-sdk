@@ -393,6 +393,43 @@ class ApiPayIns extends Libraries\ApiBase
     }
 
     /**
+     * Create a pay in intent refund (full or partial)
+     * @param string $intentId The identifier of the PayInIntent
+     * @param \MangoPay\PayInIntent $payInIntentRefund The Refund to be created
+     * @return \MangoPay\PayInIntent Object returned from API
+     */
+    public function CreatePayInIntentRefund($intentId, $payInIntentRefund, $idempotencyKey = null)
+    {
+        return $this->CreateObject(
+            'payins_intent_create_refund',
+            $payInIntentRefund,
+            '\MangoPay\PayInIntent',
+            $intentId,
+            null,
+            $idempotencyKey
+        );
+    }
+
+    /**
+     * Reverse a pay in intent refund (fully or partial)
+     * @param string $intentId The identifier of the PayInIntent
+     * @param string $refundId The identifier of the PayInIntentRefund
+     * @param \MangoPay\PayInIntent $payInIntentRefund The Refund to be reversed
+     * @return \MangoPay\PayInIntent Object returned from API
+     */
+    public function ReversePayInIntentRefund($intentId, $refundId, $payInIntentRefund, $idempotencyKey = null)
+    {
+        return $this->CreateObject(
+            'payins_intent_reverse_refund',
+            $payInIntentRefund,
+            '\MangoPay\PayInIntent',
+            $intentId,
+            $refundId,
+            $idempotencyKey
+        );
+    }
+
+    /**
      * Retrieve a paginated list of banks that you can present to the user for selection during their Pay by Bank checkout experience
      * @param \MangoPay\Pagination $pagination Pagination object
      * @param \MangoPay\FilterSupportedBanks $filter Filtering object
@@ -434,5 +471,44 @@ class ApiPayIns extends Libraries\ApiBase
     public function GetPayPalDataCollection($dataCollectionId, $idempotencyKey = null)
     {
         return $this->GetObject('payins_paypal_data_collection_get', null, $dataCollectionId);
+    }
+
+    /**
+     * Create a PayInIntentDispute (full or partial)
+     * @param string $intentId The identifier of the PayInIntent
+     * @param string $captureId The identifier of the PayInIntentCapture
+     * @param \MangoPay\PayInIntent $payInIntentDispute The Dispute to be created
+     * @return \MangoPay\PayInIntent Object returned from API
+     */
+    public function CreatePayInIntentDispute($intentId, $captureId, $payInIntentDispute, $idempotencyKey = null)
+    {
+        return $this->CreateObject(
+            'payins_intent_create_dispute',
+            $payInIntentDispute,
+            '\MangoPay\PayInIntent',
+            $intentId,
+            $captureId,
+            $idempotencyKey
+        );
+    }
+
+    /**
+     * Update PayInIntentDispute outcome
+     * @param string $intentId The identifier of the PayInIntent
+     * @param string $captureId The identifier of the PayInIntentCapture
+     * @param string $disputeId The identifier of the PayInIntentDispute
+     * @param \MangoPay\PayInIntent $disputeOutcome Object containing the 'decision' and intent id
+     * @return \MangoPay\PayInIntent Object returned from API
+     */
+    public function UpdatePayInIntentDisputeOutcome($intentId, $captureId, $disputeId, $disputeOutcome)
+    {
+        return $this->UpdateObject(
+            'payins_intent_update_dispute_outcome',
+            $disputeOutcome,
+            '\MangoPay\PayInIntent',
+            $intentId,
+            $captureId,
+            $disputeId
+        );
     }
 }

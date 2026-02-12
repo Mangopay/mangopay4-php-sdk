@@ -1286,23 +1286,13 @@ class PayInsTest extends Base
         $intentAuthorization = $this->getNewPayInIntentAuthorization();
         $this->assertNotNull($intentAuthorization);
         $this->assertEquals("AUTHORIZED", $intentAuthorization->Status);
+        $this->assertNotNull($intentAuthorization->UnfundedAmount);
+        $this->assertNotNull($intentAuthorization->LineItems[0]->UnfundedSellerAmount);
     }
 
     public function test_CreatePayInIntentFullCapture()
     {
-        $intentAuthorization = $this->getNewPayInIntentAuthorization();
-
-        $externalData = new PayInIntentExternalData();
-        $externalData->ExternalProcessingDate = "01-10-2024";
-        $externalData->ExternalProviderReference = strval(rand(0, 999));
-        $externalData->ExternalMerchantReference = "Order-xyz-35e8490e-2ec9-4c82-978e-c712a3f5ba16";
-        $externalData->ExternalProviderName = "Stripe";
-        $externalData->ExternalProviderPaymentMethod = "PAYPAL";
-
-        $fullCapture = new PayInIntent();
-        $fullCapture->ExternalData = $externalData;
-
-        $result = $this->_api->PayIns->CreatePayInIntentCapture($intentAuthorization->Id, $fullCapture);
+        $result = $this->getNewPayInIntentFullCapture();
 
         $this->assertNotNull($result);
         $this->assertEquals("CAPTURED", $result->Status);
@@ -1407,6 +1397,86 @@ class PayInsTest extends Base
         $this->assertEquals('updated description', $updated->Description);
     }
 
+    public function test_CreateFullPayInIntentRefund()
+    {
+        $intentRefund = $this->getNewFullPayInIntentRefund();
+
+        $this->assertNotNull($intentRefund);
+        $this->assertEquals("REFUNDED", $intentRefund->Status);
+    }
+
+    public function test_CreatePartialPayInIntentRefund()
+    {
+        $fullCapture = $this->getNewPayInIntentFullCapture();
+
+        $externalData = new PayInIntentExternalData();
+        $externalData->ExternalProcessingDate = 1728133765;
+        $externalData->ExternalProviderReference = strval(round(microtime(true) * 1000));
+        $externalData->ExternalMerchantReference = "Order-xyz-35e8490e-2ec9-4c82-978e-c712a3f5ba16";
+        $externalData->ExternalProviderName = "Stripe";
+        $externalData->ExternalProviderPaymentMethod = "PAYPAL";
+
+        $refundDto = new PayInIntent();
+        $refundDto->ExternalData = $externalData;
+        $refundDto->Amount = 1000;
+
+        $lineItem = new PayInIntentLineItem();
+        $lineItem->Id = $fullCapture->LineItems[0]->Id;
+        $lineItem->Amount = $fullCapture->LineItems[0]->TotalLineItemAmount;
+        $refundDto->LineItems = [$lineItem];
+
+        $intentRefund = $this->_api->PayIns->CreatePayInIntentRefund($fullCapture->Id, $refundDto);
+
+        $this->assertNotNull($intentRefund);
+        $this->assertEquals("REFUNDED", $intentRefund->Status);
+    }
+
+    public function test_FullyReversePayInIntentRefund()
+    {
+        $intentRefund = $this->getNewFullPayInIntentRefund();
+
+        $externalData = new PayInIntentExternalData();
+        $externalData->ExternalProcessingDate = 1728133765;
+        $externalData->ExternalProviderReference = strval(round(microtime(true) * 1000));
+        $externalData->ExternalMerchantReference = "Order-xyz-35e8490e-2ec9-4c82-978e-c712a3f5ba16";
+        $externalData->ExternalProviderName = "Stripe";
+        $externalData->ExternalProviderPaymentMethod = "PAYPAL";
+
+        $reverseRefundDto = new PayInIntent();
+        $reverseRefundDto->ExternalData = $externalData;
+
+        $reversed = $this->_api->PayIns->ReversePayInIntentRefund($intentRefund->Id, $intentRefund->Refund->Id, $reverseRefundDto);
+
+        $this->assertNotNull($reversed);
+        $this->assertEquals("REFUND_REVERSED", $reversed->Status);
+    }
+
+    public function test_PartiallyReversePayInIntentRefund()
+    {
+        $intentRefund = $this->getNewFullPayInIntentRefund();
+
+        $externalData = new PayInIntentExternalData();
+        $externalData->ExternalProcessingDate = 1728133765;
+        $externalData->ExternalProviderReference = strval(round(microtime(true) * 1000));
+        $externalData->ExternalMerchantReference = "Order-xyz-35e8490e-2ec9-4c82-978e-c712a3f5ba16";
+        $externalData->ExternalProviderName = "Stripe";
+        $externalData->ExternalProviderPaymentMethod = "PAYPAL";
+
+        $reverseRefundDto = new PayInIntent();
+        $reverseRefundDto->ExternalData = $externalData;
+        $reverseRefundDto->Amount = 1000;
+
+        $lineItem = new PayInIntentLineItem();
+        $lineItem->Id = $intentRefund->LineItems[0]->Id;
+        $lineItem->Amount = $intentRefund->LineItems[0]->RefundedAmount;
+        $reverseRefundDto->LineItems = [$lineItem];
+
+        $reversed = $this->_api->PayIns->ReversePayInIntentRefund($intentRefund->Id, $intentRefund->Refund->Id, $reverseRefundDto);
+
+        $this->assertNotNull($reversed);
+        $this->assertEquals("REFUND_REVERSED", $reversed->Status);
+    }
+
     private function createNewSplits($intent)
     {
         $externalData = new PayInIntentExternalData();
@@ -1483,5 +1553,76 @@ class PayInsTest extends Base
         $this->assertEquals($created->dataCollectionId, $fetched->DataCollectionId);
         $this->assertEquals("Jane", $fetched->sender_first_name);
         $this->assertEquals("Doe", $fetched->sender_last_name);
+    }
+
+    public function test_createFullPayInIntentDispute()
+    {
+        $fullCapture = $this->getNewPayInIntentFullCapture();
+
+        $externalData = new PayInIntentExternalData();
+        $externalData->ExternalProcessingDate = 1728133765;
+        $externalData->ExternalProviderReference = strval(round(microtime(true) * 1000));
+        $externalData->ExternalMerchantReference = "Order-xyz-35e8490e-2ec9-4c82-978e-c712a3f5ba16";
+        $externalData->ExternalProviderName = "Stripe";
+        $externalData->ExternalProviderPaymentMethod = "PAYPAL";
+
+        $disputeDto = new PayInIntent();
+        $disputeDto->ExternalData = $externalData;
+
+        $intentDispute = $this->_api->PayIns->CreatePayInIntentDispute($fullCapture->Id, $fullCapture->Capture->Id, $disputeDto);
+
+        $this->assertNotNull($intentDispute);
+        $this->assertEquals("DISPUTED", $intentDispute->Status);
+    }
+
+    public function test_createPartialPayInIntentDispute()
+    {
+        $fullCapture = $this->getNewPayInIntentFullCapture();
+
+        $externalData = new PayInIntentExternalData();
+        $externalData->ExternalProcessingDate = 1728133765;
+        $externalData->ExternalProviderReference = strval(round(microtime(true) * 1000));
+        $externalData->ExternalMerchantReference = "Order-xyz-35e8490e-2ec9-4c82-978e-c712a3f5ba16";
+        $externalData->ExternalProviderName = "Stripe";
+        $externalData->ExternalProviderPaymentMethod = "PAYPAL";
+
+        $disputeDto = new PayInIntent();
+        $disputeDto->ExternalData = $externalData;
+        $disputeDto->Amount = 1000;
+
+        $lineItem = new PayInIntentLineItem();
+        $lineItem->Id = $fullCapture->LineItems[0]->Id;
+        $lineItem->Amount = $fullCapture->LineItems[0]->TotalLineItemAmount;
+        $disputeDto->LineItems = [$lineItem];
+
+        $intentDispute = $this->_api->PayIns->CreatePayInIntentDispute($fullCapture->Id, $fullCapture->Capture->Id, $disputeDto);
+
+        $this->assertNotNull($intentDispute);
+        $this->assertEquals("DISPUTED", $intentDispute->Status);
+    }
+
+    public function test_updatePayInIntentDisputeOutcome()
+    {
+        $fullCapture = $this->getNewPayInIntentFullCapture();
+
+        $externalData = new PayInIntentExternalData();
+        $externalData->ExternalProcessingDate = 1728133765;
+        $externalData->ExternalProviderReference = strval(round(microtime(true) * 1000));
+        $externalData->ExternalMerchantReference = "Order-xyz-35e8490e-2ec9-4c82-978e-c712a3f5ba16";
+        $externalData->ExternalProviderName = "Stripe";
+        $externalData->ExternalProviderPaymentMethod = "PAYPAL";
+
+        $disputeDto = new PayInIntent();
+        $disputeDto->ExternalData = $externalData;
+
+        $intentDispute = $this->_api->PayIns->CreatePayInIntentDispute($fullCapture->Id, $fullCapture->Capture->Id, $disputeDto);
+
+        $outcomeDto = new PayInIntent();
+        $outcomeDto->Decision = "DEFENDED";
+
+        $result = $this->_api->PayIns->UpdatePayInIntentDisputeOutcome($fullCapture->Id, $fullCapture->Capture->Id, $intentDispute->Dispute->Id, $outcomeDto);
+
+        $this->assertNotNull($result);
+        $this->assertEquals("DEFENDED", $result->Decision);
     }
 }

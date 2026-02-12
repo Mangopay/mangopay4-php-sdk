@@ -2,10 +2,6 @@
 
 namespace MangoPay\Tests\Cases;
 
-use MangoPay\VirtualAccount;
-use MangoPay\Wallet;
-use function PHPUnit\Framework\assertNotTrue;
-
 /**
  * Tests basic methods for Virtual Accounts
  */
@@ -15,10 +11,11 @@ class VirtualAccountsTest extends Base
      * @var \MangoPay\VirtualAccount
      */
     public static $johnsVirtualAccount;
+
     public function test_VirtualAccount_Create()
     {
         $virtualAccount = $this->getNewVirtualAccount();
-        $wallet = $this -> getJohnsWallet();
+        $wallet = $this->getJohnsWallet();
 
         $this->assertNotNull($virtualAccount);
         $this->assertEquals($virtualAccount->WalletId, $wallet->Id);
@@ -30,7 +27,7 @@ class VirtualAccountsTest extends Base
     public function test_VirtualAccount_Get()
     {
         $virtualAccount = $this->getNewVirtualAccount();
-        $wallet = $this -> getJohnsWallet();
+        $wallet = $this->getJohnsWallet();
         $fetchedVirtualAccount = $this->_api->VirtualAccounts->Get($wallet->Id, $virtualAccount->Id);
 
         $this->assertNotNull($fetchedVirtualAccount);

@@ -105,13 +105,19 @@ abstract class ApiBase
         'payins_intent_get' => ['/payins/intents/%s', RequestType::GET, 'V3.0'],
         'payins_intent_cancel' => ['/payins/intents/%s/cancel', RequestType::POST, 'V3.0'],
         'payins_intent_create_splits' => ['/payins/intents/%s/splits', RequestType::POST, 'V3.0'],
-        'settlement_create' => ['/payins/intents/settlements', RequestType::POST, 'V3.0'],
+        'settlement_generate_upload_url' => ['/payins/intents/settlements', RequestType::POST, 'V3.0'],
         'settlement_get' => ['/payins/intents/settlements/%s', RequestType::GET, 'V3.0'],
-        'settlement_update' => ['/payins/intents/settlements/%s', RequestType::PUT, 'V3.0'],
+        'settlement_generate_new_upload_url' => ['/payins/intents/settlements/%s', RequestType::PUT, 'V3.0'],
+        'settlement_get_validations' => ['/payins/intents/settlements/%s/validations', RequestType::GET, 'V3.0'],
+        'settlement_cancel' => ['/payins/intents/settlements/%s/cancel', RequestType::POST, 'V3.0'],
         'payins_intent_execute_split' => ['/payins/intents/%s/splits/%s/execute', RequestType::POST, 'V3.0'],
         'payins_intent_reverse_split' => ['/payins/intents/%s/splits/%s/reverse', RequestType::POST, 'V3.0'],
         'payins_intent_get_split' => ['/payins/intents/%s/splits/%s', RequestType::GET, 'V3.0'],
         'payins_intent_update_split' => ['/payins/intents/%s/splits/%s', RequestType::PUT, 'V3.0'],
+        'payins_intent_create_refund' => ['/payins/intents/%s/refunds', RequestType::POST, 'V3.0'],
+        'payins_intent_reverse_refund' => ['/payins/intents/%s/refunds/%s/reverse', RequestType::POST, 'V3.0'],
+        'payins_intent_create_dispute' => ['/payins/intents/%s/captures/%s/disputes', RequestType::POST, 'V3.0'],
+        'payins_intent_update_dispute_outcome' => ['/payins/intents/%s/captures/%s/disputes/%s/decision', RequestType::PUT, 'V3.0'],
 
         'repudiation_get' => ['/repudiations/%s', RequestType::GET],
 
@@ -473,9 +479,14 @@ abstract class ApiBase
         $responseClassName,
         $pagination = null,
         $filter = null,
+        $entityId = null,
         $clientIdRequired = true
     ) {
-        $urlPath = $this->GetRequestUrl($methodKey);
+        if ($entityId != null) {
+            $urlPath = sprintf($this->GetRequestUrl($methodKey), $entityId);
+        } else {
+            $urlPath = $this->GetRequestUrl($methodKey);
+        }
 
         if (is_null($pagination) || !is_object($pagination) || get_class($pagination) != 'MangoPay\Pagination') {
             $pagination = new \MangoPay\Pagination();
@@ -561,6 +572,33 @@ abstract class ApiBase
 
         $requestData = $this->BuildRequestData($entity);
 
+        $apiVersion = $this->GetApiVersion($methodKey);
+        $rest = new RestTool($this->_root, true);
+        $response = $rest->Request($urlMethod, $apiVersion, $this->GetRequestType($methodKey), $requestData);
+
+        if (!is_null($responseClassName)) {
+            return $this->CastResponseToEntity($response, $responseClassName);
+        }
+
+        return $response;
+    }
+
+    /**
+     * Does the same thing as SaveObject above, but keeps natural order of provided entity ids when building the URL
+     */
+    protected function UpdateObject($methodKey, $entity, $responseClassName = null, $firstEntityId = null, $secondEntityId = null, $thirdEntityId = null)
+    {
+        if (!is_null($thirdEntityId)) {
+            $urlMethod = sprintf($this->GetRequestUrl($methodKey), $firstEntityId, $secondEntityId, $thirdEntityId);
+        } elseif (!is_null($secondEntityId)) {
+            $urlMethod = sprintf($this->GetRequestUrl($methodKey), $firstEntityId, $secondEntityId);
+        } elseif (!is_null($firstEntityId)) {
+            $urlMethod = sprintf($this->GetRequestUrl($methodKey), $firstEntityId);
+        } else {
+            $urlMethod = $this->GetRequestUrl($methodKey);
+        }
+
+        $requestData = $this->BuildRequestData($entity);
         $apiVersion = $this->GetApiVersion($methodKey);
         $rest = new RestTool($this->_root, true);
         $response = $rest->Request($urlMethod, $apiVersion, $this->GetRequestType($methodKey), $requestData);
@@ -885,7 +923,7 @@ abstract class ApiBase
             'payins_intent_create_splits' => '\MangoPay\IntentSplits',
             'payins_intent_create_authprization' => '\MangoPay\PayInIntent',
             'payins_intent_create_capture' => '\MangoPay\PayInIntent',
-            'settlement_create' => '\MangoPay\Settlement',
+            'settlement_generate_upload_url' => '\MangoPay\Settlement',
             'payins_intent_execute_split' => '\MangoPay\PayInIntentSplit',
             'payins_intent_reverse_split' => '\MangoPay\PayInIntentSplit'
         ];

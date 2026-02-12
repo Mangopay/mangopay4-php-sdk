@@ -67,7 +67,7 @@ class PayInIntent extends Libraries\EntityBase
     public $Captures;
 
     /**
-     * @var PayInIntentCapture
+     * @var PayInIntentCapture|null
      */
     public $Capture;
 
@@ -78,7 +78,7 @@ class PayInIntent extends Libraries\EntityBase
     public $Refunds;
 
     /**
-     * @var PayInIntentRefund | null
+     * @var PayInIntentRefund|null
      */
     public $Refund;
 
@@ -89,7 +89,7 @@ class PayInIntent extends Libraries\EntityBase
     public $Disputes;
 
     /**
-     * @var PayInIntentDispute
+     * @var PayInIntentDispute|null
      */
     public $Dispute;
 
@@ -110,6 +110,9 @@ class PayInIntent extends Libraries\EntityBase
      */
     public $UnfundedAmount;
 
+    /**
+     * @var string|null
+     */
     public $Decision;
 
     /**

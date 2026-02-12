@@ -1,3 +1,75 @@
+## [3.50.0] - 2026-02-12
+### FX
+
+#### Breaking change – Custom fees
+#771
+To support percentage-based FX fees ([API release note](/release-notes/api/2026-02-11)):
+- **Breaking change** – The `CreateInstantConversion.Fees` type is now `CustomFees` instead of `Money`, to support the new FX fees structure of `Type` (`PERCENTAGE` | `FIXED`) and `Value`
+- **Breaking change** - The `ConversionQuote.Fees` type is now `CustomFees` instead of `Money`,  to support the new FX fees structure of `Type` (`PERCENTAGE` | `FIXED`) and `Value`
+- Added `RequestedFees` to `ConversionQuote` and `Conversion`
+
+#### Added – User margin
+#771
+To support the FX user margin ([API release note](/release-notes/api/2026-02-11)):
+- Added `UserMargin` to `CreateInstantConversion` and `ConversionQuote`
+- Added `MarginsResponse` to `Conversion` and `ConversionQuote`
+
+### Echo
+
+#### Breaking change - Settlement upload endpoints
+#767
+To support the new behavior of the [POST Create a Settlement](/api-reference/settlements/create-settlement) endpoint to obtain an `UploadUrl`:
+- Updated `settlement_sample.csv` and tests
+- Added `FileName` and `UploadUrl` to `Settlement`
+- Added `GenerateSettlementUploadUrl ` interface
+- **Breaking change** – Replaced `upload` method in `ApiSettlements` with `GenerateUploadUrl`
+- **Breaking change** – Replaced `update` method in `ApiSettlements` with `GenerateNewUploadUrl`
+
+#### Added - GET validations for a Settlement endpoint
+#767
+To support the [GET View validations for a Settlement](/api-reference/settlements/view-settlement-validations) endpoint:
+- Added `SettlementValidation`, `SettlementValidationFooter`, `SettlementValidationLine` classes
+- Added `GetValidations` method to `ApiSettlements`
+
+#### Added - PUT Cancel a Settlement endpoint
+#767
+To support the [PUT Cancel a Settlement](/api-reference/settlements/cancel-settlement) endpoint:
+- Added `Cancel` method to `ApiSettlements`
+
+#### Added – Intent unfunded amounts and source wallet
+#768
+- Added `SplitOriginWalletId` to `PayInIntentLineItem`, `PayInIntentSplit`
+  #761
+- Added `UnfundedSellerAmount` to `PayInIntentLineItem`
+- Added `UnfundedAmount` to `PayInIntent`
+
+#### Added – POST Create a Refund of an Intent
+#763
+To support [POST Create a Refund of an Intent](/api-reference/intents/create-intent-refund):
+- Added `Refund` and `Capture` to `PayInIntent`
+- Added `CreatePayInIntentRefund` method to `ApiPayins`
+
+#### Added – POST Reverse the Refund of an Intent
+#763
+To support [POST Reverse the Refund of an Intent](/api-reference/intents/create-intent-refund):
+- Added `ReversePayInIntentRefund` method to `ApiPayins`
+
+#### Added – POST Create a Dispute of an Intent
+#763
+To support [POST Create a Dispute of an Intent](/api-reference/intents/create-intent-refund):
+- Added `Dispute` to `PayInIntent`
+- Added `CreatePayInIntentDispute` method to `ApiPayins`
+
+#### Added - PUT Update an Intent Dispute
+#763
+To support [PUT Update an Intent Dispute](/api-reference/intents/create-intent-dispute):
+- Added `Decision` to `PayInIntent`
+- Added `UpdatePayInIntentDisputeOutcome` method to `ApiPayins`
+
+#### Fixed - VirtualAccountCapabilities
+#760
+- Fixed `LocalPayInAvailable` and `InternationalPayInAvailable` in `VirtualAccountCapabilities` class
+
 ## [3.49.0] - 2026-01-27
 ### Added
 - Support for new [GET View the SCA status of a User](https://docs.mangopay.com/api-reference/users/view-user-sca-status) endpoint ([API release note](https://docs.mangopay.com/release-notes/api/2026-01-15)) (#766)

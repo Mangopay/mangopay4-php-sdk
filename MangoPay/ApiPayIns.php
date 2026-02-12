@@ -474,17 +474,17 @@ class ApiPayIns extends Libraries\ApiBase
     }
 
     /**
-     * Create a PayInIntentCapture (full or partial)
+     * Create a PayInIntentDispute (full or partial)
      * @param string $intentId The identifier of the PayInIntent
      * @param string $captureId The identifier of the PayInIntentCapture
-     * @param \MangoPay\PayInIntent $payInIntentCapture The Capture to be reversed
+     * @param \MangoPay\PayInIntent $payInIntentDispute The Dispute to be created
      * @return \MangoPay\PayInIntent Object returned from API
      */
-    public function CreatePayInIntentDispute($intentId, $captureId, $payInIntentCapture, $idempotencyKey = null)
+    public function CreatePayInIntentDispute($intentId, $captureId, $payInIntentDispute, $idempotencyKey = null)
     {
         return $this->CreateObject(
             'payins_intent_create_dispute',
-            $payInIntentCapture,
+            $payInIntentDispute,
             '\MangoPay\PayInIntent',
             $intentId,
             $captureId,
@@ -493,7 +493,7 @@ class ApiPayIns extends Libraries\ApiBase
     }
 
     /**
-     * Create a PayInIntentCapture (full or partial)
+     * Update PayInIntentDispute outcome
      * @param string $intentId The identifier of the PayInIntent
      * @param string $captureId The identifier of the PayInIntentCapture
      * @param string $disputeId The identifier of the PayInIntentDispute

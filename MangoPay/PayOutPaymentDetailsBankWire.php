@@ -71,6 +71,12 @@ class PayOutPaymentDetailsBankWire extends Libraries\Dto implements PayOutPaymen
     public $RecipientVerificationOfPayee;
 
     /**
+     * Possible values: OUR / SHA
+     * @var string|null
+     */
+    public $ChargeBearer;
+
+    /**
      * Get array with mapping which property is object and what type of object
      * @return array
      */

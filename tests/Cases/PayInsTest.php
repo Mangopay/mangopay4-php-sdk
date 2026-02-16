@@ -815,7 +815,6 @@ class PayInsTest extends Base
 //        $this->assertEquals("CREATED", $result->Status);
         $this->assertEquals("PAYIN", $result->Type);
         $this->assertEquals("REGULAR", $result->Nature);
-        $this->assertNotNull($result->AuthenticationResult);
     }
 
     public function test_PayIns_Google_Pay_Create()

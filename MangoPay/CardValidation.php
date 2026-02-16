@@ -118,10 +118,17 @@ class CardValidation extends Libraries\EntityBase
      */
     public $PaymentCategory;
 
+    /**
+     * Authentication result.
+     * @var AuthenticationResult|null
+     */
+    public $AuthenticationResult;
+
     public function GetSubObjects()
     {
         $subObjects = parent::GetSubObjects();
         $subObjects['BrowserInfo'] = '\MangoPay\BrowserInfo';
+        $subObjects['AuthenticationResult'] = '\MangoPay\AuthenticationResult';
 
         return $subObjects;
     }

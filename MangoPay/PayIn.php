@@ -59,6 +59,12 @@ class PayIn extends Transaction
     public $ProfilingAttemptReference;
 
     /**
+     * Authentication result. Returned on Card related transactions.
+     * @var AuthenticationResult|null
+     */
+    public $AuthenticationResult;
+
+    /**
      * Get array with mapping which property depends on other property
      * @return array
      */

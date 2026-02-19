@@ -650,6 +650,7 @@ class PayInsTest extends Base
         $result = $this->_api->PayIns->CreateRecurringPayInRegistrationCIT($cit);
 
         $this->assertNotNull($result);
+        $this->assertNotNull($result->PaymentCategory);
     }
 
     public function test_Create_Recurring_PayIn_CIT_Check_CardInfo()

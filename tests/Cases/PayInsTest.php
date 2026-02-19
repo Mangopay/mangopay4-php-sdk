@@ -85,6 +85,7 @@ class PayInsTest extends Base
         $this->assertEquals(PayInStatus::Succeeded, $payIn->Status);
         $this->assertEquals('PAYIN', $payIn->Type);
         $this->assertEquals('TelephoneOrder', $payIn->PaymentCategory);
+        $this->assertNotNull($payIn->AuthenticationResult);
 
         $this->assertNotNull($payIn->PaymentDetails->CardInfo);
 //        $this->assertNotNull($payIn->PaymentDetails->CardInfo->BIN);
@@ -428,6 +429,7 @@ class PayInsTest extends Base
 
         $this->assertNotNull($message);
         $this->assertTrue(strpos($message, 'Not found') !== false);
+        $this->assertNotNull($payIn->AuthenticationResult);
     }
 
     public function test_PayIn_GetRefunds()
@@ -650,6 +652,7 @@ class PayInsTest extends Base
         $result = $this->_api->PayIns->CreateRecurringPayInRegistrationCIT($cit);
 
         $this->assertNotNull($result);
+        $this->assertNotNull($result->AuthenticationResult);
         $this->assertNotNull($result->PaymentCategory);
     }
 

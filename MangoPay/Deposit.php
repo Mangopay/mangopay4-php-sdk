@@ -124,6 +124,12 @@ class Deposit extends Libraries\EntityBase
     public $CardInfo;
 
     /**
+     * Authentication result.
+     * @var AuthenticationResult|null
+     */
+    public $AuthenticationResult;
+
+    /**
      * Get array with mapping which property is object and what type of object
      * @return array
      */
@@ -135,6 +141,7 @@ class Deposit extends Libraries\EntityBase
         $subObjects['BrowserInfo'] = '\MangoPay\BrowserInfo';
         $subObjects['Billing'] = '\MangoPay\Billing';
         $subObjects['Shipping'] = '\MangoPay\Shipping';
+        $subObjects['AuthenticationResult'] = '\MangoPay\AuthenticationResult';
 
         return $subObjects;
     }

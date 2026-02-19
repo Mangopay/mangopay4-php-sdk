@@ -187,6 +187,12 @@ class CardPreAuthorization extends Libraries\EntityBase
     public $PaymentCategory;
 
     /**
+     * Authentication result.
+     * @var AuthenticationResult|null
+     */
+    public $AuthenticationResult;
+
+    /**
      * Get array with mapping which property is object and what type of object
      * @return array
      */
@@ -197,6 +203,7 @@ class CardPreAuthorization extends Libraries\EntityBase
             'Billing' => '\MangoPay\Billing',
             'SecurityInfo' => '\MangoPay\SecurityInfo',
             'RemainingFunds' => '\MangoPay\Money',
+            'AuthenticationResult' => '\MangoPay\AuthenticationResult',
         ];
     }
 

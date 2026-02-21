@@ -12,7 +12,8 @@ class ApiVirtualAccounts extends Libraries\ApiBase
      */
     public function Create($virtualAccount, $walletId, $idempotencyKey = null)
     {
-        return $this->CreateObject('virtual_account_create', $virtualAccount, '\MangoPay\VirtualAccount', $walletId, $idempotencyKey);
+        return $this->CreateObject('virtual_account_create', $virtualAccount,
+            '\MangoPay\VirtualAccount', $walletId, null, $idempotencyKey);
     }
 
     /**

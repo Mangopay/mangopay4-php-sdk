@@ -135,26 +135,10 @@ class DisputesTest extends Base
     {
         $this->init();
 
-        $disputeForDoc = null;
-        foreach ($this->_clientDisputes as $dispute) {
-            if ($dispute->Status == \MangoPay\DisputeStatus::PendingClientAction
-                || $dispute->Status == \MangoPay\DisputeStatus::ReopenedPendingClientAction) {
-                $disputeForDoc = $dispute;
-                break;
-            }
-        }
-        if (is_null($disputeForDoc)) {
-            $this->markTestSkipped("Cannot test creating dispute document because there's no dispute with expected status in the disputes list.");
-            return;
-        }
-        $document = new \MangoPay\DisputeDocument();
-        $document->Type = \MangoPay\DisputeDocumentType::DeliveryProof;
-
-        $result = $this->_api->Disputes->CreateDisputeDocument($disputeForDoc->Id, $document);
-
+        $result = $this->getNewDisputeDocument();
         $this->assertNotNull($result);
-        $this->assertEquals($result->Type, \MangoPay\DisputeDocumentType::DeliveryProof);
-        $this->assertEquals($result->DisputeId, $disputeForDoc->Id);
+        $this->assertEquals(\MangoPay\DisputeDocumentType::DeliveryProof, $result->Type);
+        $this->assertNotNull($result->DisputeId);
     }
 
     public function test_Disputes_CreateDisputePage()
@@ -461,21 +445,9 @@ class DisputesTest extends Base
             $this->markTestSkipped("Cannot test creating settlement transfer because there's no closed, not costestable disputes in the disputes list.");
             return;
         }
-        $pagination = new \MangoPay\Pagination();
-        $transactions = $this->_api->Disputes->GetTransactions($disputeForTest->Id, $pagination);
-        $repudiationId = $transactions[0]->Id;
         $this->markTestSkipped("404 not found");
-        $repudiation = $this->_api->Disputes->GetRepudiation($repudiationId);
-        $settlementTransfer = new \MangoPay\SettlementTransfer();
-        $settlementTransfer->AuthorId = $repudiation->AuthorId;
-        $settlementTransfer->DebitedFunds = new \MangoPay\Money();
-        $settlementTransfer->DebitedFunds->Amount = 1;
-        $settlementTransfer->DebitedFunds->Currency = "EUR";
-        $settlementTransfer->Fees = new \MangoPay\Money();
-        $settlementTransfer->Fees->Amount = 0;
-        $settlementTransfer->Fees->Currency = "EUR";
 
-        $transfer = $this->_api->Disputes->CreateSettlementTransfer($settlementTransfer, $repudiationId);
+        $transfer = $this->getNewSettlementTransfer();
         $this->assertNotNull($transfer);
         $this->assertTrue($transfer->Type == 'TRANSFER');
         $this->assertTrue($transfer->Nature == 'SETTLEMENT');

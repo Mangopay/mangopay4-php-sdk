@@ -49,17 +49,7 @@ class PayOutsTest extends Base
     public function test_PayOut_CheckEligibility()
     {
         $payOut = $this->getJohnsPayOutForCardDirect();
-
-        $eligibility = new PayOutEligibilityRequest();
-        $eligibility->AuthorId = $payOut->AuthorId;
-        $eligibility->DebitedFunds = new Money();
-        $eligibility->DebitedFunds->Amount = 10;
-        $eligibility->DebitedFunds->Currency = CurrencyIso::EUR;
-        $eligibility->PayoutModeRequested = "INSTANT_PAYMENT";
-        $eligibility->BankAccountId = $payOut->MeanOfPaymentDetails->BankAccountId;
-        $eligibility->DebitedWalletId = $payOut->DebitedWalletId;
-
-        $result = $this->_api->PayOuts->CheckInstantPayoutEligibility($eligibility);
+        $result = $this->createPayOutCheckEligibility($payOut);
 
         $this->assertNotNull($payOut->Id);
         $this->assertSame(\MangoPay\PayOutPaymentType::BankWire, $payOut->PaymentType);

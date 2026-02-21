@@ -12,9 +12,10 @@ class ApiDeposits extends Libraries\ApiBase
      * @param CreateDeposit $deposit Deposit object to save
      * @return Deposit Deposit object returned from API
      */
-    public function Create(CreateDeposit $deposit)
+    public function Create(CreateDeposit $deposit, $idempotencyKey = null)
     {
-        return $this->CreateObject('deposits_create', $deposit, '\MangoPay\Deposit');
+        return $this->CreateObject('deposits_create', $deposit,
+            '\MangoPay\Deposit', null, null, $idempotencyKey);
     }
 
     /**

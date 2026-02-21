@@ -541,9 +541,10 @@ class ApiUsers extends Libraries\ApiBase
      * @param $companyNumberDetails
      * @return \MangoPay\CompanyNumberDetails
      */
-    public function ValidateTheFormatOfUserData($companyNumberDetails)
+    public function ValidateTheFormatOfUserData($companyNumberDetails, $idempotencyKey = null)
     {
-        return $this->ExecutePostRequest('validate_the_format_of_user_data', $companyNumberDetails, '\MangoPay\CompanyNumberDetails');
+        return $this->ExecutePostRequest('validate_the_format_of_user_data', $companyNumberDetails,
+            '\MangoPay\CompanyNumberDetails', null, $idempotencyKey);
     }
 
     /**

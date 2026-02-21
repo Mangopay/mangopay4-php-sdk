@@ -24,7 +24,7 @@ class ApiBankingAliases extends Libraries\ApiBase
      * @return \MangoPay\BankingAlias returned from API
      * @throws Libraries\Exception
      */
-    public function Create($bankingAlias)
+    public function Create($bankingAlias, $idempotencyKey = null)
     {
         $className = get_class($bankingAlias);
         if ($className == 'MangoPay\BankingAliasIBAN') {
@@ -33,7 +33,8 @@ class ApiBankingAliases extends Libraries\ApiBase
             throw new Libraries\Exception('Wrong entity class for BankingAlias');
         }
 
-        $response = $this->CreateObject($methodKey, $bankingAlias, null, $bankingAlias->WalletId);
+        $response = $this->CreateObject($methodKey, $bankingAlias, null, $bankingAlias->WalletId,
+            null, $idempotencyKey);
         return $this->GetBankingAliasResponse($response);
     }
 

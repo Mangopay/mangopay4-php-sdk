@@ -965,17 +965,17 @@ abstract class ApiBase
             'create_conversion_quote' => '\MangoPay\ConversionQuote',
             'identity_verification_create' => '\MangoPay\IdentityVerification',
             'recipients_create' => '\MangoPay\Recipient',
-            'payins_intent_create_authprization' => '\MangoPay\PayInIntent',
-            'payins_intent_create_capture' => '\MangoPay\PayInIntent',
-            'payins_intent_cancel' => '\MangoPay\PayInIntent',
-            'payins_intent_create_splits' => '\MangoPay\IntentSplits',
             'payins_intent_execute_split' => '\MangoPay\PayInIntentSplit',
             'payins_intent_reverse_split' => '\MangoPay\PayInIntentSplit',
-            'payins_intent_create_refund' => '\MangoPay\PayInIntent',
             'payins_intent_reverse_refund' => '\MangoPay\PayInIntent',
             'payins_intent_create_dispute' => '\MangoPay\PayInIntent',
-            'settlement_generate_upload_url' => '\MangoPay\Settlement',
             'settlement_cancel' => '\MangoPay\Settlement',
+            'payins_intent_create_splits' => '\MangoPay\IntentSplits',
+            'payins_intent_create_refund' => '\MangoPay\PayInIntent',
+            'payins_intent_cancel' => '\MangoPay\PayInIntent',
+            'payins_intent_create_capture' => '\MangoPay\PayInIntent',
+            'settlement_generate_upload_url' => '\MangoPay\Settlement',
+            'payins_intent_create_authprization' => '\MangoPay\PayInIntent',
         ];
 
         foreach ($map as $key => $className) {

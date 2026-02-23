@@ -9,10 +9,17 @@ use MangoPay\BankingAliasType;
 use MangoPay\Billing;
 use MangoPay\Birthplace;
 use MangoPay\BrowserInfo;
+use MangoPay\ConversionQuote;
 use MangoPay\CreateCardPreAuthorizedDepositPayIn;
+use MangoPay\CreateClientWalletsInstantConversion;
+use MangoPay\CreateClientWalletsQuotedConversion;
 use MangoPay\CreateDeposit;
+use MangoPay\CreateInstantConversion;
+use MangoPay\CreateQuotedConversion;
 use MangoPay\CurrencyIso;
+use MangoPay\CustomFees;
 use MangoPay\IndividualRecipient;
+use MangoPay\IntentSplits;
 use MangoPay\LegalPersonType;
 use MangoPay\LegalRepresentative;
 use MangoPay\Libraries\Exception;
@@ -23,6 +30,7 @@ use MangoPay\PayInIntentBuyer;
 use MangoPay\PayInIntentExternalData;
 use MangoPay\PayInIntentLineItem;
 use MangoPay\PayInIntentSeller;
+use MangoPay\PayInIntentSplit;
 use MangoPay\PayOut;
 use MangoPay\PayOutEligibilityRequest;
 use MangoPay\PayOutPaymentDetailsBankWire;
@@ -35,6 +43,7 @@ use MangoPay\Ubo;
 use MangoPay\UpdateDeposit;
 use MangoPay\UserCategory;
 use MangoPay\UserLegalSca;
+use MangoPay\UserMargin;
 use MangoPay\UserNatural;
 use MangoPay\UserNaturalSca;
 use MangoPay\VirtualAccount;
@@ -163,6 +172,8 @@ abstract class Base extends TestCase
      * @var \MangoPay\BankingAliasIBAN
      */
     public static $JohnsBankingAliasGB;
+    /** @var \MangoPay\PayInRecurringRegistration */
+    public static $JohnsRecurringPayinRegistrationPaypal;
     /** @var \MangoPay\MangoPayApi */
     protected $_api;
 
@@ -443,7 +454,7 @@ abstract class Base extends TestCase
             $bankingAliasGB->Active = "true";
             $bankingAliasGB->LocalAccountDetails = $localAccountDetails;
 
-            self::$JohnsBankingAliasGB = $this->_api->BankingAliases->Create($bankingAliasGB, $wallet->Id);
+            self::$JohnsBankingAliasGB = $this->_api->BankingAliases->Create($bankingAliasGB);
         }
 
         return self::$JohnsBankingAliasGB;
@@ -2280,7 +2291,7 @@ abstract class Base extends TestCase
         return $deposit;
     }
 
-    protected function getNewPayInIntentAuthorization()
+    protected function getNewPayInIntentAuthorization($idempotencyKey = null)
     {
         $user = $this->getJohn();
         $wallet = $this->getJohnsWallet();
@@ -2315,7 +2326,7 @@ abstract class Base extends TestCase
         $toCreate->Buyer = $buyer;
         $toCreate->LineItems = $lineItems;
 
-        return $this->_api->PayIns->CreatePayInIntentAuthorization($toCreate);
+        return $this->_api->PayIns->CreatePayInIntentAuthorization($toCreate, $idempotencyKey);
     }
 
     protected function getNewRecipientObject()
@@ -2343,7 +2354,7 @@ abstract class Base extends TestCase
         return $recipient;
     }
 
-    protected function getNewPayInIntentFullCapture()
+    protected function getNewPayInIntentFullCapture($idempotencyKey = null)
     {
         $intentAuthorization = $this->getNewPayInIntentAuthorization();
 
@@ -2357,10 +2368,10 @@ abstract class Base extends TestCase
         $fullCapture = new PayInIntent();
         $fullCapture->ExternalData = $externalData;
 
-        return $this->_api->PayIns->CreatePayInIntentCapture($intentAuthorization->Id, $fullCapture);
+        return $this->_api->PayIns->CreatePayInIntentCapture($intentAuthorization->Id, $fullCapture, $idempotencyKey);
     }
 
-    protected function getNewFullPayInIntentRefund()
+    protected function getNewFullPayInIntentRefund($idempotencyKey = null)
     {
         $fullCapture = $this->getNewPayInIntentFullCapture();
 
@@ -2374,7 +2385,7 @@ abstract class Base extends TestCase
         $refundDto = new PayInIntent();
         $refundDto->ExternalData = $externalData;
 
-        return $this->_api->PayIns->CreatePayInIntentRefund($fullCapture->Id, $refundDto);
+        return $this->_api->PayIns->CreatePayInIntentRefund($fullCapture->Id, $refundDto, $idempotencyKey);
     }
 
     protected function assertIdempotencyResource($key, $expectedClass)
@@ -2593,6 +2604,10 @@ abstract class Base extends TestCase
 
     protected function getRecurringPayinRegistrationPaypal()
     {
+        if (self::$JohnsRecurringPayinRegistrationPaypal !== null) {
+            return self::$JohnsRecurringPayinRegistrationPaypal;
+        }
+
         $values = $this->getJohnsWalletWithMoneyAndCardId();
         $walletId = $values["walletId"];
         $user = $this->getJohn();
@@ -2618,7 +2633,9 @@ abstract class Base extends TestCase
         $payIn->Billing = $billing;
         $payIn->PaymentType = "PAYPAL";
 
-        return $this->_api->PayIns->CreateRecurringRegistration($payIn);
+        self::$JohnsRecurringPayinRegistrationPaypal = $this->_api->PayIns->CreateRecurringRegistration($payIn);
+
+        return self::$JohnsRecurringPayinRegistrationPaypal;
     }
 
     protected function createRecurringPaypalPayInCIT($idempotencyKey = null)
@@ -2667,5 +2684,145 @@ abstract class Base extends TestCase
         $payOut->MeanOfPaymentDetails->PayoutModeRequested = 'STANDARD';
 
         return $this->_api->Clients->CreatePayOut($payOut, $idempotencyKey);
+    }
+
+    protected function createInstantConversion($idempotencyKey = null)
+    {
+        $john = $this->getJohn();
+        $creditedWallet = new \MangoPay\Wallet();
+        $creditedWallet->Owners = [$john->Id];
+        $creditedWallet->Currency = 'GBP';
+        $creditedWallet->Description = 'WALLET IN EUR WITH MONEY';
+
+        $creditedWallet = $this->_api->Wallets->Create($creditedWallet);
+
+        $debitedWallet = $this->getJohnsWalletWithMoney();
+
+        $instantConversion = new CreateInstantConversion();
+        $instantConversion->AuthorId = $debitedWallet->Owners[0];
+        $instantConversion->CreditedWalletId = $creditedWallet->Id;
+        $instantConversion->DebitedWalletId = $debitedWallet->Id;
+
+        $creditedFunds = new Money();
+        $creditedFunds->Currency = 'GBP';
+        $instantConversion->CreditedFunds = $creditedFunds;
+
+        $debitedFunds = new Money();
+        $debitedFunds->Currency = 'EUR';
+        $debitedFunds->Amount = 79;
+        $instantConversion->DebitedFunds = $debitedFunds;
+
+        $fees = new CustomFees();
+        $fees->Currency = 'EUR';
+        $fees->Amount = 9;
+        $instantConversion->Fees = $fees;
+
+        $instantConversion->Tag = "create instant conversion";
+
+        return $this->_api->Conversions->CreateInstantConversion($instantConversion, $idempotencyKey);
+    }
+
+    protected function createQuotedConversion($idempotencyKey = null)
+    {
+        $john = $this->getJohn();
+        $creditedWallet = new \MangoPay\Wallet();
+        $creditedWallet->Owners = [$john->Id];
+        $creditedWallet->Currency = 'GBP';
+        $creditedWallet->Description = 'WALLET IN EUR WITH MONEY';
+
+        $creditedWallet = $this->_api->Wallets->Create($creditedWallet);
+
+        $debitedWallet = $this->getJohnsWalletWithMoney();
+
+        $quote = $this->createConversionQuote();
+
+        $quotedConversion = new CreateQuotedConversion();
+        $quotedConversion->QuoteId = $quote->Id;
+        $quotedConversion->AuthorId = $debitedWallet->Owners[0];
+        $quotedConversion->CreditedWalletId = $creditedWallet->Id;
+        $quotedConversion->DebitedWalletId = $debitedWallet->Id;
+
+        return $this->_api->Conversions->CreateQuotedConversion($quotedConversion, $idempotencyKey);
+    }
+
+    protected function createClientWalletsQuotedConversion($idempotencyKey = null)
+    {
+        $quote = $this->createConversionQuote();
+
+        $quotedConversion = new CreateClientWalletsQuotedConversion();
+        $quotedConversion->QuoteId = $quote->Id;
+        $quotedConversion->DebitedWalletType = 'FEES';
+        $quotedConversion->CreditedWalletType = 'CREDIT';
+        $quotedConversion->Tag = 'Created via the PHP SDK';
+
+        return $this->_api->Conversions->CreateClientWalletsQuotedConversion($quotedConversion, $idempotencyKey);
+    }
+
+    protected function createClientWalletsInstantConversion($idempotencyKey = null)
+    {
+        $creditedFunds = new Money();
+        $creditedFunds->Currency = 'USD';
+
+        $debitedFunds = new Money();
+        $debitedFunds->Currency = 'EUR';
+        $debitedFunds->Amount = 100;
+
+        $instantConversion = new CreateClientWalletsInstantConversion();
+        $instantConversion->DebitedWalletType = 'FEES';
+        $instantConversion->DebitedFunds = $debitedFunds;
+        $instantConversion->CreditedWalletType = 'FEES';
+        $instantConversion->CreditedFunds = $creditedFunds;
+
+        $instantConversion->Tag = "Client wallets instant conversion via the PHP SDK";
+
+        return $this->_api->Conversions->CreateClientWalletsInstantConversion($instantConversion, $idempotencyKey);
+    }
+
+    protected function createConversionQuote($fees = null, $idempotencyKey = null)
+    {
+        $quote = new ConversionQuote();
+        $creditedFunds = new Money();
+        $creditedFunds->Currency = 'GBP';
+        $quote->CreditedFunds = $creditedFunds;
+
+        $debitedFunds = new Money();
+        $debitedFunds->Currency = 'EUR';
+        $debitedFunds->Amount = 50;
+        $quote->DebitedFunds = $debitedFunds;
+
+        $quote->Duration = 300;
+        $quote->Tag = "Created using the Mangopay PHP SDK";
+        $quote->Fees = $fees;
+
+        $userMargin = new UserMargin();
+        $userMargin->Type = "PERCENTAGE";
+        $userMargin->Value = 0.1;
+        $quote->UserMargin = $userMargin;
+
+        return $this->_api->Conversions->CreateConversionQuote($quote, $idempotencyKey);
+    }
+
+    protected function createNewSplits($intent, $idempotencyKey = null)
+    {
+        $externalData = new PayInIntentExternalData();
+        $externalData->ExternalProcessingDate = "01-10-2024";
+        $externalData->ExternalProviderReference = strval(rand(0, 999));
+        $externalData->ExternalMerchantReference = "Order-xyz-35e8490e-2ec9-4c82-978e-c712a3f5ba16";
+        $externalData->ExternalProviderName = "Stripe";
+        $externalData->ExternalProviderPaymentMethod = "PAYPAL";
+
+        $fullCapture = new PayInIntent();
+        $fullCapture->ExternalData = $externalData;
+        $this->_api->PayIns->CreatePayInIntentCapture($intent->Id, $fullCapture);
+
+        $split = new PayInIntentSplit();
+        $split->LineItemId = $intent->LineItems[0]->Id;
+        $split->SplitAmount = 10;
+
+        $splitsArray = [$split];
+        $splitsPost = new IntentSplits();
+        $splitsPost->Splits = $splitsArray;
+
+        return $this->_api->PayIns->CreatePayInIntentSplits($intent->Id, $splitsPost, $idempotencyKey);
     }
 }

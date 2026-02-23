@@ -2,12 +2,18 @@
 
 namespace MangoPay\Tests\Cases;
 
+use MangoPay\CustomFees;
+use MangoPay\IdentityVerification;
 use MangoPay\Libraries\ResponseException;
 use MangoPay\Money;
 use MangoPay\PayIn;
 use MangoPay\PayInExecutionDetailsDirect;
+use MangoPay\PayInIntent;
+use MangoPay\PayInIntentExternalData;
 use MangoPay\PayInPaymentDetailsBankWire;
 use MangoPay\Report;
+use MangoPay\Settlement;
+use MangoPay\UserCategory;
 
 /**
  * Tests methods for idempotency support
@@ -446,7 +452,7 @@ class IdempotencyTest extends Base
         $this->assertIdempotencyResource($key, '\MangoPay\PayOutEligibilityResponse');
     }
 
-    public function test_GetIdempotencyKey_CardDirect_getPaymentMethodMetadata()
+    public function test_GetIdempotencyKey_CardDirect_GetPaymentMethodMetadata()
     {
         $key = md5(uniqid());
         $payin = $this->getNewPayInCardDirect();
@@ -812,5 +818,194 @@ class IdempotencyTest extends Base
 
         $this->_api->Deposits->Create($this->getNewDeposit($cardRegistration->CardId, $user->Id), $key);
         $this->assertIdempotencyResource($key, '\MangoPay\Deposit');
+    }
+
+    public function test_GetIdempotencyKey_CreateInstantConversion()
+    {
+        $key = md5(uniqid());
+        $this->createInstantConversion($key);
+        $this->assertIdempotencyResource($key, '\MangoPay\Conversion');
+    }
+
+    public function test_GetIdempotencyKey_CreateClientWalletsInstantConversion()
+    {
+        $key = md5(uniqid());
+        $this->createClientWalletsInstantConversion($key);
+        $this->assertIdempotencyResource($key, '\MangoPay\Conversion');
+    }
+
+    public function test_GetIdempotencyKey_CreateQuotedConversion()
+    {
+        $key = md5(uniqid());
+        $this->createQuotedConversion($key);
+        $this->assertIdempotencyResource($key, '\MangoPay\Conversion');
+
+    }
+
+    public function test_GetIdempotencyKey_CreateClientWalletsQuotedConversion()
+    {
+        $key = md5(uniqid());
+        $this->createClientWalletsQuotedConversion($key);
+        $this->assertIdempotencyResource($key, '\MangoPay\Conversion');
+    }
+
+    public function test_GetIdempotencyKey_CreateConversionQuote()
+    {
+        $key = md5(uniqid());
+        $fees = new CustomFees();
+        $fees->Currency = 'EUR';
+        $fees->Amount = 100;
+        $fees->Type = "PERCENTAGE";
+        $this->createConversionQuote($fees, $key);
+        $this->assertIdempotencyResource($key, '\MangoPay\ConversionQuote');
+    }
+
+    public function test_GetIdempotencyKey_IdentityVerification_Create()
+    {
+        $key = md5(uniqid());
+        $john = $this->getJohn();
+        $identityVerificationCreate = new IdentityVerification();
+        $identityVerificationCreate->ReturnUrl = "https://example.com";
+        $identityVerificationCreate->Tag = "Created by the PHP SDK";
+
+        $this->_api->IdentityVerifications->Create($identityVerificationCreate, $john->Id, $key);
+        $this->assertIdempotencyResource($key, '\MangoPay\IdentityVerification');
+    }
+
+    public function test_GetIdempotencyKey_Recipient_Create()
+    {
+        $key = md5(uniqid());
+        $john = $this->getJohnSca(UserCategory::Owner, false);
+        $recipient = $this->getNewRecipientObject();
+        $recipient->ScaContext = "USER_PRESENT";
+
+        $this->_api->Recipients->Create($recipient, $john->Id, $key);
+        $this->assertIdempotencyResource($key, '\MangoPay\Recipient');
+    }
+
+    public function test_GetIdempotencyKey_CreatePayInIntentAuthorization()
+    {
+        $key = md5(uniqid());
+        $this->getNewPayInIntentAuthorization($key);
+        $this->assertIdempotencyResource($key, '\MangoPay\PayInIntent');
+    }
+
+    public function test_GetIdempotencyKey_CreatePayInIntentFullCapture()
+    {
+        $key = md5(uniqid());
+        $this->getNewPayInIntentFullCapture($key);
+        $this->assertIdempotencyResource($key, '\MangoPay\PayInIntent');
+    }
+
+    public function test_GetIdempotencyKey_CancelPayInIntent()
+    {
+        $key = md5(uniqid());
+        $intent = $this->getNewPayInIntentAuthorization();
+        $details = new PayInIntent();
+        $externalData = new PayInIntentExternalData();
+        $externalData->ExternalProcessingDate = 1728133765;
+        $externalData->ExternalProviderReference = strval(rand(0, 10000));
+        $details->ExternalData = $externalData;
+
+        $this->_api->PayIns->CancelPayInIntent($intent->Id, $details, $key);
+        $this->assertIdempotencyResource($key, '\MangoPay\PayInIntent');
+    }
+
+    public function test_GetIdempotencyKey_CreatePayInIntentSplits()
+    {
+        $key = md5(uniqid());
+        $intent = $this->getNewPayInIntentAuthorization();
+        $this->createNewSplits($intent, $key);
+        $this->assertIdempotencyResource($key, '\MangoPay\IntentSplits');
+    }
+
+    public function test_GetIdempotencyKey_ExecutePayInIntentSplit()
+    {
+        $this->markTestSkipped();
+        $key = md5(uniqid());
+        $intent = $this->getNewPayInIntentAuthorization();
+        $split = $this->createNewSplits($intent)->Splits[0];
+        try {
+            $this->_api->PayIns->ExecutePayInIntentSplit($intent->Id, $split->Id, $key);
+        } catch (\MangoPay\Libraries\Exception $exc) {
+            // expect error. A success use case can't be automatically tested since a manual payin needs to be created
+            $this->assertSame('Bad request. One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.', $exc->getMessage());
+        }
+
+        $this->assertIdempotencyResource($key, '\MangoPay\PayInIntentSplit');
+    }
+
+    public function test_GetIdempotencyKey_ReversePayInIntentSplit()
+    {
+        $key = md5(uniqid());
+        $intent = $this->getNewPayInIntentAuthorization();
+        $split = $this->createNewSplits($intent)->Splits[0];
+
+        $this->_api->PayIns->ReversePayInIntentSplit($intent->Id, $split->Id, $key);
+        $this->assertIdempotencyResource($key, '\MangoPay\PayInIntentSplit');
+    }
+
+    public function test_GetIdempotencyKey_CreateFullPayInIntentRefund()
+    {
+        $key = md5(uniqid());
+        $this->getNewFullPayInIntentRefund($key);
+        $this->assertIdempotencyResource($key, '\MangoPay\PayInIntent');
+    }
+
+    public function test_GetIdempotencyKey_FullyReversePayInIntentRefund()
+    {
+        $key = md5(uniqid());
+        $intentRefund = $this->getNewFullPayInIntentRefund();
+
+        $externalData = new PayInIntentExternalData();
+        $externalData->ExternalProcessingDate = 1728133765;
+        $externalData->ExternalProviderReference = strval(round(microtime(true) * 1000));
+        $externalData->ExternalMerchantReference = "Order-xyz-35e8490e-2ec9-4c82-978e-c712a3f5ba16";
+        $externalData->ExternalProviderName = "Stripe";
+        $externalData->ExternalProviderPaymentMethod = "PAYPAL";
+
+        $reverseRefundDto = new PayInIntent();
+        $reverseRefundDto->ExternalData = $externalData;
+
+        $this->_api->PayIns->ReversePayInIntentRefund($intentRefund->Id, $intentRefund->Refund->Id, $reverseRefundDto, $key);
+        $this->assertIdempotencyResource($key, '\MangoPay\PayInIntent');
+    }
+
+    public function test_GetIdempotencyKey_CreateFullPayInIntentDispute()
+    {
+        $key = md5(uniqid());
+        $fullCapture = $this->getNewPayInIntentFullCapture();
+
+        $externalData = new PayInIntentExternalData();
+        $externalData->ExternalProcessingDate = 1728133765;
+        $externalData->ExternalProviderReference = strval(round(microtime(true) * 1000));
+        $externalData->ExternalMerchantReference = "Order-xyz-35e8490e-2ec9-4c82-978e-c712a3f5ba16";
+        $externalData->ExternalProviderName = "Stripe";
+        $externalData->ExternalProviderPaymentMethod = "PAYPAL";
+
+        $disputeDto = new PayInIntent();
+        $disputeDto->ExternalData = $externalData;
+
+        $this->_api->PayIns->CreatePayInIntentDispute($fullCapture->Id, $fullCapture->Capture->Id, $disputeDto, $key);
+        $this->assertIdempotencyResource($key, '\MangoPay\PayInIntent');
+    }
+
+    public function test_GetIdempotencyKey_CreateSettlement()
+    {
+        $key = md5(uniqid());
+        $settlement = new Settlement();
+        $settlement->FileName = 'settlement_sample.csv';
+        $this->_api->Settlements->GenerateUploadUrl($settlement, $key);
+        $this->assertIdempotencyResource($key, '\MangoPay\Settlement');
+    }
+
+    public function test_GetIdempotencyKey_CancelSettlement()
+    {
+        $key = md5(uniqid());
+        $settlement = new Settlement();
+        $settlement->FileName = 'settlement_sample.csv';
+        $created = $this->_api->Settlements->GenerateUploadUrl($settlement);
+        $this->_api->Settlements->Cancel($created->SettlementId, $key);
+        $this->assertIdempotencyResource($key, '\MangoPay\Settlement');
     }
 }

@@ -1298,30 +1298,6 @@ class PayInsTest extends Base
         $this->assertEquals("REFUND_REVERSED", $reversed->Status);
     }
 
-    private function createNewSplits($intent)
-    {
-        $externalData = new PayInIntentExternalData();
-        $externalData->ExternalProcessingDate = "01-10-2024";
-        $externalData->ExternalProviderReference = strval(rand(0, 999));
-        $externalData->ExternalMerchantReference = "Order-xyz-35e8490e-2ec9-4c82-978e-c712a3f5ba16";
-        $externalData->ExternalProviderName = "Stripe";
-        $externalData->ExternalProviderPaymentMethod = "PAYPAL";
-
-        $fullCapture = new PayInIntent();
-        $fullCapture->ExternalData = $externalData;
-        $this->_api->PayIns->CreatePayInIntentCapture($intent->Id, $fullCapture);
-
-        $split = new PayInIntentSplit();
-        $split->LineItemId = $intent->LineItems[0]->Id;
-        $split->SplitAmount = 10;
-
-        $splitsArray = [$split];
-        $splitsPost = new IntentSplits();
-        $splitsPost->Splits = $splitsArray;
-
-        return $this->_api->PayIns->CreatePayInIntentSplits($intent->Id, $splitsPost);
-    }
-
     public function test_GetPayByBankSupportedBanks()
     {
         $result = $this->_api->PayIns->GetPayByBankSupportedBanks();
@@ -1371,7 +1347,7 @@ class PayInsTest extends Base
 
         $fetched = $this->_api->PayIns->GetPayPalDataCollection($created->dataCollectionId);
         $this->assertNotNull($fetched);
-        $this->assertEquals($created->dataCollectionId, $fetched->DataCollectionId);
+        $this->assertEquals($created->dataCollectionId, $fetched->dataCollectionId);
         $this->assertEquals("Jane", $fetched->sender_first_name);
         $this->assertEquals("Doe", $fetched->sender_last_name);
     }

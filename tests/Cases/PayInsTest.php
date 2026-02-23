@@ -1554,7 +1554,7 @@ class PayInsTest extends Base
 
         $fetched = $this->_api->PayIns->GetPayPalDataCollection($created->dataCollectionId);
         $this->assertNotNull($fetched);
-        $this->assertEquals($created->dataCollectionId, $fetched->DataCollectionId);
+        $this->assertEquals($created->dataCollectionId, $fetched->dataCollectionId);
         $this->assertEquals("Jane", $fetched->sender_first_name);
         $this->assertEquals("Doe", $fetched->sender_last_name);
     }

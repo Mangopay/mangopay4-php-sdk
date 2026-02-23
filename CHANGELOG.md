@@ -1,3 +1,21 @@
+## [3.50.1] - 2026-02-23
+### Added - ChargeBearer body parameter on payouts
+
+https://github.com/Mangopay/mangopay4-php-sdk/pull/779/changes/011296e13901bd6ece848d9f052de9f93dd43346
+On [POST Create a Payout](/api-reference/payouts/create-payout), platforms can now request to pay all SWIFT fees using the `OUR` value of the new `ChargeBearer` property ([API release note](/release-notes/api/2026-02-16)):
+- Handle `ChargeBearer` param
+
+### Added - AuthenticationType response property on card pay-ins
+
+https://github.com/Mangopay/mangopay4-php-sdk/pull/779/changes/cffccbe99a3efd51bdfba54ff4e37536240af578
+- The `AuthenticationResult.AuthenticationType` response property is now returned on card pay-ins
+
+### Added - TelephoneOrder body parameter on recurring card pay-ins (CIT and MIT)
+
+https://github.com/Mangopay/mangopay4-php-sdk/pull/779/changes/e69cc7af27f9384c3d02bac91774b21f76061035
+To support the `TelephoneOrder` property on [POST Create a Recurring PayIn (MIT)](/api-reference/recurring-card-payins/create-recurring-payin-cit) and [POST Create a Recurring PayIn (CIT)](/api-reference/recurring-card-payins/create-recurring-payin-mit):
+- handle `PaymentCategory` param
+
 ## [3.50.0] - 2026-02-12
 ### FX
 

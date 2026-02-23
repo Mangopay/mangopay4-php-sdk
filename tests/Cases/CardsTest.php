@@ -74,6 +74,7 @@ class CardsTest extends Base
             $this->assertNotNull($validatedCard);
             $this->assertNotNull($validatedCard->Id);
             $this->assertNotNull($validatedCard->SecureMode);
+            $this->assertNotNull($validatedCard->AuthenticationResult);
         } catch (Exception $e) {
             print_r("can't test due to client issues");
         }

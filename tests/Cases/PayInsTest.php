@@ -85,6 +85,7 @@ class PayInsTest extends Base
         $this->assertEquals(PayInStatus::Succeeded, $payIn->Status);
         $this->assertEquals('PAYIN', $payIn->Type);
         $this->assertEquals('TelephoneOrder', $payIn->PaymentCategory);
+        $this->assertNotNull($payIn->AuthenticationResult);
 
         $this->assertNotNull($payIn->PaymentDetails->CardInfo);
 //        $this->assertNotNull($payIn->PaymentDetails->CardInfo->BIN);
@@ -428,6 +429,7 @@ class PayInsTest extends Base
 
         $this->assertNotNull($message);
         $this->assertTrue(strpos($message, 'Not found') !== false);
+        $this->assertNotNull($payIn->AuthenticationResult);
     }
 
     public function test_PayIn_GetRefunds()
@@ -650,6 +652,8 @@ class PayInsTest extends Base
         $result = $this->_api->PayIns->CreateRecurringPayInRegistrationCIT($cit);
 
         $this->assertNotNull($result);
+        $this->assertNotNull($result->AuthenticationResult);
+        $this->assertNotNull($result->PaymentCategory);
     }
 
     public function test_Create_Recurring_PayIn_CIT_Check_CardInfo()
@@ -1550,7 +1554,7 @@ class PayInsTest extends Base
 
         $fetched = $this->_api->PayIns->GetPayPalDataCollection($created->dataCollectionId);
         $this->assertNotNull($fetched);
-        $this->assertEquals($created->dataCollectionId, $fetched->DataCollectionId);
+        $this->assertEquals($created->dataCollectionId, $fetched->dataCollectionId);
         $this->assertEquals("Jane", $fetched->sender_first_name);
         $this->assertEquals("Doe", $fetched->sender_last_name);
     }

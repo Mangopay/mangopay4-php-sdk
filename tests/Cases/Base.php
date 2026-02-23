@@ -2394,7 +2394,7 @@ abstract class Base extends TestCase
         $this->assertInstanceOf('\MangoPay\Response', $resp);
         $this->assertInstanceOf($expectedClass, $resp->Resource);
     }
-    
+
     protected function getNewDisputeDocument($idempotencyKey = null)
     {
         $pagination = new \MangoPay\Pagination(1, 100);
@@ -2483,7 +2483,7 @@ abstract class Base extends TestCase
         return $this->_api->PayIns->CreateDepositPreauthorizedPayInWithoutComplement($dto, $idempotencyKey);
     }
 
-        protected function createDepositPreauthorizedPayInPriorToComplement($idempotencyKey = null)
+    protected function createDepositPreauthorizedPayInPriorToComplement($idempotencyKey = null)
     {
         $user = $this->getJohn();
         $cardRegistration = $this->getUpdatedCardRegistration($user->Id);

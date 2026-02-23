@@ -30,7 +30,6 @@ use MangoPay\UpdateDeposit;
  */
 class PayInsTest extends Base
 {
-
     public function test_PayIns_Create_CardWeb()
     {
         $payIn = $this->getJohnsPayInCardWeb();

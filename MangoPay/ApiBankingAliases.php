@@ -33,8 +33,14 @@ class ApiBankingAliases extends Libraries\ApiBase
             throw new Libraries\Exception('Wrong entity class for BankingAlias');
         }
 
-        $response = $this->CreateObject($methodKey, $bankingAlias, null, $bankingAlias->WalletId,
-            null, $idempotencyKey);
+        $response = $this->CreateObject(
+            $methodKey,
+            $bankingAlias,
+            null,
+            $bankingAlias->WalletId,
+            null,
+            $idempotencyKey
+        );
         return $this->GetBankingAliasResponse($response);
     }
 

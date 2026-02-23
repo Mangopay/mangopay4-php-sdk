@@ -839,7 +839,6 @@ class IdempotencyTest extends Base
         $key = md5(uniqid());
         $this->createQuotedConversion($key);
         $this->assertIdempotencyResource($key, '\MangoPay\Conversion');
-
     }
 
     public function test_GetIdempotencyKey_CreateClientWalletsQuotedConversion()

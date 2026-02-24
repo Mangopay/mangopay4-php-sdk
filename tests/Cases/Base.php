@@ -9,9 +9,17 @@ use MangoPay\BankingAliasType;
 use MangoPay\Billing;
 use MangoPay\Birthplace;
 use MangoPay\BrowserInfo;
+use MangoPay\ConversionQuote;
+use MangoPay\CreateCardPreAuthorizedDepositPayIn;
+use MangoPay\CreateClientWalletsInstantConversion;
+use MangoPay\CreateClientWalletsQuotedConversion;
 use MangoPay\CreateDeposit;
+use MangoPay\CreateInstantConversion;
+use MangoPay\CreateQuotedConversion;
 use MangoPay\CurrencyIso;
+use MangoPay\CustomFees;
 use MangoPay\IndividualRecipient;
+use MangoPay\IntentSplits;
 use MangoPay\LegalPersonType;
 use MangoPay\LegalRepresentative;
 use MangoPay\Libraries\Exception;
@@ -22,12 +30,20 @@ use MangoPay\PayInIntentBuyer;
 use MangoPay\PayInIntentExternalData;
 use MangoPay\PayInIntentLineItem;
 use MangoPay\PayInIntentSeller;
+use MangoPay\PayInIntentSplit;
+use MangoPay\PayOut;
+use MangoPay\PayOutEligibilityRequest;
+use MangoPay\PayOutPaymentDetailsBankWire;
 use MangoPay\Recipient;
+use MangoPay\RecurringPayInCIT;
+use MangoPay\RecurringPayPalPayInCIT;
 use MangoPay\ShippingPreference;
 use MangoPay\Tests\Mocks\MockStorageStrategy;
 use MangoPay\Ubo;
+use MangoPay\UpdateDeposit;
 use MangoPay\UserCategory;
 use MangoPay\UserLegalSca;
+use MangoPay\UserMargin;
 use MangoPay\UserNatural;
 use MangoPay\UserNaturalSca;
 use MangoPay\VirtualAccount;
@@ -156,6 +172,10 @@ abstract class Base extends TestCase
      * @var \MangoPay\BankingAliasIBAN
      */
     public static $JohnsBankingAliasGB;
+
+    /** @var \MangoPay\PayInRecurringRegistration */
+    public static $JohnsRecurringPayinRegistrationPaypal;
+
     /** @var \MangoPay\MangoPayApi */
     protected $_api;
 
@@ -305,13 +325,13 @@ abstract class Base extends TestCase
      * @return UserNaturalSca
      * @throws Exception
      */
-    protected function getJohnSca($userCategory, $recreate)
+    protected function getJohnSca($userCategory, $recreate, $idempotencyKey = null)
     {
         switch ($userCategory) {
             case UserCategory::Payer:
-                return $this->getJohnScaPayer($recreate);
+                return $this->getJohnScaPayer($recreate, $idempotencyKey);
             case UserCategory::Owner:
-                return $this->getJohnScaOwner($recreate);
+                return $this->getJohnScaOwner($recreate, $idempotencyKey);
             default:
                 throw new Exception('Unexpected user category');
         }
@@ -322,9 +342,9 @@ abstract class Base extends TestCase
      * @return UserNaturalSca
      * @throws Exception
      */
-    private function getJohnScaPayer($recreate)
+    private function getJohnScaPayer($recreate, $idempotencyKey = null)
     {
-        if (self::$JohnScaPayer === null || $recreate) {
+        if (self::$JohnScaPayer === null || $recreate || $idempotencyKey !== null) {
             $user = new UserNaturalSca();
             $user->FirstName = "John SCA";
             $user->LastName = "Doe SCA Review";
@@ -332,7 +352,11 @@ abstract class Base extends TestCase
             $user->TermsAndConditionsAccepted = true;
             $user->UserCategory = UserCategory::Payer;
             $user->Address = $this->getNewAddress();
-            self::$JohnScaPayer = $this->_api->Users->Create($user);
+            $result = $this->_api->Users->Create($user, $idempotencyKey);
+            if ($idempotencyKey === null) {
+                self::$JohnScaPayer = $result;
+            }
+            return $result;
         }
         return self::$JohnScaPayer;
     }
@@ -342,9 +366,9 @@ abstract class Base extends TestCase
      * @return UserNaturalSca
      * @throws Exception
      */
-    private function getJohnScaOwner($recreate)
+    private function getJohnScaOwner($recreate, $idempotencyKey = null)
     {
-        if (self::$JohnScaOwner === null || $recreate) {
+        if (self::$JohnScaOwner === null || $recreate || $idempotencyKey !== null) {
             $user = new UserNaturalSca();
             $user->FirstName = "John SCA";
             $user->LastName = "Doe SCA Review";
@@ -359,7 +383,11 @@ abstract class Base extends TestCase
             $user->TermsAndConditionsAccepted = true;
             $user->PhoneNumber = "+33611111111";
             $user->PhoneNumberCountry = "FR";
-            self::$JohnScaOwner = $this->_api->Users->Create($user);
+            $result = $this->_api->Users->Create($user, $idempotencyKey);
+            if ($idempotencyKey === null) {
+                self::$JohnScaOwner = $result;
+            }
+            return $result;
         }
         return self::$JohnScaOwner;
     }
@@ -375,15 +403,13 @@ abstract class Base extends TestCase
         return $this->_api->Users->Create($user);
     }
 
-    /**
-     * Creates self::$JohnsBankingAliasIBAN (Banking alias belonging to John) if not created yet
-     * @return \MangoPay\BankingAliasIBAN
-     */
-    protected function getJohnsBankingAliasIBAN()
+    protected function getJohnsBankingAliasIBAN($wallet = null, $idempotencyKey = null)
     {
-        if (self::$JohnsBankingAliasIBAN === null) {
-            $john = $this->getJohn();
+        if ($wallet === null) {
             $wallet = $this->getJohnsWallet();
+        }
+        if (self::$JohnsBankingAliasIBAN === null || $idempotencyKey !== null) {
+            $john = $this->getJohn();
 
             $bankingAliasIBAN = new \MangoPay\BankingAliasIBAN();
             $bankingAliasIBAN->CreditedUserId = $john->Id;
@@ -392,7 +418,11 @@ abstract class Base extends TestCase
             $bankingAliasIBAN->Country = "LU";
             $bankingAliasIBAN->Active = "true";
 
-            self::$JohnsBankingAliasIBAN = $this->_api->BankingAliases->Create($bankingAliasIBAN, $wallet->Id);
+            $result = $this->_api->BankingAliases->Create($bankingAliasIBAN, $idempotencyKey);
+            if ($idempotencyKey === null) {
+                self::$JohnsBankingAliasIBAN = $result;
+            }
+            return $result;
         }
 
         return self::$JohnsBankingAliasIBAN;
@@ -426,7 +456,7 @@ abstract class Base extends TestCase
             $bankingAliasGB->Active = "true";
             $bankingAliasGB->LocalAccountDetails = $localAccountDetails;
 
-            self::$JohnsBankingAliasGB = $this->_api->BankingAliases->Create($bankingAliasGB, $wallet->Id);
+            self::$JohnsBankingAliasGB = $this->_api->BankingAliases->Create($bankingAliasGB);
         }
 
         return self::$JohnsBankingAliasGB;
@@ -464,16 +494,20 @@ abstract class Base extends TestCase
         return $this->_api->Wallets->Create($wallet);
     }
 
-    protected function getNewVirtualAccount()
+    protected function getNewVirtualAccount($idempotencyKey = null)
     {
-        if (self::$johnsVirtualAccount === null) {
+        if (self::$johnsVirtualAccount === null || $idempotencyKey !== null) {
             $wallet = $this->getJohnsWallet();
             $virtualAccount = new VirtualAccount();
             $virtualAccount->Country = "FR";
             $virtualAccount->VirtualAccountPurpose = "Collection";
             $virtualAccount->Tag = "create virtual account tag";
 
-            self::$johnsVirtualAccount = $this->_api->VirtualAccounts->Create($virtualAccount, $wallet->Id);
+            $result = $this->_api->VirtualAccounts->Create($virtualAccount, $wallet->Id, $idempotencyKey);
+            if ($idempotencyKey === null) {
+                self::$johnsVirtualAccount = $result;
+            }
+            return $result;
         }
 
         return self::$johnsVirtualAccount;
@@ -580,10 +614,10 @@ abstract class Base extends TestCase
      * @return array<int,string>
      * @phpstan-return {walletId: string, cardId?: string }
      */
-    protected function getJohnsWalletWithMoneyAndCardId($amount = 1000)
+    protected function getJohnsWalletWithMoneyAndCardId($amount = 1000, $recreate = false)
     {
         $arr = [];
-        if (self::$JohnsWalletWithMoney === null) {
+        if (self::$JohnsWalletWithMoney === null || $recreate) {
             $john = $this->getJohn();
             // create wallet with money
             $wallet = new \MangoPay\Wallet();
@@ -915,7 +949,7 @@ abstract class Base extends TestCase
         return $this->_api->PayIns->Create($payIn);
     }
 
-    protected function getNewPayInMbwayWeb($userId = null)
+    protected function getNewPayInMbwayWeb($userId = null, $idempotencyKey = null)
     {
         $wallet = $this->getJohnsWalletWithMoney();
         if (is_null($userId)) {
@@ -942,7 +976,7 @@ abstract class Base extends TestCase
 
         $payIn->Tag = "test tag";
 
-        return $this->_api->PayIns->Create($payIn);
+        return $this->_api->PayIns->Create($payIn, $idempotencyKey);
     }
 
     protected function getNewPayInGooglePayDirect($userId = null)
@@ -1001,7 +1035,7 @@ abstract class Base extends TestCase
         return $this->_api->PayIns->CreateGooglePay($payIn);
     }
 
-    protected function getNewPayInMultibancoWeb($userId = null)
+    protected function getNewPayInMultibancoWeb($userId = null, $idempotencyKey = null)
     {
         $wallet = $this->getJohnsWalletWithMoney();
         if (is_null($userId)) {
@@ -1029,10 +1063,10 @@ abstract class Base extends TestCase
 
         $payIn->Tag = "Multibanco tag";
 
-        return $this->_api->PayIns->Create($payIn);
+        return $this->_api->PayIns->Create($payIn, $idempotencyKey);
     }
 
-    protected function getNewPayInSatispayWeb($userId = null)
+    protected function getNewPayInSatispayWeb($userId = null, $idempotencyKey = null)
     {
         $wallet = $this->getJohnsWalletWithMoney();
         if (is_null($userId)) {
@@ -1062,10 +1096,10 @@ abstract class Base extends TestCase
 
         $payIn->Tag = "Satispay tag";
 
-        return $this->_api->PayIns->Create($payIn);
+        return $this->_api->PayIns->Create($payIn, $idempotencyKey);
     }
 
-    protected function getNewPayInBlikWeb($userId = null, $withCode = false)
+    protected function getNewPayInBlikWeb($userId = null, $withCode = false, $idempotencyKey = null)
     {
         $john = $this->getJohn();
         $wallet = new \MangoPay\Wallet();
@@ -1107,11 +1141,11 @@ abstract class Base extends TestCase
 
         $payIn->Tag = "Blik tag";
 
-        return $this->_api->PayIns->Create($payIn);
+        return $this->_api->PayIns->Create($payIn, $idempotencyKey);
     }
 
 
-    protected function getNewPayInKlarnaWeb($userId = null)
+    protected function getNewPayInKlarnaWeb($userId = null, $idempotencyKey = null)
     {
         $wallet = $this->getJohnsWalletWithMoney();
         if (is_null($userId)) {
@@ -1164,10 +1198,10 @@ abstract class Base extends TestCase
 
         $payIn->Tag = "Klarna tag";
 
-        return $this->_api->PayIns->Create($payIn);
+        return $this->_api->PayIns->Create($payIn, $idempotencyKey);
     }
 
-    protected function getLegacyPayInIdealWeb($userId = null)
+    protected function getLegacyPayInIdealWeb($userId = null, $idempotencyKey = null)
     {
         $wallet = $this->getJohnsWalletWithMoney();
         if (is_null($userId)) {
@@ -1199,10 +1233,10 @@ abstract class Base extends TestCase
 
         $payIn->Tag = "Ideal tag";
 
-        return $this->_api->PayIns->Create($payIn);
+        return $this->_api->PayIns->Create($payIn, $idempotencyKey);
     }
 
-    protected function getNewPayInIdealWeb($userId = null)
+    protected function getNewPayInIdealWeb($userId = null, $idempotencyKey = null)
     {
         $wallet = $this->getJohnsWalletWithMoney();
         if (is_null($userId)) {
@@ -1230,10 +1264,10 @@ abstract class Base extends TestCase
 
         $payIn->Tag = "Ideal tag";
 
-        return $this->_api->PayIns->Create($payIn);
+        return $this->_api->PayIns->Create($payIn, $idempotencyKey);
     }
 
-    protected function getNewPayInGiropayWeb($userId = null)
+    protected function getNewPayInGiropayWeb($userId = null, $idempotencyKey = null)
     {
         $wallet = $this->getJohnsWalletWithMoney();
         if (is_null($userId)) {
@@ -1260,10 +1294,10 @@ abstract class Base extends TestCase
 
         $payIn->Tag = "Giropay tag";
 
-        return $this->_api->PayIns->Create($payIn);
+        return $this->_api->PayIns->Create($payIn, $idempotencyKey);
     }
 
-    protected function getNewPayInSwishWeb($userId = null)
+    protected function getNewPayInSwishWeb($userId = null, $idempotencyKey = null)
     {
         $wallet = $this->getJohnsWalletForCurrency("SEK");
         if (is_null($userId)) {
@@ -1290,10 +1324,10 @@ abstract class Base extends TestCase
 
         $payIn->Tag = "Swish tag";
 
-        return $this->_api->PayIns->Create($payIn);
+        return $this->_api->PayIns->Create($payIn, $idempotencyKey);
     }
 
-    protected function getNewPayInTwintWeb($userId = null)
+    protected function getNewPayInTwintWeb($userId = null, $idempotencyKey = null)
     {
         $wallet = $this->getJohnsWalletForCurrency("CHF");
         if (is_null($userId)) {
@@ -1320,10 +1354,10 @@ abstract class Base extends TestCase
 
         $payIn->Tag = "Twint tag";
 
-        return $this->_api->PayIns->Create($payIn);
+        return $this->_api->PayIns->Create($payIn, $idempotencyKey);
     }
 
-    protected function getNewPayInBancontactWeb($userId = null)
+    protected function getNewPayInBancontactWeb($userId = null, $idempotencyKey = null)
     {
         $wallet = $this->getJohnsWalletWithMoney();
         if (is_null($userId)) {
@@ -1352,10 +1386,10 @@ abstract class Base extends TestCase
 
         $payIn->Tag = "Bancontact tag";
 
-        return $this->_api->PayIns->Create($payIn);
+        return $this->_api->PayIns->Create($payIn, $idempotencyKey);
     }
 
-    protected function getNewPayInBizumWeb($userId = null, $usePhone = true)
+    protected function getNewPayInBizumWeb($userId = null, $usePhone = true, $idempotencyKey = null)
     {
         $wallet = $this->getJohnsWalletWithMoney();
         if (is_null($userId)) {
@@ -1385,10 +1419,10 @@ abstract class Base extends TestCase
             $payIn->Tag = "Bizum with return url tag";
         }
 
-        return $this->_api->PayIns->Create($payIn);
+        return $this->_api->PayIns->Create($payIn, $idempotencyKey);
     }
 
-    protected function getNewPayInPayByBankWeb($userId = null)
+    protected function getNewPayInPayByBankWeb($userId = null, $idempotencyKey = null)
     {
         $wallet = $this->getJohnsWalletForCurrency("EUR");
 
@@ -1423,7 +1457,7 @@ abstract class Base extends TestCase
 
         $payIn->Tag = "PayByBank PHP";
 
-        return $this->_api->PayIns->Create($payIn);
+        return $this->_api->PayIns->Create($payIn, $idempotencyKey);
     }
 
     /**
@@ -1705,9 +1739,9 @@ abstract class Base extends TestCase
         return self::$JohnsPayInPaypalWeb;
     }
 
-    protected function getJohnsPayInPaypalWebV2()
+    protected function getJohnsPayInPaypalWebV2($idempotencyKey = null)
     {
-        if (self::$JohnsPayInPaypalWebV2 === null) {
+        if (self::$JohnsPayInPaypalWebV2 === null || $idempotencyKey !== null) {
             $wallet = $this->getJohnsWallet();
             $user = $this->getJohn();
 
@@ -1754,7 +1788,11 @@ abstract class Base extends TestCase
             $payIn->PaymentDetails->LineItems = [$lineItem];
             $payIn->PaymentDetails->ShippingPreference = ShippingPreference::NO_SHIPPING;
 
-            self::$JohnsPayInPaypalWebV2 = $this->_api->PayIns->CreatePayPal($payIn);
+            $result = $this->_api->PayIns->CreatePayPal($payIn, $idempotencyKey);
+            if ($idempotencyKey === null) {
+                self::$JohnsPayInPaypalWebV2 = $result;
+            }
+            return $result;
         }
 
         return self::$JohnsPayInPaypalWebV2;
@@ -1778,9 +1816,9 @@ abstract class Base extends TestCase
      * Creates Pay-In Card Web object using the /payment-methods/payconiq endpoint
      * @return \MangoPay\PayIn
      */
-    protected function getJohnsPayInPayconiqWebV2()
+    protected function getJohnsPayInPayconiqWebV2($idempotencyKey = null)
     {
-        return $this->_api->PayIns->CreatePayconiq(self::newPayconiqWebPayIn());
+        return $this->_api->PayIns->CreatePayconiq(self::newPayconiqWebPayIn(), $idempotencyKey);
     }
 
     private function newPayconiqWebPayIn()
@@ -1849,13 +1887,13 @@ abstract class Base extends TestCase
      * @return UserLegalSca
      * @throws Exception
      */
-    protected function getMatrixSca($userCategory, $recreate)
+    protected function getMatrixSca($userCategory, $recreate, $idempotencyKey = null)
     {
         switch ($userCategory) {
             case UserCategory::Payer:
-                return $this->getMatrixScaPayer($recreate);
+                return $this->getMatrixScaPayer($recreate, $idempotencyKey);
             case UserCategory::Owner:
-                return $this->getMatrixScaOwner($recreate);
+                return $this->getMatrixScaOwner($recreate, $idempotencyKey);
             default:
                 throw new Exception('Unexpected user category');
         }
@@ -1866,9 +1904,9 @@ abstract class Base extends TestCase
      * @return UserLegalSca
      * @throws Exception
      */
-    private function getMatrixScaPayer($recreate)
+    private function getMatrixScaPayer($recreate, $idempotencyKey = null)
     {
-        if (self::$MatrixScaPayer === null || $recreate) {
+        if (self::$MatrixScaPayer === null || $recreate || $idempotencyKey !== null) {
             $legalRepresentative = new LegalRepresentative();
             $legalRepresentative->FirstName = "John SCA";
             $legalRepresentative->LastName = "Doe SCA Review";
@@ -1888,7 +1926,11 @@ abstract class Base extends TestCase
             $user->TermsAndConditionsAccepted = true;
             $user->LegalRepresentative = $legalRepresentative;
 
-            self::$MatrixScaPayer = $this->_api->Users->Create($user);
+            $result = $this->_api->Users->Create($user, $idempotencyKey);
+            if ($idempotencyKey === null) {
+                self::$MatrixScaPayer = $result;
+            }
+            return $result;
         }
         return self::$MatrixScaPayer;
     }
@@ -1898,9 +1940,9 @@ abstract class Base extends TestCase
      * @return UserLegalSca
      * @throws Exception
      */
-    private function getMatrixScaOwner($recreate)
+    private function getMatrixScaOwner($recreate, $idempotencyKey = null)
     {
-        if (self::$MatrixScaOwner === null || $recreate) {
+        if (self::$MatrixScaOwner === null || $recreate || $idempotencyKey !== null) {
             $john = $this->getJohn();
 
             $legalRepresentative = new LegalRepresentative();
@@ -1924,7 +1966,11 @@ abstract class Base extends TestCase
             $user->TermsAndConditionsAccepted = true;
             $user->LegalRepresentative = $legalRepresentative;
 
-            self::$MatrixScaOwner = $this->_api->Users->Create($user);
+            $result = $this->_api->Users->Create($user, $idempotencyKey);
+            if ($idempotencyKey === null) {
+                self::$MatrixScaOwner = $result;
+            }
+            return $result;
         }
         return self::$MatrixScaOwner;
     }
@@ -2247,7 +2293,7 @@ abstract class Base extends TestCase
         return $deposit;
     }
 
-    protected function getNewPayInIntentAuthorization()
+    protected function getNewPayInIntentAuthorization($idempotencyKey = null)
     {
         $user = $this->getJohn();
         $wallet = $this->getJohnsWallet();
@@ -2282,7 +2328,7 @@ abstract class Base extends TestCase
         $toCreate->Buyer = $buyer;
         $toCreate->LineItems = $lineItems;
 
-        return $this->_api->PayIns->CreatePayInIntentAuthorization($toCreate);
+        return $this->_api->PayIns->CreatePayInIntentAuthorization($toCreate, $idempotencyKey);
     }
 
     protected function getNewRecipientObject()
@@ -2310,7 +2356,7 @@ abstract class Base extends TestCase
         return $recipient;
     }
 
-    protected function getNewPayInIntentFullCapture()
+    protected function getNewPayInIntentFullCapture($idempotencyKey = null)
     {
         $intentAuthorization = $this->getNewPayInIntentAuthorization();
 
@@ -2324,10 +2370,10 @@ abstract class Base extends TestCase
         $fullCapture = new PayInIntent();
         $fullCapture->ExternalData = $externalData;
 
-        return $this->_api->PayIns->CreatePayInIntentCapture($intentAuthorization->Id, $fullCapture);
+        return $this->_api->PayIns->CreatePayInIntentCapture($intentAuthorization->Id, $fullCapture, $idempotencyKey);
     }
 
-    protected function getNewFullPayInIntentRefund()
+    protected function getNewFullPayInIntentRefund($idempotencyKey = null)
     {
         $fullCapture = $this->getNewPayInIntentFullCapture();
 
@@ -2341,6 +2387,444 @@ abstract class Base extends TestCase
         $refundDto = new PayInIntent();
         $refundDto->ExternalData = $externalData;
 
-        return $this->_api->PayIns->CreatePayInIntentRefund($fullCapture->Id, $refundDto);
+        return $this->_api->PayIns->CreatePayInIntentRefund($fullCapture->Id, $refundDto, $idempotencyKey);
+    }
+
+    protected function assertIdempotencyResource($key, $expectedClass)
+    {
+        $resp = $this->_api->Responses->Get($key);
+        $this->assertInstanceOf('\MangoPay\Response', $resp);
+        $this->assertInstanceOf($expectedClass, $resp->Resource);
+    }
+
+    protected function getNewDisputeDocument($idempotencyKey = null)
+    {
+        $pagination = new \MangoPay\Pagination(1, 100);
+        $sorting = new \MangoPay\Sorting();
+        $sorting->AddField("CreationDate", \MangoPay\SortDirection::DESC);
+        $disputes = $this->_api->Disputes->GetAll($pagination, $sorting);
+
+        $disputeForDoc = null;
+        foreach ($disputes as $dispute) {
+            if ($dispute->Status == \MangoPay\DisputeStatus::PendingClientAction
+                || $dispute->Status == \MangoPay\DisputeStatus::ReopenedPendingClientAction) {
+                $disputeForDoc = $dispute;
+                break;
+            }
+        }
+
+        if (is_null($disputeForDoc)) {
+            return null;
+        }
+
+        $document = new \MangoPay\DisputeDocument();
+        $document->Type = \MangoPay\DisputeDocumentType::DeliveryProof;
+
+        return $this->_api->Disputes->CreateDisputeDocument($disputeForDoc->Id, $document, $idempotencyKey);
+    }
+
+    protected function getNewSettlementTransfer($idempotencyKey = null)
+    {
+        $pagination = new \MangoPay\Pagination(1, 100);
+        $sorting = new \MangoPay\Sorting();
+        $sorting->AddField("CreationDate", \MangoPay\SortDirection::DESC);
+        $disputes = $this->_api->Disputes->GetAll($pagination, $sorting);
+
+        $disputeForTest = null;
+        foreach ($disputes as $dispute) {
+            if ($dispute->Status == \MangoPay\DisputeStatus::Closed && $dispute->DisputeType == \MangoPay\DisputeType::NotContestable) {
+                $disputeForTest = $dispute;
+                break;
+            }
+        }
+
+        if (is_null($disputeForTest)) {
+            return null;
+        }
+
+        $pagination = new \MangoPay\Pagination();
+        $transactions = $this->_api->Disputes->GetTransactions($disputeForTest->Id, $pagination);
+        $repudiationId = $transactions[0]->Id;
+        $repudiation = $this->_api->Disputes->GetRepudiation($repudiationId);
+
+        $settlementTransfer = new \MangoPay\SettlementTransfer();
+        $settlementTransfer->AuthorId = $repudiation->AuthorId;
+        $settlementTransfer->DebitedFunds = new \MangoPay\Money();
+        $settlementTransfer->DebitedFunds->Amount = 1;
+        $settlementTransfer->DebitedFunds->Currency = "EUR";
+        $settlementTransfer->Fees = new \MangoPay\Money();
+        $settlementTransfer->Fees->Amount = 0;
+        $settlementTransfer->Fees->Currency = "EUR";
+
+        return $this->_api->Disputes->CreateSettlementTransfer($settlementTransfer, $repudiationId, $idempotencyKey);
+    }
+
+    protected function createDepositPreauthorizedPayInWithoutComplement($idempotencyKey = null)
+    {
+        $user = $this->getJohn();
+        $cardRegistration = $this->getUpdatedCardRegistration($user->Id);
+        $deposit = $this->_api->Deposits->Create($this->getNewDeposit($cardRegistration->CardId, $user->Id));
+        $wallet = $this->getJohnsWallet();
+
+        $dto = new CreateCardPreAuthorizedDepositPayIn();
+        $dto->DepositId = $deposit->Id;
+        $dto->AuthorId = $user->Id;
+        $dto->CreditedWalletId = $wallet->Id;
+
+        $debitedFunds = new Money();
+        $debitedFunds->Amount = 1000;
+        $debitedFunds->Currency = "EUR";
+
+        $fees = new Money();
+        $fees->Amount = 0;
+        $fees->Currency = "EUR";
+
+        $dto->DebitedFunds = $debitedFunds;
+        $dto->Fees = $fees;
+
+        return $this->_api->PayIns->CreateDepositPreauthorizedPayInWithoutComplement($dto, $idempotencyKey);
+    }
+
+    protected function createDepositPreauthorizedPayInPriorToComplement($idempotencyKey = null)
+    {
+        $user = $this->getJohn();
+        $cardRegistration = $this->getUpdatedCardRegistration($user->Id);
+        $deposit = $this->_api->Deposits->Create($this->getNewDeposit($cardRegistration->CardId, $user->Id));
+        $wallet = $this->getJohnsWallet();
+
+        $dto = new CreateCardPreAuthorizedDepositPayIn();
+        $dto->DepositId = $deposit->Id;
+        $dto->AuthorId = $user->Id;
+        $dto->CreditedWalletId = $wallet->Id;
+
+        $debitedFunds = new Money();
+        $debitedFunds->Amount = 1000;
+        $debitedFunds->Currency = "EUR";
+
+        $fees = new Money();
+        $fees->Amount = 0;
+        $fees->Currency = "EUR";
+
+        $dto->DebitedFunds = $debitedFunds;
+        $dto->Fees = $fees;
+
+        return $this->_api->PayIns->CreateDepositPreauthorizedPayInPriorToComplement($dto, $idempotencyKey);
+    }
+
+    protected function createDepositPreauthorizedPayInComplement($idempotencyKey = null)
+    {
+        $user = $this->getJohn();
+        $cardRegistration = $this->getUpdatedCardRegistration($user->Id);
+        $deposit = $this->_api->Deposits->Create($this->getNewDeposit($cardRegistration->CardId, $user->Id));
+        $updateDepositDto = new UpdateDeposit();
+        $updateDepositDto->PaymentStatus = "NO_SHOW_REQUESTED";
+        $this->_api->Deposits->Update($deposit->Id, $updateDepositDto);
+        $wallet = $this->getJohnsWallet();
+
+        $dto = new CreateCardPreAuthorizedDepositPayIn();
+        $dto->DepositId = $deposit->Id;
+        $dto->AuthorId = $user->Id;
+        $dto->CreditedWalletId = $wallet->Id;
+
+        $debitedFunds = new Money();
+        $debitedFunds->Amount = 1000;
+        $debitedFunds->Currency = "EUR";
+
+        $fees = new Money();
+        $fees->Amount = 0;
+        $fees->Currency = "EUR";
+
+        $dto->DebitedFunds = $debitedFunds;
+        $dto->Fees = $fees;
+
+        return $this->_api->PayIns->CreateDepositPreauthorizedPayInComplement($dto, $idempotencyKey);
+    }
+
+    protected function createPayOutCheckEligibility($payOut, $idempotencyKey = null)
+    {
+        $eligibility = new PayOutEligibilityRequest();
+        $eligibility->AuthorId = $payOut->AuthorId;
+        $eligibility->DebitedFunds = new Money();
+        $eligibility->DebitedFunds->Amount = 10;
+        $eligibility->DebitedFunds->Currency = CurrencyIso::EUR;
+        $eligibility->PayoutModeRequested = "INSTANT_PAYMENT";
+        $eligibility->BankAccountId = $payOut->MeanOfPaymentDetails->BankAccountId;
+        $eligibility->DebitedWalletId = $payOut->DebitedWalletId;
+
+        return $this->_api->PayOuts->CheckInstantPayoutEligibility($eligibility, $idempotencyKey);
+    }
+
+    protected function getRecurringPayin($recreateWallet = false, $idempotencyKey = null)
+    {
+        $values = $this->getJohnsWalletWithMoneyAndCardId(1000, $recreateWallet);
+        $walletId = $values["walletId"];
+        $cardId = $values["cardId"];
+        $user = $this->getJohn();
+
+        $payIn = new \MangoPay\PayInRecurringRegistration();
+        $payIn->AuthorId = $user->Id;
+        $payIn->CardId = $cardId;
+        $payIn->CreditedUserId = $user->Id;
+        $payIn->CreditedWalletId = $walletId;
+        $payIn->FirstTransactionDebitedFunds = new \MangoPay\Money();
+        $payIn->FirstTransactionDebitedFunds->Amount = 12;
+        $payIn->FirstTransactionDebitedFunds->Currency = 'EUR';
+        $payIn->FirstTransactionFees = new \MangoPay\Money();
+        $payIn->FirstTransactionFees->Amount = 1;
+        $payIn->FirstTransactionFees->Currency = 'EUR';
+        $billing = new \MangoPay\Billing();
+        $billing->FirstName = 'John';
+        $billing->LastName = 'Doe';
+        $billing->Address = $this->getNewAddress();
+        $shipping = new \MangoPay\Shipping();
+        $shipping->FirstName = 'John';
+        $shipping->LastName = 'Doe';
+        $shipping->Address = $this->getNewAddress();
+        $payIn->Shipping = $shipping;
+        $payIn->Billing = $billing;
+        $payIn->FreeCycles = 0;
+
+        return $this->_api->PayIns->CreateRecurringRegistration($payIn, $idempotencyKey);
+    }
+
+    protected function createRecurringPayInCIT($idempotencyKey = null)
+    {
+        self::$JohnsWalletWithMoney = null; // Reset the cache value
+
+        $registration = $this->getRecurringPayin();
+
+        $cit = new RecurringPayInCIT();
+        $cit->RecurringPayinRegistrationId = $registration->Id;
+        $cit->IpAddress = "2001:0620:0000:0000:0211:24FF:FE80:C12C";
+        $cit->SecureModeReturnURL = "http://www.my-site.com/returnurl";
+        $cit->StatementDescriptor = "lorem";
+        $cit->Tag = "custom meta";
+        $cit->BrowserInfo = $this->getBrowserInfo();
+
+        return $this->_api->PayIns->CreateRecurringPayInRegistrationCIT($cit, $idempotencyKey);
+    }
+
+    protected function getRecurringPayinRegistrationPaypal()
+    {
+        if (self::$JohnsRecurringPayinRegistrationPaypal !== null) {
+            return self::$JohnsRecurringPayinRegistrationPaypal;
+        }
+
+        $values = $this->getJohnsWalletWithMoneyAndCardId();
+        $walletId = $values["walletId"];
+        $user = $this->getJohn();
+
+        $payIn = new \MangoPay\PayInRecurringRegistration();
+        $payIn->AuthorId = $user->Id;
+        $payIn->CreditedWalletId = $walletId;
+        $payIn->FirstTransactionDebitedFunds = new \MangoPay\Money();
+        $payIn->FirstTransactionDebitedFunds->Amount = 100;
+        $payIn->FirstTransactionDebitedFunds->Currency = 'EUR';
+        $payIn->FirstTransactionFees = new \MangoPay\Money();
+        $payIn->FirstTransactionFees->Amount = 0;
+        $payIn->FirstTransactionFees->Currency = 'EUR';
+        $billing = new \MangoPay\Billing();
+        $billing->FirstName = 'John';
+        $billing->LastName = 'Doe';
+        $billing->Address = $this->getNewAddress();
+        $shipping = new \MangoPay\Shipping();
+        $shipping->FirstName = 'John';
+        $shipping->LastName = 'Doe';
+        $shipping->Address = $this->getNewAddress();
+        $payIn->Shipping = $shipping;
+        $payIn->Billing = $billing;
+        $payIn->PaymentType = "PAYPAL";
+
+        self::$JohnsRecurringPayinRegistrationPaypal = $this->_api->PayIns->CreateRecurringRegistration($payIn);
+
+        return self::$JohnsRecurringPayinRegistrationPaypal;
+    }
+
+    protected function createRecurringPaypalPayInCIT($idempotencyKey = null)
+    {
+        self::$JohnsWalletWithMoney = null; // Reset the cache value
+
+        $registration = $this->getRecurringPayinRegistrationPaypal();
+
+        $cit = new RecurringPayPalPayInCIT();
+        $cit->RecurringPayinRegistrationId = $registration->Id;
+        $cit->ReturnURL = "http://example.com";
+        $cit->CancelURL = "http://example.net";
+
+        $lineItem = new LineItem();
+        $lineItem->Name = 'test item';
+        $lineItem->Quantity = 1;
+        $lineItem->UnitAmount = 100;
+        $lineItem->TaxAmount = 0;
+
+        $cit->LineItems = [$lineItem];
+
+        $cit->ShippingPreference = "SET_PROVIDED_ADDRESS";
+        $cit->Reference = "abcd-efgh-ijkl";
+        $cit->StatementDescriptor = "Example123";
+
+        return $this->_api->PayIns->CreateRecurringPayPalPayInCIT($cit, $idempotencyKey);
+    }
+
+    public function createPayOutForClient($idempotencyKey = null)
+    {
+        $account = $this->getClientBankAccount();
+        $createdAccount = $this->_api->Clients->CreateBankAccount($account);
+
+        $wallets = $this->_api->Clients->GetWallets(\MangoPay\FundsType::FEES);
+        $payOut = new PayOut();
+
+        $payOut->Tag = 'bla';
+        $payOut->DebitedFunds = new Money();
+        $payOut->DebitedFunds->Currency = 'EUR';
+        $payOut->DebitedFunds->Amount = 12;
+
+        $payOut->DebitedWalletId = $wallets[0]->Id;
+        $payOut->MeanOfPaymentDetails = new PayOutPaymentDetailsBankWire();
+        $payOut->MeanOfPaymentDetails->BankAccountId = $createdAccount->Id;
+        $payOut->MeanOfPaymentDetails->BankWireRef = 'invoice 7282';
+        $payOut->MeanOfPaymentDetails->PayoutModeRequested = 'STANDARD';
+
+        return $this->_api->Clients->CreatePayOut($payOut, $idempotencyKey);
+    }
+
+    protected function createInstantConversion($idempotencyKey = null)
+    {
+        $john = $this->getJohn();
+        $creditedWallet = new \MangoPay\Wallet();
+        $creditedWallet->Owners = [$john->Id];
+        $creditedWallet->Currency = 'GBP';
+        $creditedWallet->Description = 'WALLET IN EUR WITH MONEY';
+
+        $creditedWallet = $this->_api->Wallets->Create($creditedWallet);
+
+        $debitedWallet = $this->getJohnsWalletWithMoney();
+
+        $instantConversion = new CreateInstantConversion();
+        $instantConversion->AuthorId = $debitedWallet->Owners[0];
+        $instantConversion->CreditedWalletId = $creditedWallet->Id;
+        $instantConversion->DebitedWalletId = $debitedWallet->Id;
+
+        $creditedFunds = new Money();
+        $creditedFunds->Currency = 'GBP';
+        $instantConversion->CreditedFunds = $creditedFunds;
+
+        $debitedFunds = new Money();
+        $debitedFunds->Currency = 'EUR';
+        $debitedFunds->Amount = 79;
+        $instantConversion->DebitedFunds = $debitedFunds;
+
+        $fees = new CustomFees();
+        $fees->Currency = 'EUR';
+        $fees->Amount = 9;
+        $instantConversion->Fees = $fees;
+
+        $instantConversion->Tag = "create instant conversion";
+
+        return $this->_api->Conversions->CreateInstantConversion($instantConversion, $idempotencyKey);
+    }
+
+    protected function createQuotedConversion($idempotencyKey = null)
+    {
+        $john = $this->getJohn();
+        $creditedWallet = new \MangoPay\Wallet();
+        $creditedWallet->Owners = [$john->Id];
+        $creditedWallet->Currency = 'GBP';
+        $creditedWallet->Description = 'WALLET IN EUR WITH MONEY';
+
+        $creditedWallet = $this->_api->Wallets->Create($creditedWallet);
+
+        $debitedWallet = $this->getJohnsWalletWithMoney();
+
+        $quote = $this->createConversionQuote();
+
+        $quotedConversion = new CreateQuotedConversion();
+        $quotedConversion->QuoteId = $quote->Id;
+        $quotedConversion->AuthorId = $debitedWallet->Owners[0];
+        $quotedConversion->CreditedWalletId = $creditedWallet->Id;
+        $quotedConversion->DebitedWalletId = $debitedWallet->Id;
+
+        return $this->_api->Conversions->CreateQuotedConversion($quotedConversion, $idempotencyKey);
+    }
+
+    protected function createClientWalletsQuotedConversion($idempotencyKey = null)
+    {
+        $quote = $this->createConversionQuote();
+
+        $quotedConversion = new CreateClientWalletsQuotedConversion();
+        $quotedConversion->QuoteId = $quote->Id;
+        $quotedConversion->DebitedWalletType = 'FEES';
+        $quotedConversion->CreditedWalletType = 'CREDIT';
+        $quotedConversion->Tag = 'Created via the PHP SDK';
+
+        return $this->_api->Conversions->CreateClientWalletsQuotedConversion($quotedConversion, $idempotencyKey);
+    }
+
+    protected function createClientWalletsInstantConversion($idempotencyKey = null)
+    {
+        $creditedFunds = new Money();
+        $creditedFunds->Currency = 'USD';
+
+        $debitedFunds = new Money();
+        $debitedFunds->Currency = 'EUR';
+        $debitedFunds->Amount = 100;
+
+        $instantConversion = new CreateClientWalletsInstantConversion();
+        $instantConversion->DebitedWalletType = 'FEES';
+        $instantConversion->DebitedFunds = $debitedFunds;
+        $instantConversion->CreditedWalletType = 'FEES';
+        $instantConversion->CreditedFunds = $creditedFunds;
+
+        $instantConversion->Tag = "Client wallets instant conversion via the PHP SDK";
+
+        return $this->_api->Conversions->CreateClientWalletsInstantConversion($instantConversion, $idempotencyKey);
+    }
+
+    protected function createConversionQuote($fees = null, $idempotencyKey = null)
+    {
+        $quote = new ConversionQuote();
+        $creditedFunds = new Money();
+        $creditedFunds->Currency = 'GBP';
+        $quote->CreditedFunds = $creditedFunds;
+
+        $debitedFunds = new Money();
+        $debitedFunds->Currency = 'EUR';
+        $debitedFunds->Amount = 50;
+        $quote->DebitedFunds = $debitedFunds;
+
+        $quote->Duration = 300;
+        $quote->Tag = "Created using the Mangopay PHP SDK";
+        $quote->Fees = $fees;
+
+        $userMargin = new UserMargin();
+        $userMargin->Type = "PERCENTAGE";
+        $userMargin->Value = 0.1;
+        $quote->UserMargin = $userMargin;
+
+        return $this->_api->Conversions->CreateConversionQuote($quote, $idempotencyKey);
+    }
+
+    protected function createNewSplits($intent, $idempotencyKey = null)
+    {
+        $externalData = new PayInIntentExternalData();
+        $externalData->ExternalProcessingDate = "01-10-2024";
+        $externalData->ExternalProviderReference = strval(rand(0, 999));
+        $externalData->ExternalMerchantReference = "Order-xyz-35e8490e-2ec9-4c82-978e-c712a3f5ba16";
+        $externalData->ExternalProviderName = "Stripe";
+        $externalData->ExternalProviderPaymentMethod = "PAYPAL";
+
+        $fullCapture = new PayInIntent();
+        $fullCapture->ExternalData = $externalData;
+        $this->_api->PayIns->CreatePayInIntentCapture($intent->Id, $fullCapture);
+
+        $split = new PayInIntentSplit();
+        $split->LineItemId = $intent->LineItems[0]->Id;
+        $split->SplitAmount = 10;
+
+        $splitsArray = [$split];
+        $splitsPost = new IntentSplits();
+        $splitsPost->Splits = $splitsArray;
+
+        return $this->_api->PayIns->CreatePayInIntentSplits($intent->Id, $splitsPost, $idempotencyKey);
     }
 }

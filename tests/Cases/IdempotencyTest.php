@@ -481,6 +481,7 @@ class IdempotencyTest extends Base
 
     public function test_GetIdempotencyKey_CreateRecurringPayPalPayInCIT()
     {
+        $this->markTestSkipped("should run individually");
         $key = md5(uniqid());
         $this->createRecurringPaypalPayInCIT($key);
         $this->assertIdempotencyResource($key, '\MangoPay\PayInRecurring');

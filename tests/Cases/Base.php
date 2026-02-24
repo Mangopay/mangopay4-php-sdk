@@ -172,8 +172,10 @@ abstract class Base extends TestCase
      * @var \MangoPay\BankingAliasIBAN
      */
     public static $JohnsBankingAliasGB;
+
     /** @var \MangoPay\PayInRecurringRegistration */
     public static $JohnsRecurringPayinRegistrationPaypal;
+
     /** @var \MangoPay\MangoPayApi */
     protected $_api;
 

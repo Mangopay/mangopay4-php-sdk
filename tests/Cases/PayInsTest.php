@@ -372,6 +372,7 @@ class PayInsTest extends Base
 
     public function test_PayIns_Create_PayconiqWebV2()
     {
+        $this->markTestSkipped("endpoint removed");
         $payIn = $this->getJohnsPayInPayconiqWebV2();
         $this->assertNotNull($payIn->Id);
         $this->assertNotNull($payIn->PaymentDetails->QRCodeURL);

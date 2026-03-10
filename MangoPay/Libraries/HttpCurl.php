@@ -51,6 +51,25 @@ class HttpCurl extends HttpBase
             curl_setopt($this->_curlHandle, CURLOPT_CAINFO, $this->_root->Config->CertificatesFilePath);
         }
 
+        // handle mTLS cert via file paths
+        if (!empty($this->_root->Config->ClientCertificatePath)) {
+            curl_setopt($this->_curlHandle, CURLOPT_SSLCERT, $this->_root->Config->ClientCertificatePath);
+            curl_setopt($this->_curlHandle, CURLOPT_SSLKEY, $this->_root->Config->ClientCertificateKeyPath);
+            if (!empty($this->_root->Config->ClientCertificateKeyPassword)) {
+                curl_setopt($this->_curlHandle, CURLOPT_SSLKEYPASSWD, $this->_root->Config->ClientCertificateKeyPassword);
+            }
+        } elseif (!empty($this->_root->Config->ClientCertificateString)) {
+            // handle mTLS cert via strings
+            if (!defined('CURLOPT_SSLCERT_BLOB') || !defined('CURLOPT_SSLKEY_BLOB')) {
+                throw new Exception('ClientCertificateString requires PHP >= 8.1 and libcurl >= 7.71.0');
+            }
+            curl_setopt($this->_curlHandle, CURLOPT_SSLCERT_BLOB, $this->_root->Config->ClientCertificateString);
+            curl_setopt($this->_curlHandle, CURLOPT_SSLKEY_BLOB, $this->_root->Config->ClientCertificateKeyString);
+            if (!empty($this->_root->Config->ClientCertificateKeyPassword)) {
+                curl_setopt($this->_curlHandle, CURLOPT_SSLKEYPASSWD, $this->_root->Config->ClientCertificateKeyPassword);
+            }
+        }
+
         switch ($restTool->GetRequestType()) {
             case RequestType::POST:
                 curl_setopt($this->_curlHandle, CURLOPT_POST, true);

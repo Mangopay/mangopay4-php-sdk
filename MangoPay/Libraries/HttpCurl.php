@@ -63,8 +63,8 @@ class HttpCurl extends HttpBase
             if (!defined('CURLOPT_SSLCERT_BLOB') || !defined('CURLOPT_SSLKEY_BLOB')) {
                 throw new Exception('ClientCertificateString requires PHP >= 8.1 and libcurl >= 7.71.0');
             }
-            curl_setopt($this->_curlHandle, CURLOPT_SSLCERT_BLOB, $this->_root->Config->ClientCertificateString);
-            curl_setopt($this->_curlHandle, CURLOPT_SSLKEY_BLOB, $this->_root->Config->ClientCertificateKeyString);
+            curl_setopt($this->_curlHandle, CURLOPT_SSLCERT_BLOB, base64_decode($this->_root->Config->ClientCertificateString));
+            curl_setopt($this->_curlHandle, CURLOPT_SSLKEY_BLOB, base64_decode($this->_root->Config->ClientCertificateKeyString));
             if (!empty($this->_root->Config->ClientCertificateKeyPassword)) {
                 curl_setopt($this->_curlHandle, CURLOPT_SSLKEYPASSWD, $this->_root->Config->ClientCertificateKeyPassword);
             }

@@ -52,7 +52,7 @@ class Configuration
     public $ClientCertificateKeyPath = '';
 
     /**
-     * Client certificate content as a PEM-encoded string for mTLS authentication.
+     * Client certificate content as a PEM-encoded base64 string for mTLS authentication.
      * Use this instead of ClientCertificatePath when the certificate is available
      * in memory (e.g. from a secrets manager).
      * Requires PHP >= 8.1 and libcurl >= 7.71.0.
@@ -62,7 +62,7 @@ class Configuration
     public $ClientCertificateString = '';
 
     /**
-     * Private key content as a PEM-encoded string for the client certificate.
+     * Private key content as a PEM-encoded base64 string for the client certificate.
      * Requires PHP >= 8.1 and libcurl >= 7.71.0.
      * @var string
      */

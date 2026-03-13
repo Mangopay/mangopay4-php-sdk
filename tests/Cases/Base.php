@@ -178,10 +178,6 @@ abstract class Base extends TestCase
 
         $api->OAuthTokenManager->RegisterCustomStorageStrategy(new MockStorageStrategy());
 
-        // mTLS client certificate
-//        $api->Config->ClientCertificatePath    = '/path/to/certificate.pem';
-//        $api->Config->ClientCertificateKeyPath = '/path/to/private.key';
-
         return $api;
     }
 

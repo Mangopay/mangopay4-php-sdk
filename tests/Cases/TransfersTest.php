@@ -26,11 +26,11 @@ class TransfersTest extends Base
 
     public function test_Transfers_Create_Sca()
     {
-        $validNaturalUserScaId = 'user_m_01JRFJJN9BR864A4KG7MH1WCZG';
-        $walletWithMoney = $this->getNewWalletWithMoney($validNaturalUserScaId, 10000);
-        $transferUserPresent = $this->getNewTransferSca($validNaturalUserScaId, 3001, 'USER_PRESENT', $walletWithMoney->Id);
-        $transferUserPresentLowAmount = $this->getNewTransferSca($validNaturalUserScaId, 20, 'USER_PRESENT', $walletWithMoney->Id);
-        $transferUserNotPresent = $this->getNewTransferSca($validNaturalUserScaId, 3001, 'USER_NOT_PRESENT', $walletWithMoney->Id);
+        $user = $this->getJohnSca("OWNER", false);
+        $walletWithMoney = $this->getNewWalletWithMoney($user->Id, 10000);
+        $transferUserPresent = $this->getNewTransferSca($user->Id, 3001, 'USER_PRESENT', $walletWithMoney->Id);
+        $transferUserPresentLowAmount = $this->getNewTransferSca($user->Id, 20, 'USER_PRESENT', $walletWithMoney->Id);
+        $transferUserNotPresent = $this->getNewTransferSca($user->Id, 3001, 'USER_NOT_PRESENT', $walletWithMoney->Id);
 
         $this->assertEquals(TransactionStatus::Succeeded, $transferUserPresent->Status);
 //        $this->assertNotNull($transferUserPresent->PendingUserAction);

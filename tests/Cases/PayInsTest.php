@@ -88,8 +88,8 @@ class PayInsTest extends Base
         $this->assertNotNull($payIn->AuthenticationResult);
 
         $this->assertNotNull($payIn->PaymentDetails->CardInfo);
-//        $this->assertNotNull($payIn->PaymentDetails->CardInfo->BIN);
-//        $this->assertNotNull($payIn->PaymentDetails->CardInfo->Type);
+        $this->assertNotNull($payIn->PaymentDetails->CardInfo->BIN);
+        $this->assertNotNull($payIn->PaymentDetails->CardInfo->Type);
     }
 
     public function test_PayIns_Get_CardDirect()
@@ -344,7 +344,6 @@ class PayInsTest extends Base
 
     public function test_PayIns_Create_PaypalWebV2()
     {
-        $this->markTestSkipped("skipped because of external error");
         $payIn = $this->getJohnsPayInPaypalWebV2();
 
         $this->assertNotNull($payIn->Id);

@@ -194,12 +194,16 @@ abstract class Base extends TestCase
     /**
      * @return UserNatural
      */
-    protected function buildJohn()
+    protected function buildJohn($bypass_sca=true)
     {
         $user = new UserNatural();
         $user->FirstName = "John";
         $user->LastName = "Doe";
-        $user->Email = "john.doe@sample.org";
+        if ($bypass_sca) {
+            $user->Email = "john.doe+accept@sample.org";
+        } else {
+            $user->Email = "john.doe@sample.org";
+        }
         $user->Address = $this->getNewAddress();
         $user->Birthday = mktime(0, 0, 0, 12, 21, 1975);
         $user->Nationality = "FR";
@@ -215,7 +219,7 @@ abstract class Base extends TestCase
         $user = new UserNatural();
         $user->FirstName = "John";
         $user->LastName = "Doe";
-        $user->Email = "john.doe@sample.org";
+        $user->Email = "john.doe+accept@sample.org";
         $user->TermsAndConditionsAccepted = true;
         $user->UserCategory = UserCategory::Payer;
         return $user;
@@ -225,7 +229,7 @@ abstract class Base extends TestCase
     {
         $user = new \MangoPay\UserLegal();
         $user->Name = "MartixSampleOrg";
-        $user->Email = "mail@test.com";
+        $user->Email = "mail+accept@test.com";
         $user->LegalPersonType = LegalPersonType::Business;
         $user->HeadquartersAddress = $this->getNewAddress();
         $user->LegalRepresentativeFirstName = $john->FirstName;
@@ -328,7 +332,7 @@ abstract class Base extends TestCase
             $user = new UserNaturalSca();
             $user->FirstName = "John SCA";
             $user->LastName = "Doe SCA Review";
-            $user->Email = "john.doe.sca@sample.org";
+            $user->Email = "john.doe.sca+accept@sample.org";
             $user->TermsAndConditionsAccepted = true;
             $user->UserCategory = UserCategory::Payer;
             $user->Address = $this->getNewAddress();
@@ -345,23 +349,33 @@ abstract class Base extends TestCase
     private function getJohnScaOwner($recreate)
     {
         if (self::$JohnScaOwner === null || $recreate) {
-            $user = new UserNaturalSca();
-            $user->FirstName = "John SCA";
-            $user->LastName = "Doe SCA Review";
-            $user->Email = "john.doe.sca@sample.org";
-            $user->Address = $this->getNewAddress();
-            $user->Birthday = mktime(0, 0, 0, 12, 21, 1975);
-            $user->Nationality = "FR";
-            $user->CountryOfResidence = "FR";
-            $user->Occupation = "programmer";
-            $user->IncomeRange = 3;
-            $user->UserCategory = UserCategory::Owner;
-            $user->TermsAndConditionsAccepted = true;
-            $user->PhoneNumber = "+33611111111";
-            $user->PhoneNumberCountry = "FR";
-            self::$JohnScaOwner = $this->_api->Users->Create($user);
+            $dto = $this->getJohnScaOwnerDto();
+            self::$JohnScaOwner = $this->_api->Users->Create($dto);
         }
         return self::$JohnScaOwner;
+    }
+
+    protected function getJohnScaOwnerDto($bypass_sca=true)
+    {
+        $user = new UserNaturalSca();
+        $user->FirstName = "John SCA";
+        $user->LastName = "Doe SCA Review";
+        if ($bypass_sca) {
+            $user->Email = "john.doe.sca+accept@sample.org";
+        } else {
+            $user->Email = "john.doe.sca@sample.org";
+        }
+        $user->Address = $this->getNewAddress();
+        $user->Birthday = mktime(0, 0, 0, 12, 21, 1975);
+        $user->Nationality = "FR";
+        $user->CountryOfResidence = "FR";
+        $user->Occupation = "programmer";
+        $user->IncomeRange = 3;
+        $user->UserCategory = UserCategory::Owner;
+        $user->TermsAndConditionsAccepted = true;
+        $user->PhoneNumber = "+33611111111";
+        $user->PhoneNumberCountry = "FR";
+        return $user;
     }
 
     /**
@@ -1872,7 +1886,7 @@ abstract class Base extends TestCase
             $legalRepresentative = new LegalRepresentative();
             $legalRepresentative->FirstName = "John SCA";
             $legalRepresentative->LastName = "Doe SCA Review";
-            $legalRepresentative->Email = "john.doe.sca@sample.org";
+            $legalRepresentative->Email = "john.doe.sca+accept@sample.org";
             $legalRepresentative->Birthday = mktime(0, 0, 0, 12, 21, 1975);
             $legalRepresentative->Nationality = "FR";
             $legalRepresentative->CountryOfResidence = "FR";
@@ -1881,7 +1895,7 @@ abstract class Base extends TestCase
 
             $user = new UserLegalSca();
             $user->Name = "MartixSampleOrg";
-            $user->Email = "john.doe@sample.org";
+            $user->Email = "john.doe+accept@sample.org";
             $user->LegalPersonType = LegalPersonType::Business;
             $user->UserCategory = UserCategory::Payer;
             $user->LegalRepresentativeAddress = $this->getNewAddress();

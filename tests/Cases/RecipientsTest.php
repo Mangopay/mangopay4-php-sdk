@@ -26,7 +26,8 @@ class RecipientsTest extends Base
 
     public function test_Recipient_Create_With_Sca_Context()
     {
-        $john = $this->getJohnSca(UserCategory::Owner, false);
+        $dto = $this->getJohnScaOwnerDto(false);
+        $john = $this->_api->Users->Create($dto);
         $recipient = $this->getNewRecipientObject($john->Id);
         $recipient->ScaContext = "USER_PRESENT";
 

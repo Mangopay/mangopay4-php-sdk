@@ -362,22 +362,6 @@ class PayInsTest extends Base
         $this->assertSame($fetched->Id, $payIn->Id);
     }
 
-    public function test_PayIns_Create_PayconiqWeb()
-    {
-        $this->markTestSkipped("endpoint removed");
-        $payIn = $this->getJohnsPayInPayconiqWeb();
-
-        $this->assertNotNull($payIn->Id);
-    }
-
-    public function test_PayIns_Create_PayconiqWebV2()
-    {
-        $payIn = $this->getJohnsPayInPayconiqWebV2();
-        $this->assertNotNull($payIn->Id);
-        $this->assertNotNull($payIn->PaymentDetails->QRCodeURL);
-        $this->assertNotNull($payIn->PaymentDetails->DeepLinkURL);
-    }
-
     public function test_PayIns_Get_PaypalWeb()
     {
         $payIn = $this->getJohnsPayInPaypalWeb();

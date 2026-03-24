@@ -261,25 +261,7 @@ class ClientTest extends Base
 
     public function test_CreatePayOut()
     {
-        $account = $this->getClientBankAccount();
-        $createdAccount = $this->_api->Clients->CreateBankAccount($account);
-
-        $wallets = $this->_api->Clients->GetWallets(\MangoPay\FundsType::FEES);
-        $payOut = new PayOut();
-
-        $payOut->Tag = 'bla';
-        $payOut->DebitedFunds = new Money();
-        $payOut->DebitedFunds->Currency = 'EUR';
-        $payOut->DebitedFunds->Amount = 12;
-
-        $payOut->DebitedWalletId = $wallets[0]->Id;
-        $payOut->MeanOfPaymentDetails = new PayOutPaymentDetailsBankWire();
-        $payOut->MeanOfPaymentDetails->BankAccountId = $createdAccount->Id;
-        $payOut->MeanOfPaymentDetails->BankWireRef = 'invoice 7282';
-        $payOut->MeanOfPaymentDetails->PayoutModeRequested = 'STANDARD';
-
-        $createdPayOut = $this->_api->Clients->CreatePayOut($payOut);
-        print_r($createdPayOut);
+        $createdPayOut = $this->createPayOutForClient();
 
         $this->assertNotNull($createdPayOut);
         $this->assertNotNull($createdPayOut->Id);

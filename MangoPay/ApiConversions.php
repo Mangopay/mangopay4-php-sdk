@@ -26,9 +26,16 @@ class ApiConversions extends Libraries\ApiBase
      * @param CreateInstantConversion $instantConversion
      * @return \MangoPay\Conversion object returned from API
      */
-    public function CreateInstantConversion($instantConversion)
+    public function CreateInstantConversion($instantConversion, $idempotencyKey = null)
     {
-        return $this->CreateObject('create_instant_conversion', $instantConversion, '\MangoPay\Conversion');
+        return $this->CreateObject(
+            'create_instant_conversion',
+            $instantConversion,
+            '\MangoPay\Conversion',
+            null,
+            null,
+            $idempotencyKey
+        );
     }
 
     /**
@@ -39,9 +46,16 @@ class ApiConversions extends Libraries\ApiBase
      * @param CreateClientWalletsInstantConversion $instantConversion
      * @return \MangoPay\Conversion object returned from API
      */
-    public function CreateClientWalletsInstantConversion($instantConversion)
+    public function CreateClientWalletsInstantConversion($instantConversion, $idempotencyKey = null)
     {
-        return $this->CreateObject('create_client_wallets_instant_conversion', $instantConversion, '\MangoPay\Conversion');
+        return $this->CreateObject(
+            'create_client_wallets_instant_conversion',
+            $instantConversion,
+            '\MangoPay\Conversion',
+            null,
+            null,
+            $idempotencyKey
+        );
     }
 
     /**
@@ -50,9 +64,16 @@ class ApiConversions extends Libraries\ApiBase
      * @param CreateQuotedConversion $quotedConversion
      * @return Conversion
      */
-    public function CreateQuotedConversion($quotedConversion)
+    public function CreateQuotedConversion($quotedConversion, $idempotencyKey = null)
     {
-        return $this->CreateObject('create_quoted_conversion', $quotedConversion, '\MangoPay\Conversion');
+        return $this->CreateObject(
+            'create_quoted_conversion',
+            $quotedConversion,
+            '\MangoPay\Conversion',
+            null,
+            null,
+            $idempotencyKey
+        );
     }
 
     /**
@@ -65,9 +86,16 @@ class ApiConversions extends Libraries\ApiBase
      * @param CreateClientWalletsQuotedConversion $quotedConversion
      * @return Conversion
      */
-    public function CreateClientWalletsQuotedConversion($quotedConversion)
+    public function CreateClientWalletsQuotedConversion($quotedConversion, $idempotencyKey = null)
     {
-        return $this->CreateObject('create_client_wallets_quoted_conversion', $quotedConversion, '\MangoPay\Conversion');
+        return $this->CreateObject(
+            'create_client_wallets_quoted_conversion',
+            $quotedConversion,
+            '\MangoPay\Conversion',
+            null,
+            null,
+            $idempotencyKey
+        );
     }
 
     /**
@@ -86,9 +114,16 @@ class ApiConversions extends Libraries\ApiBase
      * @param ConversionQuote $quote
      * @return ConversionQuote
      */
-    public function CreateConversionQuote($quote)
+    public function CreateConversionQuote($quote, $idempotencyKey = null)
     {
-        return $this->CreateObject('create_conversion_quote', $quote, '\MangoPay\ConversionQuote');
+        return $this->CreateObject(
+            'create_conversion_quote',
+            $quote,
+            '\MangoPay\ConversionQuote',
+            null,
+            null,
+            $idempotencyKey
+        );
     }
 
     /**

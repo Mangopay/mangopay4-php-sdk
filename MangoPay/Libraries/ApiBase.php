@@ -306,7 +306,16 @@ abstract class ApiBase
         'recipients_validate' => ['/users/%s/recipients/validate', RequestType::POST],
         'recipients_deactivate' => ['/recipients/%s', RequestType::PUT],
 
-        'pay_by_bank_get_supported_banks' => ['/payment-methods/openbanking/metadata/supported-banks', RequestType::GET]
+        'pay_by_bank_get_supported_banks' => ['/payment-methods/openbanking/metadata/supported-banks', RequestType::GET],
+
+        'acquiring_payins_card-direct_create' => ['/acquiring/payins/card/direct/', RequestType::POST],
+        'acquiring_payins_ideal-web_create' => ['/acquiring/payins/payment-methods/ideal', RequestType::POST],
+        'acquiring_payins_applepay-direct_create' => ['/acquiring/payins/payment-methods/applepay', RequestType::POST],
+        'acquiring_payins_googlepay-direct_create' => ['/acquiring/payins/payment-methods/googlepay', RequestType::POST],
+        'acquiring_payins_paypal-web_create' => ['/acquiring/payins/payment-methods/paypal', RequestType::POST],
+        'acquiring_payins_paypal_data_collection_create' => ['/acquiring/payins/payment-methods/paypal/data-collection', RequestType::POST],
+        'acquiring_payins_createrefunds' => ['/acquiring/payins/%s/refunds', RequestType::POST],
+        'acquiring_card_validate' => ['/acquiring/cards/%s/validation', RequestType::POST]
     ];
 
     /**

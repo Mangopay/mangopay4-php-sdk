@@ -68,8 +68,6 @@ abstract class ApiBase
         'payins_paypal-web_create_v2' => ['/payins/payment-methods/paypal', RequestType::POST],
         'payins_paypal_data_collection_create' => ['/payins/payment-methods/paypal/data-collection', RequestType::POST],
         'payins_paypal_data_collection_get' => ['/payins/payment-methods/paypal/data-collection/%s', RequestType::GET],
-        'payins_payconiq-web_create' => ['/payins/payconiq/web', RequestType::POST],
-        'payins_payconiqv2-web_create' => ['/payins/payment-methods/payconiq', RequestType::POST],
         'payins_get' => ['/payins/%s', RequestType::GET],
         'payins_createrefunds' => ['/payins/%s/refunds', RequestType::POST],
         'payins_applepay-direct_create' => ['/payins/applepay/direct', RequestType::POST],
@@ -308,7 +306,16 @@ abstract class ApiBase
         'recipients_validate' => ['/users/%s/recipients/validate', RequestType::POST],
         'recipients_deactivate' => ['/recipients/%s', RequestType::PUT],
 
-        'pay_by_bank_get_supported_banks' => ['/payment-methods/openbanking/metadata/supported-banks', RequestType::GET]
+        'pay_by_bank_get_supported_banks' => ['/payment-methods/openbanking/metadata/supported-banks', RequestType::GET],
+
+        'acquiring_payins_card-direct_create' => ['/acquiring/payins/card/direct/', RequestType::POST],
+        'acquiring_payins_ideal-web_create' => ['/acquiring/payins/payment-methods/ideal', RequestType::POST],
+        'acquiring_payins_applepay-direct_create' => ['/acquiring/payins/payment-methods/applepay', RequestType::POST],
+        'acquiring_payins_googlepay-direct_create' => ['/acquiring/payins/payment-methods/googlepay', RequestType::POST],
+        'acquiring_payins_paypal-web_create' => ['/acquiring/payins/payment-methods/paypal', RequestType::POST],
+        'acquiring_payins_paypal_data_collection_create' => ['/acquiring/payins/payment-methods/paypal/data-collection', RequestType::POST],
+        'acquiring_payins_createrefunds' => ['/acquiring/payins/%s/refunds', RequestType::POST],
+        'acquiring_card_validate' => ['/acquiring/cards/%s/validation', RequestType::POST]
     ];
 
     /**

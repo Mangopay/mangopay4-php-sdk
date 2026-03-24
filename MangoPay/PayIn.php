@@ -14,7 +14,7 @@ class PayIn extends Transaction
     public $CreditedWalletId;
 
     /**
-     * PaymentType {CARD, BANK_WIRE, DIRECT_DEBIT, PAYPAL, PAYCONIQ }
+     * PaymentType {CARD, BANK_WIRE, DIRECT_DEBIT, PAYPAL }
      * @var string
      */
     public $PaymentType;
@@ -59,6 +59,12 @@ class PayIn extends Transaction
     public $ProfilingAttemptReference;
 
     /**
+     * Authentication result. Returned on Card related transactions.
+     * @var AuthenticationResult|null
+     */
+    public $AuthenticationResult;
+
+    /**
      * Get array with mapping which property depends on other property
      * @return array
      */
@@ -76,7 +82,6 @@ class PayIn extends Transaction
                 PayInPaymentType::ApplePay => 'MangoPay\PayInPaymentDetailsApplePay',
                 PayInPaymentType::GooglePay => 'MangoPay\PayInPaymentDetailsGooglePay',
                 PayInPaymentType::GooglePayV2 => 'MangoPay\PayInPaymentDetailsGooglePay',
-                PayInPaymentType::Payconiq => 'MangoPay\PayInPaymentDetailsPayconiq',
                 PayInPaymentType::Mbway => 'MangoPay\PayInPaymentDetailsMbway',
                 PayInPaymentType::Multibanco => 'MangoPay\PayInPaymentDetailsMultibanco',
                 PayInPaymentType::Satispay => 'MangoPay\PayInPaymentDetailsSatispay',

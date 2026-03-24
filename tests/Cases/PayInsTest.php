@@ -83,10 +83,11 @@ class PayInsTest extends Base
         $this->assertEquals(PayInStatus::Succeeded, $payIn->Status);
         $this->assertEquals('PAYIN', $payIn->Type);
         $this->assertEquals('TelephoneOrder', $payIn->PaymentCategory);
+        $this->assertNotNull($payIn->AuthenticationResult);
 
         $this->assertNotNull($payIn->PaymentDetails->CardInfo);
-//        $this->assertNotNull($payIn->PaymentDetails->CardInfo->BIN);
-//        $this->assertNotNull($payIn->PaymentDetails->CardInfo->Type);
+        $this->assertNotNull($payIn->PaymentDetails->CardInfo->BIN);
+        $this->assertNotNull($payIn->PaymentDetails->CardInfo->Type);
     }
 
     public function test_PayIns_Get_CardDirect()
@@ -359,22 +360,6 @@ class PayInsTest extends Base
         $this->assertSame($fetched->Id, $payIn->Id);
     }
 
-    public function test_PayIns_Create_PayconiqWeb()
-    {
-        $this->markTestSkipped("endpoint removed");
-        $payIn = $this->getJohnsPayInPayconiqWeb();
-
-        $this->assertNotNull($payIn->Id);
-    }
-
-    public function test_PayIns_Create_PayconiqWebV2()
-    {
-        $payIn = $this->getJohnsPayInPayconiqWebV2();
-        $this->assertNotNull($payIn->Id);
-        $this->assertNotNull($payIn->PaymentDetails->QRCodeURL);
-        $this->assertNotNull($payIn->PaymentDetails->DeepLinkURL);
-    }
-
     public function test_PayIns_Get_PaypalWeb()
     {
         $payIn = $this->getJohnsPayInPaypalWeb();
@@ -426,6 +411,7 @@ class PayInsTest extends Base
 
         $this->assertNotNull($message);
         $this->assertTrue(strpos($message, 'Not found') !== false);
+        $this->assertNotNull($payIn->AuthenticationResult);
     }
 
     public function test_PayIn_GetRefunds()
@@ -569,6 +555,8 @@ class PayInsTest extends Base
     {
         $result = $this->createRecurringPayInCIT();
         $this->assertNotNull($result);
+        $this->assertNotNull($result->AuthenticationResult);
+        $this->assertNotNull($result->PaymentCategory);
     }
 
     public function test_Create_Recurring_PayIn_CIT_Check_CardInfo()
@@ -885,6 +873,7 @@ class PayInsTest extends Base
         $this->assertEquals(PayInStatus::Created, $payIn->Status);
         $this->assertEquals('PAYIN', $payIn->Type);
         $this->assertEquals('REGULAR', $payIn->Nature);
+        $this->assertEquals(10, $payIn->PaymentDetails->LineItems[0]->Discount);
 
         $fetchedPayIn = $this->_api->PayIns->Get($payIn->Id);
         $this->assertEquals($payIn->Id, $fetchedPayIn->Id);

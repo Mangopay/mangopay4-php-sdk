@@ -16,7 +16,6 @@ class PayInPaymentType
     const ApplePay = 'APPLEPAY';
     const GooglePay = 'GOOGLEPAY';
     const GooglePayV2 = 'GOOGLE_PAY';
-    const Payconiq = 'PAYCONIQ';
     const Mbway = 'MBWAY';
     const Multibanco = 'MULTIBANCO';
     const Satispay = 'SATISPAY';

@@ -63,4 +63,12 @@ class PayInPaymentDetailsCard extends Libraries\Dto implements PayInPaymentDetai
      * @var object
      */
     public $CardInfo;
+
+    /**
+     * Allowed values: VISA, MASTERCARD, CB, MAESTRO
+     *
+     * The card network to use, as chosen by the cardholder, in case of co-branded card products.
+     * @var string
+     */
+    public $PreferredCardNetwork;
 }

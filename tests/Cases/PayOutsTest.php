@@ -19,6 +19,7 @@ class PayOutsTest extends Base
         $this->assertNotNull($payOut->MeanOfPaymentDetails->RecipientVerificationOfPayee);
         $this->assertSame(\MangoPay\PayOutPaymentType::BankWire, $payOut->PaymentType);
         $this->assertInstanceOf('\MangoPay\PayOutPaymentDetailsBankWire', $payOut->MeanOfPaymentDetails);
+        $this->assertNotNull($payOut->MeanOfPaymentDetails->ChargeBearer);
     }
 
     public function test_PayOut_Create_WithRecipientId()

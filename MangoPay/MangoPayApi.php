@@ -233,6 +233,12 @@ class MangoPayApi
     public $Settlements;
 
     /**
+     * Provides acquiring request methods
+     * @var ApiAcquiring
+     */
+    public $Acquiring;
+
+    /**
      * Constructor
      */
     public function __construct()
@@ -274,6 +280,7 @@ class MangoPayApi
         $this->Recipients = new ApiRecipients($this);
         $this->ReportsV2 = new ApiReportsV2($this);
         $this->Settlements = new ApiSettlements($this);
+        $this->Acquiring = new ApiAcquiring($this);
 
         // Setting default NullLogger
         $this->logger = new NullLogger();

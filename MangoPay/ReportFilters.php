@@ -54,4 +54,9 @@ class ReportFilters extends Libraries\Dto
      * @var bool
      */
     public $Scheduled;
+
+    /**
+     * @var string
+     */
+    public $SettlementId;
 }

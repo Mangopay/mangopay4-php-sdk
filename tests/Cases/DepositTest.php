@@ -22,6 +22,7 @@ class DepositTest extends Base
         $deposit = $this->_api->Deposits->Create($this->getNewDeposit($cardRegistration->CardId, $user->Id));
 
         $this->assertNotNull($deposit);
+        $this->assertNotNull($deposit->AuthenticationResult);
     }
 
     /**

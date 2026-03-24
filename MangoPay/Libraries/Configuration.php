@@ -39,6 +39,43 @@ class Configuration
     public $CertificatesFilePath = '';
 
     /**
+     * Absolute path to the client certificate file for mTLS authentication (PEM format).
+     * If empty, mTLS client certificate authentication is not used.
+     * @var string
+     */
+    public $ClientCertificatePath = '';
+
+    /**
+     * Absolute path to the private key file for the client certificate (PEM format).
+     * @var string
+     */
+    public $ClientCertificateKeyPath = '';
+
+    /**
+     * Client certificate content as a PEM-encoded base64 string for mTLS authentication.
+     * Use this instead of ClientCertificatePath when the certificate is available
+     * in memory (e.g. from a secrets manager).
+     * Requires PHP >= 8.1 and libcurl >= 7.71.0.
+     * If empty, mTLS string-based authentication is not used.
+     * @var string
+     */
+    public $ClientCertificateString = '';
+
+    /**
+     * Private key content as a PEM-encoded base64 string for the client certificate.
+     * Requires PHP >= 8.1 and libcurl >= 7.71.0.
+     * @var string
+     */
+    public $ClientCertificateKeyString = '';
+
+    /**
+     * Password/passphrase for the client certificate private key.
+     * Leave empty if the key is not password-protected.
+     * @var string
+     */
+    public $ClientCertificateKeyPassword = '';
+
+    /**
      * [INTERNAL USAGE ONLY]
      * Switch debug mode: log all request and response data
      */

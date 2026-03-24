@@ -29,7 +29,13 @@ class WalletsTest extends Base
 
     public function test_Wallets_Get_Sca()
     {
-        $wallet = $this->getJohnsWallet();
+        $user = $this->getJohnScaOwnerDto(false);
+        $user = $this->_api->Users->Create($user);
+        $wallet = new \MangoPay\Wallet();
+        $wallet->Owners = [$user->Id];
+        $wallet->Currency = 'EUR';
+        $wallet->Description = 'WALLET IN EUR';
+        $wallet = $this->_api->Wallets->Create($wallet);
 
         try {
             $this->_api->Wallets->Get($wallet->Id, "USER_PRESENT");
@@ -78,7 +84,13 @@ class WalletsTest extends Base
 
     public function test_Wallets_Transactions_Sca()
     {
-        $wallet = $this->getJohnsWallet();
+        $user = $this->buildJohn(false);
+        $user = $this->_api->Users->Create($user);
+        $wallet = new \MangoPay\Wallet();
+        $wallet->Owners = [$user->Id];
+        $wallet->Currency = 'EUR';
+        $wallet->Description = 'WALLET IN EUR';
+        $wallet = $this->_api->Wallets->Create($wallet);
 
         $pagination = new \MangoPay\Pagination(1, 1);
         $filter = new \MangoPay\FilterTransactions();

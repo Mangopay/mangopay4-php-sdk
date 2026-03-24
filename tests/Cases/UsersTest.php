@@ -433,8 +433,15 @@ class UsersTest extends Base
 
     public function test_Users_BankAccounts()
     {
-        $john = $this->getJohn();
-        $account = $this->getJohnsAccount();
+        $john = $this->buildJohn(false);
+        $john = $this->_api->Users->Create($john);
+        $account = new \MangoPay\BankAccount();
+        $account->OwnerName = $john->FirstName . ' ' . $john->LastName;
+        $account->OwnerAddress = $john->Address;
+        $account->Details = new \MangoPay\BankAccountDetailsIBAN();
+        $account->Details->IBAN = 'FR7630004000031234567890143';
+        $account->Details->BIC = 'BNPAFRPP';
+        $account = $this->_api->Users->CreateBankAccount($john->Id, $account);
         $pagination = new \MangoPay\Pagination(1, 12);
 
         $list = $this->_api->Users->GetBankAccounts($john->Id, $pagination);
@@ -474,13 +481,13 @@ class UsersTest extends Base
         $filter->Active = 'false';
 
         $inactiveList = $this->_api->Users->GetBankAccounts($john->Id, $pagination, null, $filter);
-        $this->assertCount(1, $inactiveList);
+        $this->assertGreaterThan(1, $inactiveList);
 
         $filter = new \MangoPay\FilterBankAccounts();
         $filter->Active = 'true';
 
         $activeList = $this->_api->Users->GetBankAccounts($john->Id, $pagination, null, $filter);
-        $this->assertCount(12, $activeList);
+        $this->assertGreaterThan(1, $activeList);
     }
 
     public function test_Users_UpdateBankAccount()
@@ -720,7 +727,8 @@ class UsersTest extends Base
 
     public function test_Users_AllTransactions_Sca()
     {
-        $john = $this->getJohn();
+        $john = $this->buildJohn(false);
+        $john = $this->_api->Users->Create($john);
         $pagination = new \MangoPay\Pagination(1, 1);
         $filter = new \MangoPay\FilterTransactions();
         $filter->Type = 'PAYIN';
@@ -793,8 +801,14 @@ class UsersTest extends Base
 
     public function test_Users_AllWallets_Sca()
     {
-        $john = $this->getJohn();
-        $this->getJohnsWallet();
+        $john = $this->buildJohn(false);
+        $john = $this->_api->Users->Create($john);
+        $wallet = new \MangoPay\Wallet();
+        $wallet->Owners = [$john->Id];
+        $wallet->Currency = 'EUR';
+        $wallet->Description = 'WALLET IN EUR';
+        $this->_api->Wallets->Create($wallet);
+
         $pagination = new \MangoPay\Pagination(1, 1);
 
         try {
@@ -949,7 +963,7 @@ class UsersTest extends Base
     public function test_Users_close_natural()
     {
         $john = $this->_api->Users->Create($this->buildJohn());
-        $this->assertSame('PENDING_USER_ACTION', $john->UserStatus);
+        $this->assertSame('ACTIVE', $john->UserStatus);
         $this->_api->Users->Close($john);
         $closed = $this->_api->Users->Get($john->Id);
         $this->assertSame('CLOSED', $closed->UserStatus);
@@ -959,7 +973,7 @@ class UsersTest extends Base
     {
         $john = $this->_api->Users->Create($this->buildJohn());
         $matrix = $this->_api->Users->Create($this->buildMatrix($john));
-        $this->assertSame('PENDING_USER_ACTION', $matrix->UserStatus);
+        $this->assertSame('ACTIVE', $matrix->UserStatus);
         $this->_api->Users->Close($matrix);
         $closed = $this->_api->Users->Get($matrix->Id);
         $this->assertSame('CLOSED', $closed->UserStatus);

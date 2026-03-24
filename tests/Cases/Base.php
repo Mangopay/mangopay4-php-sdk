@@ -1135,7 +1135,7 @@ abstract class Base extends TestCase
         $payIn->Fees->Amount = 10;
         $payIn->Fees->Currency = 'EUR';
         $payIn->DebitedFunds = new \MangoPay\Money();
-        $payIn->DebitedFunds->Amount = 1000;
+        $payIn->DebitedFunds->Amount = 990;
         $payIn->DebitedFunds->Currency = 'EUR';
 
         // payment type as CARD
@@ -1152,6 +1152,7 @@ abstract class Base extends TestCase
         $lineItem->Quantity = 1;
         $lineItem->UnitAmount = 1000;
         $lineItem->TaxAmount = 0;
+        $lineItem->Discount = 10;
 
         $payIn->PaymentDetails->LineItems = [$lineItem];
 

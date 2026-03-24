@@ -986,6 +986,7 @@ class PayInsTest extends Base
         $this->assertEquals(PayInStatus::Created, $payIn->Status);
         $this->assertEquals('PAYIN', $payIn->Type);
         $this->assertEquals('REGULAR', $payIn->Nature);
+        $this->assertEquals(10, $payIn->PaymentDetails->LineItems[0]->Discount);
 
         $fetchedPayIn = $this->_api->PayIns->Get($payIn->Id);
         $this->assertEquals($payIn->Id, $fetchedPayIn->Id);

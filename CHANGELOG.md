@@ -1,3 +1,7 @@
+## [3.51.0] - 2026-03-19
+### Added - mTLS certificates support
+- mTLS certificates are now configurable in the SDK via file paths or encoded strings
+
 ## [3.50.1] - 2026-02-23
 ### Added - ChargeBearer body parameter on payouts
 

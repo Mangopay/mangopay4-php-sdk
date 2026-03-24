@@ -116,6 +116,93 @@ try {
 }
 ```
 
+## mTLS configuration
+
+### Set the base URL for mTLS
+
+Using mTLS authentication requires your integration to call a base URL with a different hostname from the standard API:
+
+* Sandbox: `https://api-mtls.sandbox.mangopay.com`
+* Production: `https://api-mtls.mangopay.com`
+
+If using mTLS, your integration should use the `api-mtls` URLs for all API calls, including OAuth token generation.
+
+**Caution:** Ensure you set the mTLS base URL, as shown in the configuration examples below. If you don’t, the mTLS certificate will not be transferred to Mangopay. When mTLS is enforced, your integration will result in an error.
+
+### Configure the SDK’s mTLS properties
+
+The PHP SDK allows you to load Base64-encoded strings from your environment variables. You can also load locally stored file paths, which may be useful during testing.
+
+**Caution:** The file path properties take precedence if both are set.
+
+#### Base64-encoded strings
+
+When your `.pem` certificate and private `.key` are stored as encoded strings in a secrets manager, you can load them using the following configuration properties.
+
+**Prerequisite:** The Base64-encoded string properties require PHP ≥ 8.1 compiled against libcurl ≥ 7.71.0.
+
+If this prerequisite is not met, the SDK will throw an exception at runtime because of the `CURLOPT_SSLCERT_BLOB` and `CURLOPT_SSLKEY_BLOB` used under the hood.
+
+  | Property                       | Type              | Description                                                   |
+  | ------------------------------ | ----------------- |---------------------------------------------------------------|
+  | `ClientCertificateString`      | string            | Base64-encoded string of the certificate `.pem` file content. |
+  | `ClientCertificateKeyString`   | string            | Base64-encoded string of the private `.key` file content.     |
+  | `ClientCertificateKeyPassword` | string (optional) | String of the passphrase for an encrypted private key.        |
+
+  ```php  theme={null}
+  $api = new MangoPay\\MangoPayApi();
+  $api->Config->ClientId = 'your-mangopay-client-id';
+  $api->Config->ClientPassword = 'your-mangopay-api-key';
+  // mTLS base URL
+  $api->Config->BaseUrl = 'https://api-mtls.sandbox.mangopay.com';
+
+  // Base64-encoded .pem certificate content
+  $api->Config->ClientCertificateString = 'MANGOPAY_PEM_B64'
+
+  // Base64-encoded private .key content
+  $api->Config->ClientCertificateKeyString = 'MANGOPAY_KEY_B64'
+
+  // Optional: passphrase if the private key is password-protected
+  $api->Config->ClientCertificateKeyPassword = 'YOUR_CERT_PASSWORD';
+  ```
+
+Typical example with a secrets manager:
+
+  ```php  theme={null}
+  $cert = $secretsManager->getSecret('MANGOPAY_PEM_B64');
+  $key  = $secretsManager->getSecret('MANGOPAY_KEY_B64');
+
+  $api->Config->ClientCertificateString    = $cert;
+  $api->Config->ClientCertificateKeyString = $key;
+  ```
+
+#### File paths
+
+If your `.pem` certificate and private `.key` are stored locally, for example during testing, you can load them using the following properties.
+
+**Caution:** If the file path properties are set, they take precedence and the Base64-encoded equivalents are ignored.
+
+  | Property                       | Type              | Description                                              |
+  | ------------------------------ | ----------------- |----------------------------------------------------------|
+  | `ClientCertificatePath`        | string            | Path to the certificate `.pem` file.                     |
+  | `ClientCertificateKeyPath`     | string            | Path to the private `.key` file.                         |
+  | `ClientCertificateKeyPassword` | string (optional) | String of the passphrase for an encrypted private key.   |
+
+  ```php  theme={null}
+  $api = new MangoPay\\MangoPayApi();
+  $api->Config->ClientId = 'your-mangopay-client-id';
+  $api->Config->ClientPassword = 'your-mangopay-api-key';
+
+  // Path to the .pem certificate file
+  $api->Config->ClientCertificatePath = '/path/to/certificate.pem';
+
+  // Path to the private .key file
+  $api->Config->ClientCertificateKeyPath = '/path/to/private.key';
+
+  // Optional: passphrase if the private key is password-protected
+  $api->Config->ClientCertificateKeyPassword = 'your-cert-password';
+  ```
+
 
 Sample usage
 -------------------------------------------------

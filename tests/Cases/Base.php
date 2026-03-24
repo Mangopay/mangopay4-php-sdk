@@ -129,11 +129,6 @@ abstract class Base extends TestCase
     public static $JohnsPayInPaypalWebV2;
 
     /**
-     * Test pay-ins Card Web object Payconiq
-     * @var \MangoPay\PayIn
-     */
-    public static $JohnsPayInPayconiqWeb;
-    /**
      * Test pay-outs objects
      * @var \MangoPay\PayOut
      */
@@ -1772,52 +1767,6 @@ abstract class Base extends TestCase
         }
 
         return self::$JohnsPayInPaypalWebV2;
-    }
-
-    /**
-     * Creates Pay-In Card Web object
-     * @return \MangoPay\PayIn
-     */
-    protected function getJohnsPayInPayconiqWeb()
-    {
-        if (self::$JohnsPayInPayconiqWeb === null) {
-            $payIn = self::newPayconiqWebPayIn();
-            self::$JohnsPayInPayconiqWeb = $this->_api->PayIns->Create($payIn);
-        }
-
-        return self::$JohnsPayInPayconiqWeb;
-    }
-
-    /**
-     * Creates Pay-In Card Web object using the /payment-methods/payconiq endpoint
-     * @return \MangoPay\PayIn
-     */
-    protected function getJohnsPayInPayconiqWebV2()
-    {
-        return $this->_api->PayIns->CreatePayconiq(self::newPayconiqWebPayIn());
-    }
-
-    private function newPayconiqWebPayIn()
-    {
-        $wallet = $this->getJohnsWallet();
-        $user = $this->getJohn();
-
-        $payIn = new \MangoPay\PayIn();
-        $payIn->AuthorId = $user->Id;
-        $payIn->CreditedUserId = $user->Id;
-        $payIn->DebitedFunds = new \MangoPay\Money();
-        $payIn->DebitedFunds->Currency = 'EUR';
-        $payIn->DebitedFunds->Amount = 1000;
-        $payIn->Fees = new \MangoPay\Money();
-        $payIn->Fees->Currency = 'EUR';
-        $payIn->Fees->Amount = 5;
-        $payIn->CreditedWalletId = $wallet->Id;
-        $payIn->PaymentDetails = new \MangoPay\PayInPaymentDetailsPayconiq();
-        $payIn->PaymentDetails->Country = 'BE';
-        $payIn->ExecutionDetails = new \MangoPay\PayInExecutionDetailsWeb();
-        $payIn->ExecutionDetails->ReturnURL = 'http://www.my-site.com/returnURL';
-
-        return $payIn;
     }
 
     /**

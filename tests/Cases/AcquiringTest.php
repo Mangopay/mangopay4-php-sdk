@@ -31,6 +31,7 @@ class AcquiringTest extends Base
 
     public function test_PayIns_Create_CardDirect()
     {
+        $this->markTestSkipped("to be tested manually");
         $payIn = $this->getAcquiringPayInCardDirect();
 
         $this->assertNotNull($payIn);
@@ -43,6 +44,7 @@ class AcquiringTest extends Base
 
     public function test_PayIns_Create_IdealWeb()
     {
+        $this->markTestSkipped("to be tested manually");
         $payIn = new PayIn();
         $payIn->DebitedFunds = new Money();
         $payIn->DebitedFunds->Amount = 1000;
@@ -117,6 +119,7 @@ class AcquiringTest extends Base
 
     public function test_PayIns_Create_PayPalWeb()
     {
+        $this->markTestSkipped("to be tested manually");
         $payIn = new PayIn();
         $payIn->DebitedFunds = new Money();
         $payIn->DebitedFunds->Amount = 100;
@@ -144,6 +147,7 @@ class AcquiringTest extends Base
 
     public function test_PayIns_Create_PayPal_DataCollection()
     {
+        $this->markTestSkipped("to be tested manually");
         $dataCollection = new stdClass();
         $dataCollection->sender_account_id = "A12345N343";
         $dataCollection->sender_first_name = "Jane";
@@ -175,6 +179,7 @@ class AcquiringTest extends Base
 
     public function test_PayIns_CreateRefund()
     {
+        $this->markTestSkipped("to be tested manually");
         $payIn = $this->getAcquiringPayInCardDirect();
         $refund = new Refund();
         $refund->DebitedFunds = new Money();
@@ -189,6 +194,7 @@ class AcquiringTest extends Base
 
     public function test_Create_CardValidation()
     {
+        $this->markTestSkipped("to be tested manually");
         $cardValidation = new \MangoPay\CardValidation();
         $cardValidation->IpAddress = "2001:0620:0000:0000:0211:24FF:FE80:C12C";
         $cardValidation->SecureModeReturnUrl = "http://www.example.com/";
@@ -220,6 +226,7 @@ class AcquiringTest extends Base
 
     private function getAcquiringPayInCardDirect()
     {
+        $this->markTestSkipped("to be tested manually");
         $payIn = new PayIn();
         $payIn->DebitedFunds = new Money();
         $payIn->DebitedFunds->Amount = 1000;

@@ -907,8 +907,6 @@ abstract class ApiBase
             'payins_paypal-web_create' => '\MangoPay\PayIn',
             'payins_recurring_paypal' => '\MangoPay\PayInRecurring',
             'payins_paypal-web_create_v2' => '\MangoPay\PayIn',
-            'payins_payconiq-web_create' => '\MangoPay\PayIn',
-            'payins_payconiqv2-web_create' => '\MangoPay\PayIn',
             'payins_applepay-direct_create' => '\MangoPay\PayIn',
             'payins_googlepay-direct_create' => '\MangoPay\PayIn',
             'payins_googlepay-direct_create_v2' => '\MangoPay\PayIn',
@@ -983,6 +981,13 @@ abstract class ApiBase
             'payins_intent_create_capture' => '\MangoPay\PayInIntent',
             'settlement_generate_upload_url' => '\MangoPay\Settlement',
             'payins_intent_create_authprization' => '\MangoPay\PayInIntent',
+            'acquiring_payins_card-direct_create' => '\MangoPay\PayIn',
+            'acquiring_payins_ideal-web_create' => '\MangoPay\PayIn',
+            'acquiring_payins_applepay-direct_create' => '\MangoPay\PayIn',
+            'acquiring_payins_googlepay-direct_create' => '\MangoPay\PayIn',
+            'acquiring_payins_paypal-web_create' => '\MangoPay\PayIn',
+            'acquiring_payins_createrefunds' => '\MangoPay\Refund',
+            'acquiring_card_validate' => '\MangoPay\CardValidation',
         ];
 
         foreach ($map as $key => $className) {

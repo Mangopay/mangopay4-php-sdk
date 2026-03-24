@@ -2,18 +2,27 @@
 
 namespace MangoPay\Tests\Cases;
 
+use MangoPay\CardValidation;
 use MangoPay\CustomFees;
 use MangoPay\IdentityVerification;
 use MangoPay\Libraries\ResponseException;
+use MangoPay\LineItem;
 use MangoPay\Money;
 use MangoPay\PayIn;
 use MangoPay\PayInExecutionDetailsDirect;
+use MangoPay\PayInExecutionDetailsWeb;
 use MangoPay\PayInIntent;
 use MangoPay\PayInIntentExternalData;
 use MangoPay\PayInPaymentDetailsBankWire;
+use MangoPay\PayInPaymentDetailsCard;
+use MangoPay\PayInPaymentDetailsIdeal;
+use MangoPay\PayInPaymentDetailsPaypal;
+use MangoPay\Refund;
 use MangoPay\Report;
+use MangoPay\ReportFilters;
 use MangoPay\Settlement;
 use MangoPay\UserCategory;
+use stdClass;
 
 /**
  * Tests methods for idempotency support
@@ -284,13 +293,6 @@ class IdempotencyTest extends Base
     {
         $key = md5(uniqid());
         $this->getJohnsPayInPaypalWebV2($key);
-        $this->assertIdempotencyResource($key, '\MangoPay\PayIn');
-    }
-
-    public function test_GetItempotencyKey_PayinsPayconiqWebCreate()
-    {
-        $key = md5(uniqid());
-        $this->getJohnsPayInPayconiqWebV2($key);
         $this->assertIdempotencyResource($key, '\MangoPay\PayIn');
     }
 
@@ -1007,5 +1009,151 @@ class IdempotencyTest extends Base
         $created = $this->_api->Settlements->GenerateUploadUrl($settlement);
         $this->_api->Settlements->Cancel($created->SettlementId, $key);
         $this->assertIdempotencyResource($key, '\MangoPay\Settlement');
+    }
+
+    public function test_GetIdempotencyKey_Acquiring_PayIns_Create_CardDirect()
+    {
+        $this->markTestSkipped("to be tested manually");
+        $key = md5(uniqid());
+        $payIn = new PayIn();
+        $payIn->DebitedFunds = new Money();
+        $payIn->DebitedFunds->Amount = 1000;
+        $payIn->DebitedFunds->Currency = 'EUR';
+        $payIn->PaymentDetails = new PayInPaymentDetailsCard();
+        $payIn->PaymentDetails->IpAddress = "2001:0620:0000:0000:0211:24FF:FE80:C12C";
+        $payIn->PaymentDetails->BrowserInfo = $this->getBrowserInfo();
+        $payIn->PaymentDetails->CardId = "placeholder";
+        $payIn->ExecutionDetails = new PayInExecutionDetailsDirect();
+        $payIn->ExecutionDetails->SecureModeReturnURL = "https://mangopay.com";
+        $payIn->ExecutionDetails->SecureMode = "DEFAULT";
+        $this->_api->Acquiring->CreatePayIn($payIn, $key);
+        $this->assertIdempotencyResource($key, '\MangoPay\PayIn');
+    }
+
+    public function test_GetIdempotencyKey_Acquiring_PayIns_Create_IdealWeb()
+    {
+        $this->markTestSkipped("to be tested manually");
+        $key = md5(uniqid());
+        $payIn = new PayIn();
+        $payIn->DebitedFunds = new Money();
+        $payIn->DebitedFunds->Amount = 1000;
+        $payIn->DebitedFunds->Currency = 'EUR';
+        $payIn->PaymentDetails = new PayInPaymentDetailsIdeal();
+        $payIn->ExecutionDetails = new PayInExecutionDetailsWeb();
+        $payIn->ExecutionDetails->ReturnURL = "https://mangopay.com";
+        $this->_api->Acquiring->CreatePayIn($payIn, $key);
+        $this->assertIdempotencyResource($key, '\MangoPay\PayIn');
+    }
+
+    public function test_GetIdempotencyKey_Acquiring_PayIns_Create_ApplePayDirect()
+    {
+        $this->markTestSkipped("to be tested manually");
+        $key = md5(uniqid());
+        $payIn = new PayIn();
+        $payIn->DebitedFunds = new Money();
+        $payIn->DebitedFunds->Amount = 1000;
+        $payIn->DebitedFunds->Currency = 'EUR';
+        $payIn->ExecutionDetails = new PayInExecutionDetailsDirect();
+        $this->_api->Acquiring->CreatePayIn($payIn, $key);
+        $this->assertIdempotencyResource($key, '\MangoPay\PayIn');
+    }
+
+    public function test_GetIdempotencyKey_Acquiring_PayIns_Create_GooglePayDirect()
+    {
+        $this->markTestSkipped("to be tested manually");
+        $key = md5(uniqid());
+        $payIn = new PayIn();
+        $payIn->DebitedFunds = new Money();
+        $payIn->DebitedFunds->Amount = 1000;
+        $payIn->DebitedFunds->Currency = 'EUR';
+        $payIn->ExecutionDetails = new PayInExecutionDetailsDirect();
+        $this->_api->Acquiring->CreatePayIn($payIn, $key);
+        $this->assertIdempotencyResource($key, '\MangoPay\PayIn');
+    }
+
+    public function test_GetIdempotencyKey_Acquiring_PayIns_Create_PayPalWeb()
+    {
+        $this->markTestSkipped("to be tested manually");
+        $key = md5(uniqid());
+        $payIn = new PayIn();
+        $payIn->DebitedFunds = new Money();
+        $payIn->DebitedFunds->Amount = 100;
+        $payIn->DebitedFunds->Currency = 'EUR';
+        $payIn->PaymentDetails = new PayInPaymentDetailsPaypal();
+        $lineItem = new LineItem();
+        $lineItem->Name = 'running shoes';
+        $lineItem->Quantity = 1;
+        $lineItem->UnitAmount = 100;
+        $lineItem->TaxAmount = 0;
+        $lineItem->Description = "seller1 ID";
+        $payIn->PaymentDetails->LineItems = [$lineItem];
+        $payIn->ExecutionDetails = new PayInExecutionDetailsWeb();
+        $this->_api->Acquiring->CreatePayIn($payIn, $key);
+        $this->assertIdempotencyResource($key, '\MangoPay\PayIn');
+    }
+
+    public function test_GetIdempotencyKey_Acquiring_PayIns_Create_PayPal_DataCollection()
+    {
+        $this->markTestSkipped("to be tested manually");
+        $key = md5(uniqid());
+        $dataCollection = new stdClass();
+        $dataCollection->sender_account_id = "A12345N343";
+        $dataCollection->sender_first_name = "Jane";
+        $dataCollection->sender_last_name = "Doe";
+        $dataCollection->sender_email = "jane.doe@sample.com";
+        $dataCollection->sender_phone = "(042) 1123 4567";
+        $dataCollection->sender_address_zip = "75009";
+        $dataCollection->sender_country_code = "FR";
+        $dataCollection->sender_create_date = "2012-12-09T19:14:55.277-0:00";
+        $dataCollection->sender_signup_ip = "10.220.90.20";
+        $dataCollection->sender_popularity_score = "high";
+        $dataCollection->receiver_account_id = "A12345N344";
+        $dataCollection->receiver_create_date = "2012-12-09T19:14:55.277-0:00";
+        $dataCollection->receiver_email = "jane@sample.com";
+        $dataCollection->receiver_address_country_code = "FR";
+        $dataCollection->business_name = "Jane Ltd";
+        $dataCollection->recipient_popularity_score = "high";
+        $dataCollection->first_interaction_date = "2012-12-09T19:14:55.277-0:00";
+        $dataCollection->txn_count_total = "34";
+        $dataCollection->vertical = "Household goods";
+        $dataCollection->transaction_is_tangible = "0";
+        $this->_api->Acquiring->CreatePayPalDataCollection($dataCollection, $key);
+        $this->assertIdempotencyResource($key, '\stdClass');
+    }
+
+    public function test_GetIdempotencyKey_Acquiring_PayIns_CreateRefund()
+    {
+        $this->markTestSkipped("to be tested manually");
+        $key = md5(uniqid());
+        $payIn = new PayIn();
+        $payIn->DebitedFunds = new Money();
+        $payIn->DebitedFunds->Amount = 1000;
+        $payIn->DebitedFunds->Currency = 'EUR';
+        $payIn->PaymentDetails = new PayInPaymentDetailsCard();
+        $payIn->PaymentDetails->IpAddress = "2001:0620:0000:0000:0211:24FF:FE80:C12C";
+        $payIn->PaymentDetails->BrowserInfo = $this->getBrowserInfo();
+        $payIn->PaymentDetails->CardId = "placeholder";
+        $payIn->ExecutionDetails = new PayInExecutionDetailsDirect();
+        $payIn->ExecutionDetails->SecureModeReturnURL = "https://mangopay.com";
+        $payIn->ExecutionDetails->SecureMode = "DEFAULT";
+        $createdPayIn = $this->_api->Acquiring->CreatePayIn($payIn);
+        $refund = new Refund();
+        $refund->DebitedFunds = new Money();
+        $refund->DebitedFunds->Amount = 10;
+        $refund->DebitedFunds->Currency = "EUR";
+        $this->_api->Acquiring->CreatePayInRefund($createdPayIn->Id, $refund, $key);
+        $this->assertIdempotencyResource($key, '\MangoPay\Refund');
+    }
+
+    public function test_GetIdempotencyKey_Acquiring_Create_CardValidation()
+    {
+        $this->markTestSkipped("to be tested manually");
+        $key = md5(uniqid());
+        $cardValidation = new CardValidation();
+        $cardValidation->IpAddress = "2001:0620:0000:0000:0211:24FF:FE80:C12C";
+        $cardValidation->SecureModeReturnUrl = "http://www.example.com/";
+        $cardValidation->BrowserInfo = $this->getBrowserInfo();
+        $this->_api->Acquiring->CreateCardValidation("placeholder", $cardValidation, $key);
+        $this->assertIdempotencyResource($key, '\MangoPay\CardValidation');
     }
 }

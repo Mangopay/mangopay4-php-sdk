@@ -38,6 +38,21 @@ class ReportsV2Test extends Base
         $this->assertSame($created->Status, "PENDING");
     }
 
+    public function test_Reports_Create_DateFilterBy()
+    {
+        $report = new Report();
+        $report->ReportType = "COLLECTED_FEES";
+        $report->DownloadFormat = "CSV";
+        $report->AfterDate = 1740787200;
+        $report->BeforeDate = 1743544740;
+        $report->DateFilterBy = "CreationDate";
+        $created = $this->_api->ReportsV2->Create($report);
+
+        $this->assertNotNull($created);
+        $this->assertSame($created->ReportType, "COLLECTED_FEES");
+        $this->assertSame($created->Status, "PENDING");
+    }
+
     public function test_Reports_Get()
     {
         $report = $this->getNewReportInstance();

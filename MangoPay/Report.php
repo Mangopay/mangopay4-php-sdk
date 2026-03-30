@@ -45,7 +45,7 @@ class Report extends Libraries\EntityBase
     public $DownloadURL;
 
     /**
-     * Type of the report: USER_WALLET_TRANSACTIONS, COLLECTED_FEES
+     * Type of the report: USER_WALLET_TRANSACTIONS, COLLECTED_FEES, ACQUIRING_SETTLEMENT, etc.
      * @var string
      */
     public $ReportType;

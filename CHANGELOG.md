@@ -1,3 +1,15 @@
+## [3.52.0] - 2026-03-25
+
+### Breaking Changes
+- **Idempotency improvements** (#777) – `GetObjectForIdempotencyUrl` updated with missing/corrected mappings; previously unmapped POST endpoints now return typed entities instead of `stdClass`. Several API methods were missing the `$idempotencyKey` parameter; it has been added as an optional last argument to `ApiPayIns::CreateDepositPreauthorizedPayIn`, `ApiConversions::Create*`, `ApiDeposits::Create`, `ApiBankingAliases::Create`, and `ApiUsers::ValidateTheFormatOfUserData`.
+- **Payconiq removal** (#785) – Payconiq was discontinued on 4 December 2025. Removed `ApiPayIns::CreatePayconiq()`, `PayInPaymentDetailsPayconiq`, `PayInPaymentType::Payconiq`, and the related URL keys from `ApiBase`.
+
+### Added
+- **Acquiring API** (#783) – New `ApiAcquiring` class (`$api->Acquiring`) with `CreatePayIn`, `CreatePayPalDataCollection`, `CreatePayInRefund`, and `CreateCardValidation` methods supporting Card Direct, iDEAL, Apple Pay, Google Pay, and PayPal.
+- `PreferredCardNetwork` field on card pay-in payment details.
+- `SettlementId` field on report filters.
+- **Klarna `LineItem` discount** (#781) – `Discount` support added to `LineItem` objects used in Klarna pay-ins.
+
 ## [3.51.0] - 2026-03-19
 ### Added - mTLS certificates support
 - mTLS certificates are now configurable in the SDK via file paths or encoded strings

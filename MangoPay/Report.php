@@ -84,4 +84,9 @@ class Report extends Libraries\EntityBase
      * @var array
      */
     public $Columns;
+
+    /**
+     * @var string|null
+     */
+    public $DateFilterBy;
 }

@@ -1,5 +1,8 @@
 name: mangopay4-php-sdk-cd
 
+permissions:
+  contents: read
+
 on:
   push:
     branches:
@@ -15,22 +18,23 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
+      max-parallel: 1
       matrix:
-        php-version: ["7.3", "7.4", "8.0"]
+        php-version: ["7.3", "7.4", "8.0", "8.1", "8.2", "8.3", "8.4", "8.5"]
         os: [ubuntu-latest]
         experimental: [false]
         composer-options: ['']
         include:
-          - { php-version: '8.1', composer-options: '--ignore-platform-req=php', experimental: true, os: ubuntu-latest }
+          - { php-version: '8.6', composer-options: '--ignore-platform-req=php+', experimental: true, os: ubuntu-latest }
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v6
       - name: Use php ${{ matrix.php-version }}
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php-version }}
           coverage: xdebug
       - name: Cache module
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: ~/.composer/cache/
           key: composer-cache

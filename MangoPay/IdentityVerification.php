@@ -43,4 +43,12 @@ class IdentityVerification extends Libraries\EntityBase
      * @var Check[]
      */
     public $Checks;
+
+    public function GetSubObjects()
+    {
+        $subObjects = parent::GetSubObjects();
+        $subObjects['Checks'] = ['array_single', '\MangoPay\Check'];
+
+        return $subObjects;
+    }
 }

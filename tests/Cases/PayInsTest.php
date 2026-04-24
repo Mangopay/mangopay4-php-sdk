@@ -1164,6 +1164,7 @@ class PayInsTest extends Base
 
         $this->assertNotNull($createdSplits->Splits);
         $this->assertTrue(sizeof($createdSplits->Splits) == 1);
+        $this->assertInstanceOf('\MangoPay\PayInIntentSplit', $createdSplits->Splits[0]);
     }
 
     public function test_ExecutePayInIntentSplit()

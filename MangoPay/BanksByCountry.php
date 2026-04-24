@@ -15,4 +15,12 @@ class BanksByCountry extends Dto
      * @var string
      */
     public $Country;
+
+    public function GetSubObjects()
+    {
+        $subObjects = parent::GetSubObjects();
+        $subObjects['Banks'] = ['array_single', '\MangoPay\Bank'];
+
+        return $subObjects;
+    }
 }

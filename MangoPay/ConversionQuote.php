@@ -63,4 +63,18 @@ class ConversionQuote extends EntityBase
      * @var MarginsResponse|null
      */
     public $MarginsResponse;
+
+    public function GetSubObjects()
+    {
+        $subObjects = parent::GetSubObjects();
+        $subObjects['DebitedFunds'] = '\MangoPay\Money';
+        $subObjects['CreditedFunds'] = '\MangoPay\Money';
+        $subObjects['Fees'] = '\MangoPay\CustomFees';
+        $subObjects['RequestedFees'] = '\MangoPay\CustomFees';
+        $subObjects['ConversionRateResponse'] = '\MangoPay\ConversionRate';
+        $subObjects['UserMargin'] = '\MangoPay\UserMargin';
+        $subObjects['MarginsResponse'] = '\MangoPay\MarginsResponse';
+
+        return $subObjects;
+    }
 }

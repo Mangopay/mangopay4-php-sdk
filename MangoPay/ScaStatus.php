@@ -28,4 +28,12 @@ class ScaStatus extends Libraries\Dto
      * @var ConsentScope|null
      */
     public $ConsentScope;
+
+    public function GetSubObjects()
+    {
+        $subObjects = parent::GetSubObjects();
+        $subObjects['ConsentScope'] = '\MangoPay\ConsentScope';
+
+        return $subObjects;
+    }
 }

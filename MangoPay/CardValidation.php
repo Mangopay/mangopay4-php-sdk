@@ -128,6 +128,7 @@ class CardValidation extends Libraries\EntityBase
     {
         $subObjects = parent::GetSubObjects();
         $subObjects['BrowserInfo'] = '\MangoPay\BrowserInfo';
+        $subObjects['CardInfo'] = '\MangoPay\CardInfo';
         $subObjects['AuthenticationResult'] = '\MangoPay\AuthenticationResult';
 
         return $subObjects;

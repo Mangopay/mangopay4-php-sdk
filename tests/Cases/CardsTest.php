@@ -2,6 +2,7 @@
 
 namespace MangoPay\Tests\Cases;
 
+use MangoPay\CardInfo;
 use MangoPay\CardValidation;
 use MangoPay\Libraries\Exception;
 use MangoPay\SortDirection;
@@ -75,6 +76,7 @@ class CardsTest extends Base
             $this->assertNotNull($validatedCard->Id);
             $this->assertNotNull($validatedCard->SecureMode);
             $this->assertNotNull($validatedCard->AuthenticationResult);
+            $this->assertInstanceOf(CardInfo::class, $validatedCard->CardInfo);
         } catch (Exception $e) {
             print_r("can't test due to client issues");
         }

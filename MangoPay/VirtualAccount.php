@@ -64,7 +64,7 @@ class VirtualAccount extends Libraries\EntityBase
 
     /**
      * The current Status of the Virtual Account
-     * @var \MangoPay\InternationalAccountDetails
+     * @var \MangoPay\InternationalAccountDetails[]
      */
     public $InternationalAccountDetails;
 
@@ -85,4 +85,14 @@ class VirtualAccount extends Libraries\EntityBase
      * @var string
      */
     public $ResultMessage;
+
+    public function GetSubObjects()
+    {
+        $subObjects = parent::GetSubObjects();
+        $subObjects['LocalAccountDetails'] = '\MangoPay\LocalAccountDetails';
+        $subObjects['InternationalAccountDetails'] = ['array_single', '\MangoPay\InternationalAccountDetails'];
+        $subObjects['Capabilities'] = '\MangoPay\VirtualAccountCapabilities';
+
+        return $subObjects;
+    }
 }

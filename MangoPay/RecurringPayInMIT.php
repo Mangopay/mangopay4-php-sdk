@@ -33,4 +33,13 @@ class RecurringPayInMIT extends Libraries\Dto
      * @var string|null
      */
     public $PaymentCategory;
+
+    public function GetSubObjects()
+    {
+        $subObjects = parent::GetSubObjects();
+        $subObjects['DebitedFunds'] = '\MangoPay\Money';
+        $subObjects['Fees'] = '\MangoPay\Money';
+
+        return $subObjects;
+    }
 }

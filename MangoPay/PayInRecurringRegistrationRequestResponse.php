@@ -23,4 +23,12 @@ class PayInRecurringRegistrationRequestResponse extends PayInRecurringRegistrati
      * @var int
      */
     public $FreeCycles;
+
+    public function GetSubObjects()
+    {
+        $subObjects = parent::GetSubObjects();
+        $subObjects['TotalAmount'] = '\MangoPay\Money';
+
+        return $subObjects;
+    }
 }

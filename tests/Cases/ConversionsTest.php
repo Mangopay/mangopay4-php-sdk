@@ -2,12 +2,9 @@
 
 namespace MangoPay\Tests\Cases;
 
-use MangoPay\ConversionQuote;
-use MangoPay\CreateClientWalletsInstantConversion;
-use MangoPay\CreateClientWalletsQuotedConversion;
-use MangoPay\CreateInstantConversion;
-use MangoPay\CreateQuotedConversion;
+use MangoPay\ConversionRate;
 use MangoPay\CustomFees;
+use MangoPay\MarginsResponse;
 use MangoPay\Money;
 use MangoPay\TransactionType;
 use MangoPay\UserMargin;
@@ -38,6 +35,12 @@ class ConversionsTest extends Base
         $this->assertSame("FIXED", $response->RequestedFees->Type);
         $this->assertNotNull($response->MarginsResponse->Mangopay);
         $this->assertNull($response->MarginsResponse->User);
+        $this->assertInstanceOf(Money::class, $response->DebitedFunds);
+        $this->assertInstanceOf(Money::class, $response->CreditedFunds);
+        $this->assertInstanceOf(Money::class, $response->Fees);
+        $this->assertInstanceOf(CustomFees::class, $response->RequestedFees);
+        $this->assertInstanceOf(ConversionRate::class, $response->ConversionRateResponse);
+        $this->assertInstanceOf(MarginsResponse::class, $response->MarginsResponse);
     }
 
     public function test_getInstantConversion()
@@ -69,6 +72,14 @@ class ConversionsTest extends Base
         $this->assertSame("PERCENTAGE", $response->RequestedFees->Type);
         $this->assertNotNull($response->MarginsResponse->Mangopay);
         $this->assertNotNull($response->MarginsResponse->User);
+        $this->assertInstanceOf(Money::class, $response->DebitedFunds);
+        $this->assertInstanceOf(Money::class, $response->CreditedFunds);
+        $this->assertInstanceOf(CustomFees::class, $response->Fees);
+        $this->assertInstanceOf(CustomFees::class, $response->RequestedFees);
+        $this->assertInstanceOf(ConversionRate::class, $response->ConversionRateResponse);
+        $this->assertInstanceOf(MarginsResponse::class, $response->MarginsResponse);
+        $this->assertInstanceOf(UserMargin::class, $response->MarginsResponse->Mangopay);
+        $this->assertInstanceOf(UserMargin::class, $response->MarginsResponse->User);
     }
 
     public function test_getConversionQuote()

@@ -50,4 +50,13 @@ class PayOutEligibilityRequest extends Dto
      * @var string
      */
     public $PayoutModeRequested;
+
+    public function GetSubObjects()
+    {
+        $subObjects = parent::GetSubObjects();
+        $subObjects['DebitedFunds'] = '\MangoPay\Money';
+        $subObjects['Fees'] = '\MangoPay\Money';
+
+        return $subObjects;
+    }
 }

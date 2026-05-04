@@ -53,4 +53,15 @@ class CreateInstantConversion extends Dto
      * @var UserMargin|null
      */
     public $UserMargin;
+
+    public function GetSubObjects()
+    {
+        $subObjects = parent::GetSubObjects();
+        $subObjects['DebitedFunds'] = '\MangoPay\Money';
+        $subObjects['CreditedFunds'] = '\MangoPay\Money';
+        $subObjects['Fees'] = '\MangoPay\CustomFees';
+        $subObjects['UserMargin'] = '\MangoPay\UserMargin';
+
+        return $subObjects;
+    }
 }

@@ -36,4 +36,12 @@ class BankingAliasIBAN extends BankingAlias
      * @var \MangoPay\LocalAccountDetailsBankingAlias
      */
     public $LocalAccountDetails;
+
+    public function GetSubObjects()
+    {
+        $subObjects = parent::GetSubObjects();
+        $subObjects['LocalAccountDetails'] = '\MangoPay\LocalAccountDetailsBankingAlias';
+
+        return $subObjects;
+    }
 }

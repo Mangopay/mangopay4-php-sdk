@@ -2,7 +2,7 @@
 
 namespace MangoPay;
 
-class InstantPayout
+class InstantPayout extends Libraries\Dto
 {
     /**
      * @var boolean
@@ -13,4 +13,12 @@ class InstantPayout
      * @var FallbackReason
      */
     public $UnreachableReason;
+
+    public function GetSubObjects()
+    {
+        $subObjects = parent::GetSubObjects();
+        $subObjects['FallbackReason'] = '\MangoPay\FallbackReason';
+
+        return $subObjects;
+    }
 }

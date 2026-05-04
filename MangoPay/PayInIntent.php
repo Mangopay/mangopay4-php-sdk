@@ -125,6 +125,14 @@ class PayInIntent extends Libraries\EntityBase
 
         $subObjects['ExternalData'] = '\MangoPay\PayInIntentExternalData';
         $subObjects['Buyer'] = '\MangoPay\PayInIntentBuyer';
+        $subObjects['LineItems'] = ['array_single', '\MangoPay\PayInIntentLineItem'];
+        $subObjects['Captures'] = ['array_single', '\MangoPay\PayInIntentCapture'];
+        $subObjects['Capture'] = '\MangoPay\PayInIntentCapture';
+        $subObjects['Refunds'] = ['array_single', '\MangoPay\PayInIntentRefund'];
+        $subObjects['Refund'] = '\MangoPay\PayInIntentRefund';
+        $subObjects['Disputes'] = ['array_single', '\MangoPay\PayInIntentDispute'];
+        $subObjects['Dispute'] = '\MangoPay\PayInIntentDispute';
+        $subObjects['Splits'] = ['array_single', '\MangoPay\PayInIntentSplitInfo'];
 
         return $subObjects;
     }

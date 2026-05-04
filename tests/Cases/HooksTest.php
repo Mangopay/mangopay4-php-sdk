@@ -29,12 +29,12 @@ class HooksTest extends Base
     public function test_Hooks_Update()
     {
         $hook = $this->getJohnHook();
-        $hook->Url = "http://test123.com";
+        $hook->Url = "https://test123.com";
 
         $saveHook = $this->_api->Hooks->Update($hook);
 
         $this->assertSame($hook->Id, $saveHook->Id);
-        $this->assertSame("http://test123.com", $saveHook->Url);
+        $this->assertSame("https://test123.com", $saveHook->Url);
     }
 
     public function test_Hooks_All()

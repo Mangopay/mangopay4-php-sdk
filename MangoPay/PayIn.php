@@ -64,6 +64,14 @@ class PayIn extends Transaction
      */
     public $AuthenticationResult;
 
+    public function GetSubObjects()
+    {
+        $subObjects = parent::GetSubObjects();
+        $subObjects['AuthenticationResult'] = '\MangoPay\AuthenticationResult';
+
+        return $subObjects;
+    }
+
     /**
      * Get array with mapping which property depends on other property
      * @return array

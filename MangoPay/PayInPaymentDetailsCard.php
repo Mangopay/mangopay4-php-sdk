@@ -71,4 +71,13 @@ class PayInPaymentDetailsCard extends Libraries\Dto implements PayInPaymentDetai
      * @var string
      */
     public $PreferredCardNetwork;
+
+    public function GetSubObjects()
+    {
+        $subObjects = parent::GetSubObjects();
+        $subObjects['BrowserInfo'] = '\MangoPay\BrowserInfo';
+        $subObjects['Shipping'] = '\MangoPay\Shipping';
+
+        return $subObjects;
+    }
 }

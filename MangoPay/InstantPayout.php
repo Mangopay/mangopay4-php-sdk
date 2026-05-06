@@ -17,7 +17,7 @@ class InstantPayout extends Libraries\Dto
     public function GetSubObjects()
     {
         $subObjects = parent::GetSubObjects();
-        $subObjects['FallbackReason'] = '\MangoPay\FallbackReason';
+        $subObjects['UnreachableReason'] = '\MangoPay\FallbackReason';
 
         return $subObjects;
     }

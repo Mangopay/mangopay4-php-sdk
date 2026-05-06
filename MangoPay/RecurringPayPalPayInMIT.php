@@ -97,4 +97,14 @@ class RecurringPayPalPayInMIT extends Libraries\Dto
      * @var string|null
      */
     public $DataCollectionId;
+
+    public function GetSubObjects()
+    {
+        $subObjects = parent::GetSubObjects();
+        $subObjects['DebitedFunds'] = '\MangoPay\Money';
+        $subObjects['Fees'] = '\MangoPay\Money';
+        $subObjects['Shipping'] = '\MangoPay\Shipping';
+
+        return $subObjects;
+    }
 }

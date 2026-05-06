@@ -84,4 +84,12 @@ class Report extends Libraries\EntityBase
      * @var array
      */
     public $Columns;
+
+    public function GetSubObjects()
+    {
+        $subObjects = parent::GetSubObjects();
+        $subObjects['Filters'] = '\MangoPay\ReportFilters';
+
+        return $subObjects;
+    }
 }

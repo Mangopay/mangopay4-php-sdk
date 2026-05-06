@@ -1,3 +1,48 @@
+## [4.0.0] - 2026-05-06
+
+### Breaking Changes
+- **Sub-object casting** (#790) – Added missing `GetSubObjects()` mappings across response and request DTOs. Properties that were previously returned as raw `stdClass` are now hydrated as typed Mangopay entities. Code that read those nested properties as plain objects (e.g. via array-style access, `property_exists`, or by passing them to functions that expect `stdClass`) must be updated to use the typed classes. Affected classes:
+  - `BankingAliasIBAN` (`LocalAccountDetails` → `LocalAccountDetailsBankingAlias`)
+  - `BanksByCountry` (`Banks` → `Bank[]`)
+  - `CardPreAuthorization` (added `BrowserInfo` → `BrowserInfo`, `Shipping` → `Shipping`)
+  - `CardValidation` (added `CardInfo` → `CardInfo`)
+  - `Check` (`Data`, `Reasons` → `CheckData[]`)
+  - `Conversion` (`DebitedFunds`, `CreditedFunds`, `Fees` → `Money`; `RequestedFees` → `CustomFees`; `ConversionRateResponse` → `ConversionRate`; `MarginsResponse` → `MarginsResponse`)
+  - `ConversionQuote` (`DebitedFunds`, `CreditedFunds` → `Money`; `Fees`, `RequestedFees` → `CustomFees`; `ConversionRateResponse` → `ConversionRate`; `UserMargin` → `UserMargin`; `MarginsResponse` → `MarginsResponse`)
+  - `CreateClientWalletsInstantConversion` (`DebitedFunds`, `CreditedFunds` → `Money`)
+  - `CreateInstantConversion` (`DebitedFunds`, `CreditedFunds` → `Money`; `Fees` → `CustomFees`; `UserMargin` → `UserMargin`)
+  - `IdentityVerification` (`Checks` → `Check[]`)
+  - `InstantPayout` – now extends `Libraries\Dto`; `UnreachableReason` → `FallbackReason`
+  - `IntentSplits` (`Splits` → `PayInIntentSplit[]`)
+  - `InternationalAccountDetails` (`Address` → `VirtualAccountAddress`, `Account` → `InternationalAccount`)
+  - `LocalAccountDetails` (`Address` → `VirtualAccountAddress`, `Account` → `LocalAccount`)
+  - `MarginsResponse` (`Mangopay`, `User` → `UserMargin`)
+  - `PayIn` (`AuthenticationResult` → `AuthenticationResult`)
+  - `PayInExecutionDetailsExternalInstruction` (`DebitedBankAccount` → `DebitedBankAccount`)
+  - `PayInIntent` (`LineItems` → `PayInIntentLineItem[]`; `Captures` → `PayInIntentCapture[]`; `Capture` → `PayInIntentCapture`; `Refunds` → `PayInIntentRefund[]`; `Refund` → `PayInIntentRefund`; `Disputes` → `PayInIntentDispute[]`; `Dispute` → `PayInIntentDispute`; `Splits` → `PayInIntentSplitInfo[]`)
+  - `PayInIntentCapture`, `PayInIntentDispute`, `PayInIntentRefund`, `PayInIntentSplitInfo` (`LineItems` → `PayInIntentLineItem[]`)
+  - `PayInPaymentDetailsBlik` (`BrowserInfo` → `BrowserInfo`)
+  - `PayInPaymentDetailsCard` (`BrowserInfo` → `BrowserInfo`, `Shipping` → `Shipping`)
+  - `PayInRecurringRegistration` (`FirstTransactionDebitedFunds`, `FirstTransactionFees`, `NextTransactionDebitedFunds`, `NextTransactionFees` → `Money`; `Billing` → `Billing`; `Shipping` → `Shipping`)
+  - `PayInRecurringRegistrationGet` (`CurrentState` → `RecurringPayInCurrentState`)
+  - `PayInRecurringRegistrationRequestResponse` (`TotalAmount` → `Money`)
+  - `PayInRecurringRegistrationUpdate` (`Shipping` → `Shipping`, `Billing` → `Billing`)
+  - `PayOutEligibilityRequest` (`DebitedFunds`, `Fees` → `Money`)
+  - `PayOutEligibilityResponse` (`InstantPayout` → `InstantPayout`)
+  - `RecurringPayInCIT` (`BrowserInfo` → `BrowserInfo`; `DebitedFunds`, `Fees` → `Money`)
+  - `RecurringPayInCurrentState` (`CumulatedDebitedAmount`, `CumulatedFeesAmount` → `Money`)
+  - `RecurringPayInMIT` (`DebitedFunds`, `Fees` → `Money`)
+  - `RecurringPayPalPayInCIT` (`Shipping` → `Shipping`)
+  - `RecurringPayPalPayInMIT` (`DebitedFunds`, `Fees` → `Money`; `Shipping` → `Shipping`)
+  - `Report` (`Filters` → `ReportFilters`)
+  - `ReportRequest` (`Filters` → `FilterReports`)
+  - `ScaStatus` (`ConsentScope` → `ConsentScope`)
+  - `SettlementValidation` (`FooterErrors` → `SettlementValidationFooter[]`; `LinesErrors` → `SettlementValidationLine[]`)
+  - `SupportedBank` (`Countries` → `BanksByCountry[]`)
+  - `VirtualAccount` (`LocalAccountDetails` → `LocalAccountDetails`; `Capabilities` → `VirtualAccountCapabilities`; **see `InternationalAccountDetails` fix below**)
+  - `VirtualAccountAvailabilities` (`Collection`, `UserOwned` → `VirtualAccountAvailability[]`)
+- **`VirtualAccount.InternationalAccountDetails` type fix** (#790) – The `VirtualAccount.$InternationalAccountDetails` property is now correctly typed as `InternationalAccountDetails[]` (an array) instead of a single `InternationalAccountDetails` object, matching the API response. Code that previously accessed this property as a single object (e.g. `$virtualAccount->InternationalAccountDetails->Iban`) must be updated to iterate the array (e.g. `$virtualAccount->InternationalAccountDetails[0]->Iban`).
+
 ## [3.52.0] - 2026-03-25
 
 ### Breaking Changes

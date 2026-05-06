@@ -45,4 +45,13 @@ class CreateClientWalletsInstantConversion extends Dto
      * @var string
      */
     public $Tag;
+
+    public function GetSubObjects()
+    {
+        $subObjects = parent::GetSubObjects();
+        $subObjects['DebitedFunds'] = '\MangoPay\Money';
+        $subObjects['CreditedFunds'] = '\MangoPay\Money';
+
+        return $subObjects;
+    }
 }

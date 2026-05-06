@@ -12,7 +12,7 @@ use Psr\Log\LoggerInterface;
  */
 class RestTool
 {
-    const VERSION = '3.52.0';
+    const VERSION = '4.0.0';
 
     /**
      * Root/parent instance that holds the OAuthToken and Configuration instance

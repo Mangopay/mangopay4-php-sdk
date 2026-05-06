@@ -2,9 +2,11 @@
 
 namespace MangoPay\Tests\Cases;
 
-use MangoPay\CreateCardPreAuthorizedDepositPayIn;
+use MangoPay\AuthenticationResult;
+use MangoPay\Billing;
+use MangoPay\BrowserInfo;
 use MangoPay\CurrencyIso;
-use MangoPay\IntentSplits;
+use MangoPay\DebitedBankAccount;
 use MangoPay\FilterSupportedBanks;
 use MangoPay\Libraries\Exception;
 use MangoPay\LineItem;
@@ -20,10 +22,10 @@ use MangoPay\PayInPaymentType;
 use MangoPay\PayInRecurringRegistrationUpdate;
 use MangoPay\PayInStatus;
 use MangoPay\RecurringPayInCIT;
-use MangoPay\RecurringPayPalPayInCIT;
+use MangoPay\RecurringPayInCurrentState;
 use MangoPay\RecurringPayPalPayInMIT;
+use MangoPay\Shipping;
 use MangoPay\TransactionStatus;
-use MangoPay\UpdateDeposit;
 
 /**
  * Tests methods for pay-ins
@@ -40,6 +42,7 @@ class PayInsTest extends Base
         $this->assertSame(\MangoPay\PayInExecutionType::Web, $payIn->ExecutionType);
         $this->assertInstanceOf('\MangoPay\PayInExecutionDetailsWeb', $payIn->ExecutionDetails);
         $this->assertNotNull($payIn->ExecutionDetails->Billing);
+        $this->assertInstanceOf(Shipping::class, $payIn->PaymentDetails->Shipping);
     }
 
     public function test_PayIns_Get_CardWeb()
@@ -84,6 +87,8 @@ class PayInsTest extends Base
         $this->assertEquals('PAYIN', $payIn->Type);
         $this->assertEquals('TelephoneOrder', $payIn->PaymentCategory);
         $this->assertNotNull($payIn->AuthenticationResult);
+        $this->assertInstanceOf(AuthenticationResult::class, $payIn->AuthenticationResult);
+        $this->assertInstanceOf(BrowserInfo::class, $payIn->PaymentDetails->BrowserInfo);
 
         $this->assertNotNull($payIn->PaymentDetails->CardInfo);
         $this->assertNotNull($payIn->PaymentDetails->CardInfo->BIN);
@@ -447,6 +452,7 @@ class PayInsTest extends Base
         $this->assertTrue($payIn->ExecutionDate != null);
         $this->assertNotNull($payIn->ExecutionDetails->DebitedBankAccount->IBAN);
         $this->assertNull($payIn->ExecutionDetails->DebitedBankAccount->AccountNumber);
+        $this->assertInstanceOf(DebitedBankAccount::class, $payIn->ExecutionDetails->DebitedBankAccount);
     }
 
     public function test_get_bank_wire_external_instructions_account_number()
@@ -513,6 +519,9 @@ class PayInsTest extends Base
         $this->assertNotNull($result);
         $this->assertNotNull($result->Id);
         $this->assertNotNull($result->FreeCycles);
+        $this->assertInstanceOf(Money::class, $result->FirstTransactionDebitedFunds);
+        $this->assertInstanceOf(Billing::class, $result->Billing);
+        $this->assertInstanceOf(Shipping::class, $result->Shipping);
     }
 
     public function test_Get_Recurring_Payment()
@@ -525,6 +534,9 @@ class PayInsTest extends Base
         $get = $this->_api->PayIns->GetRecurringRegistration($result->Id);
         $this->assertSame($result->Id, $get->Id);
         $this->assertNotNull($get);
+        $this->assertInstanceOf(RecurringPayInCurrentState::class, $get->CurrentState);
+        $this->assertInstanceOf(Money::class, $get->CurrentState->CumulatedDebitedAmount);
+        $this->assertInstanceOf(Money::class, $get->CurrentState->CumulatedFeesAmount);
 
         $this->assertNotNull($get->FreeCycles);
     }
@@ -614,6 +626,9 @@ class PayInsTest extends Base
         $payIn->FractionedPayment = false;
 
         $registration = $this->_api->PayIns->CreateRecurringRegistration($payIn);
+        $this->assertInstanceOf(Money::class, $registration->TotalAmount);
+        $this->assertInstanceOf(Money::class, $registration->NextTransactionDebitedFunds);
+        $this->assertInstanceOf(Money::class, $registration->NextTransactionFees);
 
         $cit = new RecurringPayInCIT();
         $cit->RecurringPayinRegistrationId = $registration->Id;
@@ -856,6 +871,7 @@ class PayInsTest extends Base
         $this->assertEquals(\MangoPay\PayInExecutionType::Web, $payIn->ExecutionType);
         $this->assertInstanceOf('\MangoPay\PayInExecutionDetailsWeb', $payIn->ExecutionDetails);
         $this->assertEquals(PayInStatus::Created, $payIn->Status);
+        $this->assertInstanceOf(BrowserInfo::class, $payIn->PaymentDetails->BrowserInfo);
 
         $fetchedPayIn = $this->_api->PayIns->Get($payIn->Id);
         $this->assertEquals($payIn->Id, $fetchedPayIn->Id);
@@ -1097,6 +1113,7 @@ class PayInsTest extends Base
         $this->assertEquals("AUTHORIZED", $intentAuthorization->Status);
         $this->assertNotNull($intentAuthorization->UnfundedAmount);
         $this->assertNotNull($intentAuthorization->LineItems[0]->UnfundedSellerAmount);
+        $this->assertInstanceOf('\MangoPay\PayInIntentLineItem', $intentAuthorization->LineItems[0]);
     }
 
     public function test_CreatePayInIntentFullCapture()
@@ -1105,6 +1122,11 @@ class PayInsTest extends Base
 
         $this->assertNotNull($result);
         $this->assertEquals("CAPTURED", $result->Status);
+        $this->assertInstanceOf('\MangoPay\PayInIntentCapture', $result->Capture);
+
+        $fetched = $this->_api->PayIns->GetPayInIntent($result->Id);
+        $this->assertInstanceOf('\MangoPay\PayInIntentCapture', $fetched->Captures[0]);
+        $this->assertInstanceOf('\MangoPay\PayInIntentLineItem', $fetched->Captures[0]->LineItems[0]);
     }
 
     public function test_CreatePayInIntentPartialCapture()
@@ -1164,6 +1186,11 @@ class PayInsTest extends Base
 
         $this->assertNotNull($createdSplits->Splits);
         $this->assertTrue(sizeof($createdSplits->Splits) == 1);
+        $this->assertInstanceOf('\MangoPay\PayInIntentSplit', $createdSplits->Splits[0]);
+
+        $fetched = $this->_api->PayIns->GetPayInIntent($intent->Id);
+        $this->assertInstanceOf('\MangoPay\PayInIntentSplitInfo', $fetched->Splits[0]);
+        $this->assertInstanceOf('\MangoPay\PayInIntentLineItem', $fetched->Splits[0]->LineItems[0]);
     }
 
     public function test_ExecutePayInIntentSplit()
@@ -1212,6 +1239,11 @@ class PayInsTest extends Base
 
         $this->assertNotNull($intentRefund);
         $this->assertEquals("REFUNDED", $intentRefund->Status);
+        $this->assertInstanceOf('\MangoPay\PayInIntentRefund', $intentRefund->Refund);
+
+        $fetched = $this->_api->PayIns->GetPayInIntent($intentRefund->Id);
+        $this->assertInstanceOf('\MangoPay\PayInIntentRefund', $fetched->Refunds[0]);
+        $this->assertInstanceOf('\MangoPay\PayInIntentLineItem', $fetched->Refunds[0]->LineItems[0]);
     }
 
     public function test_CreatePartialPayInIntentRefund()
@@ -1301,6 +1333,9 @@ class PayInsTest extends Base
         $resultFilteredPaginated = $this->_api->PayIns->GetPayByBankSupportedBanks($pagination, $filter);
         $this->assertEquals(1, sizeof($resultFilteredPaginated->SupportedBanks->Countries));
         $this->assertEquals(2, sizeof($resultFilteredPaginated->SupportedBanks->Countries[0]->Banks));
+
+        $this->assertInstanceOf('\MangoPay\BanksByCountry', $resultFilteredPaginated->SupportedBanks->Countries[0]);
+        $this->assertInstanceOf('\MangoPay\Bank', $resultFilteredPaginated->SupportedBanks->Countries[0]->Banks[0]);
     }
 
     public function test_CreateAndFetchPayPalDataCollection()
@@ -1358,6 +1393,11 @@ class PayInsTest extends Base
 
         $this->assertNotNull($intentDispute);
         $this->assertEquals("DISPUTED", $intentDispute->Status);
+        $this->assertInstanceOf('\MangoPay\PayInIntentDispute', $intentDispute->Dispute);
+
+        $fetched = $this->_api->PayIns->GetPayInIntent($intentDispute->Id);
+        $this->assertInstanceOf('\MangoPay\PayInIntentDispute', $fetched->Disputes[0]);
+        $this->assertInstanceOf('\MangoPay\PayInIntentLineItem', $fetched->Disputes[0]->LineItems[0]);
     }
 
     public function test_createPartialPayInIntentDispute()

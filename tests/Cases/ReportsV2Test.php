@@ -36,6 +36,7 @@ class ReportsV2Test extends Base
         $this->assertNotNull($created->Id);
         $this->assertSame($created->ReportType, "USER_WALLET_TRANSACTIONS");
         $this->assertSame($created->Status, "PENDING");
+        $this->assertInstanceOf(ReportFilters::class, $created->Filters);
     }
 
     public function test_Reports_Get()

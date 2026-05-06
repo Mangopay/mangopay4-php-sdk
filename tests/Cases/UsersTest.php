@@ -2,6 +2,7 @@
 
 namespace MangoPay\Tests\Cases;
 
+use MangoPay\ConsentScope;
 use MangoPay\FilterWallets;
 use MangoPay\LegalRepresentative;
 use MangoPay\Libraries\Exception;
@@ -988,5 +989,6 @@ class UsersTest extends Base
         $this->assertNotNull($scaStatus->ConsentScope->ContactInformationUpdate);
         $this->assertEquals("ACTIVE", $scaStatus->UserStatus);
         $this->assertEquals(true, $scaStatus->IsEnrolled);
+        $this->assertInstanceOf(ConsentScope::class, $scaStatus->ConsentScope);
     }
 }

@@ -1,4 +1,4 @@
-## [4.0.0] - 2026-05-04
+## [4.0.0] - 2026-05-06
 
 ### Breaking Changes
 - **Sub-object casting** (#790) – Added missing `GetSubObjects()` mappings across response and request DTOs. Properties that were previously returned as raw `stdClass` are now hydrated as typed Mangopay entities. Code that read those nested properties as plain objects (e.g. via array-style access, `property_exists`, or by passing them to functions that expect `stdClass`) must be updated to use the typed classes. Affected classes:

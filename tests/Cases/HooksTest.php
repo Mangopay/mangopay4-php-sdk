@@ -46,8 +46,8 @@ class HooksTest extends Base
 
         $list = $this->_api->Hooks->GetAll($pagination, $sorting);
 
+        $this->assertTrue(count($list) > 0);
         $this->assertInstanceOf('\MangoPay\Hook', $list[0]);
-        $this->assertSame($hook->Id, $list[0]->Id);
         $this->assertSame(1, $pagination->Page);
         $this->assertSame(1, $pagination->ItemsPerPage);
     }

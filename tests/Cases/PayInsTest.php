@@ -23,6 +23,7 @@ use MangoPay\PayInRecurringRegistrationUpdate;
 use MangoPay\PayInStatus;
 use MangoPay\RecurringPayInCIT;
 use MangoPay\RecurringPayInCurrentState;
+use MangoPay\RecurringPayInRegistration;
 use MangoPay\RecurringPayPalPayInMIT;
 use MangoPay\Shipping;
 use MangoPay\TransactionStatus;
@@ -522,6 +523,86 @@ class PayInsTest extends Base
         $this->assertInstanceOf(Money::class, $result->FirstTransactionDebitedFunds);
         $this->assertInstanceOf(Billing::class, $result->Billing);
         $this->assertInstanceOf(Shipping::class, $result->Shipping);
+    }
+
+    public function test_Create_Recurring_Pay_In_Registration()
+    {
+        $created = $this->createNewRecurringPayInRegistration();
+        $fetched = $this->_api->PayIns->GetRecurringPayInRegistration($created->Id);
+
+        $this->assertNotNull($created);
+        $this->assertNotNull($fetched);
+        $this->assertInstanceOf(RecurringPayInRegistration::class, $created);
+        $this->assertNotNull($created->Id);
+        $this->assertNotNull($created->CurrentState);
+        $this->assertInstanceOf(Money::class, $created->FirstTransactionDebitedFunds);
+        $this->assertInstanceOf(Billing::class, $created->Billing);
+        $this->assertInstanceOf(Shipping::class, $created->Shipping);
+        $this->assertEquals("CREATED", $created->Status);
+        $this->assertEquals($created->Id, $fetched->Id);
+        $this->assertEquals($created->Status, $fetched->Status);
+    }
+
+    public function test_Update_Recurring_Pay_In_Registration()
+    {
+        $created = $this->createNewRecurringPayInRegistration();
+
+        $this->assertNotNull($created);
+        $this->assertEquals("CREATED", $created->Status);
+
+        $toUpdate = new RecurringPayInRegistration();
+        $toUpdate->Id = $created->Id;
+        $toUpdate->Status = "ENDED";
+
+        $updated = $this->_api->PayIns->UpdateRecurringPayInRegistration($toUpdate);
+        $this->assertNotNull($updated);
+        $this->assertEquals("ENDED", $updated->Status);
+    }
+
+    public function test_Create_Recurring_Card_Pay_In_CIT() {
+        $payInRegistration = $this->createNewRecurringPayInRegistration();
+        $created = $this->createRecurringCardPayInCIT($payInRegistration->Id);
+
+        $this->assertNotNull($created);
+        $this->assertEquals("SUCCEEDED", $created->Status);
+        $this->assertNotNull($created->AuthenticationResult);
+        $this->assertNotNull($created->RecurringPayinRegistrationId);
+        $this->assertEquals("CARD", $created->PaymentType);
+        $this->assertEquals("DIRECT", $created->ExecutionType);
+    }
+
+    public function test_Create_Recurring_Card_Pay_In_MIT() {
+        $payInRegistration = $this->createNewRecurringPayInRegistration();
+        $created = $this->createRecurringCardPayInMIT($payInRegistration->Id);
+
+        $this->assertNotNull($created);
+        $this->assertEquals("SUCCEEDED", $created->Status);
+        $this->assertNotNull($created->AuthenticationResult);
+        $this->assertNotNull($created->RecurringPayinRegistrationId);
+        $this->assertEquals("CARD", $created->PaymentType);
+        $this->assertEquals("DIRECT", $created->ExecutionType);
+    }
+
+    public function test_Create_Recurring_PayPal_Pay_In_CIT() {
+        $payInRegistration = $this->createNewRecurringPayPalPayInRegistration();
+        $created = $this->createNewRecurringPayPalPayInCIT($payInRegistration->Id);
+
+        $this->assertNotNull($created);
+        $this->assertEquals("CREATED", $created->Status);
+        $this->assertNotNull($created->RecurringPayinRegistrationId);
+        $this->assertEquals("PAYPAL", $created->PaymentType);
+        $this->assertEquals("WEB", $created->ExecutionType);
+    }
+
+    public function test_Create_Recurring_PayPal_Pay_In_MIT() {
+        $payInRegistration = $this->createNewRecurringPayPalPayInRegistration();
+        $created = $this->createNewRecurringPayPalPayInMIT($payInRegistration->Id);
+
+        $this->assertNotNull($created);
+        $this->assertEquals("CREATED", $created->Status);
+        $this->assertNotNull($created->RecurringPayinRegistrationId);
+        $this->assertEquals("PAYPAL", $created->PaymentType);
+        $this->assertEquals("WEB", $created->ExecutionType);
     }
 
     public function test_Get_Recurring_Payment()

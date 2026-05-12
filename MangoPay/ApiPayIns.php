@@ -60,6 +60,7 @@ class ApiPayIns extends Libraries\ApiBase
      * Create a recurring payment
      * @param \MangoPay\PayInRecurringRegistration $recurringRegistration
      * @return \MangoPay\PayInRecurringRegistrationRequestResponse
+     * @deprecated Use 'CreateRecurringPayInRegistration' instead
      */
     public function CreateRecurringRegistration($recurringRegistration, $idempotencyKey = null)
     {
@@ -74,9 +75,28 @@ class ApiPayIns extends Libraries\ApiBase
     }
 
     /**
+     * Create recurring pay-in registration
+     *
+     * @param RecurringPayInRegistration $recurringRegistration
+     * @return RecurringPayInRegistration
+     */
+    public function CreateRecurringPayInRegistration($recurringRegistration, $idempotencyKey = null)
+    {
+        return $this->CreateObject(
+            'payins_recurring_registration',
+            $recurringRegistration,
+            '\MangoPay\RecurringPayInRegistration',
+            null,
+            null,
+            $idempotencyKey
+        );
+    }
+
+    /**
      * Get recurring payment
      * @param string $recurringRegistrationId
      * @return \MangoPay\PayInRecurringRegistrationGet
+     * @deprecated Use 'GetRecurringPayInRegistration' instead
      */
     public function GetRecurringRegistration($recurringRegistrationId, $idempotencyKey = null)
     {
@@ -84,19 +104,64 @@ class ApiPayIns extends Libraries\ApiBase
     }
 
     /**
-    * Update recurring payment
-    * @param PayInRecurringRegistrationUpdate $recurringUpdate
-    * @return \MangoPay\PayInRecurringRegistrationGet
-    */
+     * Get recurring pay-in registration
+     *
+     * @param string $id
+     * @return RecurringPayInRegistration
+     */
+    public function GetRecurringPayInRegistration($id)
+    {
+        return $this->GetObject('payins_recurring_registration_get',
+            '\MangoPay\RecurringPayInRegistration', $id);
+    }
+
+    /**
+     * Update recurring payment
+     * @param PayInRecurringRegistrationUpdate $recurringUpdate
+     * @return \MangoPay\PayInRecurringRegistrationGet
+     * @deprecated Use 'UpdateRecurringPayInRegistration' instead
+     */
     public function UpdateRecurringRegistration($recurringUpdate, $idempotencyKey = null)
     {
         return $this->SaveObject('payins_recurring_registration_put', $recurringUpdate, '\MangoPay\PayInRecurringRegistrationGet');
     }
 
     /**
+     * Update recurring pay-in registration
+     *
+     * @param RecurringPayInRegistration $payInRegistration
+     * @return RecurringPayInRegistration
+     */
+    public function UpdateRecurringPayInRegistration($payInRegistration)
+    {
+        return $this->SaveObject('payins_recurring_registration_put', $payInRegistration,
+            '\MangoPay\RecurringPayInRegistration');
+    }
+
+    /**
+     * Create a Recurring PayIn, using the same structure and logic as normal PayIns
+     * @param PayIn $recurringPayIn
+     * @return PayIn
+     */
+    public function CreateRecurringPayIn($recurringPayIn, $idempotencyKey = null)
+    {
+        $paymentKey = $this->GetPaymentKey($recurringPayIn);
+        $executionKey = $this->GetExecutionKey($recurringPayIn);
+        return $this->CreateObject(
+            'payins_recurring_' . $paymentKey . '-' . $executionKey . '_create',
+            $recurringPayIn,
+            '\MangoPay\PayIn',
+            null,
+            null,
+            $idempotencyKey
+        );
+    }
+
+    /**
      * Create a Recurring PayIn CIT
      * @param \MangoPay\RecurringPayInCIT $recurringPayInRegistrationCIT
      * @return \MangoPay\PayInRecurring
+     * deprecated Use `CreateRecurringPayIn` instead
      */
     public function CreateRecurringPayInRegistrationCIT($recurringPayInRegistrationCIT, $idempotencyKey = null)
     {
@@ -114,6 +179,7 @@ class ApiPayIns extends Libraries\ApiBase
      * Create a Recurring PayIn MIT
      * @param \MangoPay\RecurringPayInMIT $recurringPayInRegistrationMIT
      * @return \MangoPay\PayInRecurring
+     * deprecated Use `CreateRecurringPayIn` instead
      */
     public function CreateRecurringPayInRegistrationMIT($recurringPayInRegistrationMIT, $idempotencyKey = null)
     {
@@ -131,6 +197,7 @@ class ApiPayIns extends Libraries\ApiBase
      * Create a Recurring PayPal PayIn CIT
      * @param \MangoPay\RecurringPayPalPayInCIT $recurringPayPalPayInCIT
      * @return \MangoPay\PayInRecurring
+     * deprecated Use `CreateRecurringPayIn` instead
      */
     public function CreateRecurringPayPalPayInCIT($recurringPayPalPayInCIT, $idempotencyKey = null)
     {
@@ -148,6 +215,7 @@ class ApiPayIns extends Libraries\ApiBase
      * Create a Recurring PayPal PayIn MIT
      * @param \MangoPay\RecurringPayPalPayInMIT $recurringPayPalPayInMIT
      * @return \MangoPay\PayInRecurring
+     * deprecated Use `CreateRecurringPayIn` instead
      */
     public function CreateRecurringPayPalPayInMIT($recurringPayPalPayInMIT, $idempotencyKey = null)
     {

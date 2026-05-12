@@ -25,17 +25,24 @@ use MangoPay\LegalRepresentative;
 use MangoPay\Libraries\Exception;
 use MangoPay\LineItem;
 use MangoPay\Money;
+use MangoPay\PayIn;
+use MangoPay\PayInExecutionDetailsDirect;
+use MangoPay\PayInExecutionDetailsWeb;
 use MangoPay\PayInIntent;
 use MangoPay\PayInIntentBuyer;
 use MangoPay\PayInIntentExternalData;
 use MangoPay\PayInIntentLineItem;
 use MangoPay\PayInIntentSeller;
 use MangoPay\PayInIntentSplit;
+use MangoPay\PayInPaymentDetailsCard;
+use MangoPay\PayInPaymentDetailsPaypal;
 use MangoPay\PayOut;
 use MangoPay\PayOutEligibilityRequest;
 use MangoPay\PayOutPaymentDetailsBankWire;
 use MangoPay\Recipient;
+use MangoPay\RecurringPayIn;
 use MangoPay\RecurringPayInCIT;
+use MangoPay\RecurringPayInRegistration;
 use MangoPay\RecurringPayPalPayInCIT;
 use MangoPay\ShippingPreference;
 use MangoPay\Tests\Mocks\MockStorageStrategy;
@@ -2551,6 +2558,50 @@ abstract class Base extends TestCase
         return $this->_api->PayIns->CreateRecurringRegistration($payIn, $idempotencyKey);
     }
 
+    protected function createNewRecurringPayInRegistration($paymentType = "CARD_DIRECT", $idempotencyKey = null) {
+        $values = $this->getJohnsWalletWithMoneyAndCardId(1000, true);
+        $walletId = $values["walletId"];
+        $cardId = $values["cardId"];
+        $user = $this->getJohn();
+
+        $recurringPayInRegistration = new RecurringPayInRegistration();
+        $recurringPayInRegistration->AuthorId = $user->Id;
+        $recurringPayInRegistration->CardId = $cardId;
+        $recurringPayInRegistration->CreditedUserId = $user->Id;
+        $recurringPayInRegistration->CreditedWalletId = $walletId;
+        $recurringPayInRegistration->FirstTransactionDebitedFunds = new \MangoPay\Money();
+        $recurringPayInRegistration->FirstTransactionDebitedFunds->Amount = 1000;
+        $recurringPayInRegistration->FirstTransactionDebitedFunds->Currency = 'EUR';
+        $recurringPayInRegistration->FirstTransactionFees = new \MangoPay\Money();
+        $recurringPayInRegistration->FirstTransactionFees->Amount = 0;
+        $recurringPayInRegistration->FirstTransactionFees->Currency = 'EUR';
+        $recurringPayInRegistration->FreeCycles = 0;
+        $recurringPayInRegistration->PaymentType = $paymentType;
+
+        $billing = new \MangoPay\Billing();
+        $billing->FirstName = 'John';
+        $billing->LastName = 'Doe';
+        $billing->Address = $this->getNewAddress();
+        $recurringPayInRegistration->Billing = $billing;
+
+        $shipping = new \MangoPay\Shipping();
+        $shipping->FirstName = 'John';
+        $shipping->LastName = 'Doe';
+        $shipping->Address = $this->getNewAddress();
+        $recurringPayInRegistration->Shipping = $shipping;
+
+        return $this->_api->PayIns->CreateRecurringPayInRegistration($recurringPayInRegistration, $idempotencyKey);
+    }
+
+    protected function createNewRecurringPayPalPayInRegistration($idempotencyKey = null) {
+        if (self::$JohnsRecurringPayinRegistrationPaypal != null) {
+            return self::$JohnsRecurringPayinRegistrationPaypal;
+        }
+
+        self::$JohnsRecurringPayinRegistrationPaypal = $this->createNewRecurringPayInRegistration("PAYPAL", $idempotencyKey);
+        return self::$JohnsRecurringPayinRegistrationPaypal;
+    }
+
     protected function createRecurringPayInCIT($idempotencyKey = null)
     {
         self::$JohnsWalletWithMoney = null; // Reset the cache value
@@ -2566,6 +2617,111 @@ abstract class Base extends TestCase
         $cit->BrowserInfo = $this->getBrowserInfo();
 
         return $this->_api->PayIns->CreateRecurringPayInRegistrationCIT($cit, $idempotencyKey);
+    }
+
+    protected function createRecurringCardPayInCIT($recurringPayInRegistrationId, $idempotencyKey = null) {
+        $payIn = new PayIn();
+        $payIn->ExecutionType = "DIRECT";
+        $payIn->PaymentType = "CARD";
+        $payIn->RecurringPayinRegistrationId = $recurringPayInRegistrationId;
+
+        $payInDetails = new PayInPaymentDetailsCard();
+        $payInDetails->IpAddress = "2001:0620:0000:0000:0211:24FF:FE80:C12C";
+        $payInDetails->BrowserInfo = $this->getBrowserInfo();
+
+        $executionDetails = new PayInExecutionDetailsDirect();
+        $executionDetails->SecureModeReturnURL = "https://www.my-site.com/returnurl";
+
+        $payIn->PaymentDetails = $payInDetails;
+        $payIn->ExecutionDetails = $executionDetails;
+
+        return $this->_api->PayIns->CreateRecurringPayIn($payIn, $idempotencyKey);
+    }
+
+    protected function createRecurringCardPayInMIT($recurringPayInRegistrationId, $idempotencyKey = null) {
+        $this->createRecurringCardPayInCIT($recurringPayInRegistrationId);
+
+        $payIn = new PayIn();
+        $payIn->ExecutionType = "DIRECT";
+        $payIn->PaymentType = "CARD";
+        $payIn->RecurringPayinRegistrationId = $recurringPayInRegistrationId;
+
+        $debitedFunds = new Money();
+        $debitedFunds->Amount = 100;
+        $debitedFunds->Currency = "EUR";
+
+        $fees = new Money();
+        $fees->Amount = 0;
+        $fees->Currency = "EUR";
+
+        $payIn->DebitedFunds = $debitedFunds;
+        $payIn->Fees = $fees;
+
+        $payInDetails = new PayInPaymentDetailsCard();
+        $executionDetails = new PayInExecutionDetailsDirect();
+        $payIn->PaymentDetails = $payInDetails;
+        $payIn->ExecutionDetails = $executionDetails;
+
+        return $this->_api->PayIns->CreateRecurringPayIn($payIn, $idempotencyKey);
+    }
+
+    protected function createNewRecurringPayPalPayInCIT($recurringPayInRegistrationId, $idempotencyKey = null) {
+        $payIn = new PayIn();
+        $payIn->ExecutionType = "PAYPAL";
+        $payIn->PaymentType = "WEB";
+        $payIn->RecurringPayinRegistrationId = $recurringPayInRegistrationId;
+
+        $lineItem = new LineItem();
+        $lineItem->Name = 'test item';
+        $lineItem->Quantity = 1;
+        $lineItem->UnitAmount = 1000;
+        $lineItem->TaxAmount = 0;
+
+        $payInDetails = new PayInPaymentDetailsPaypal();
+        $payInDetails->LineItems = [$lineItem];
+
+        $executionDetails = new PayInExecutionDetailsWeb();
+        $executionDetails->ReturnURL = "https://www.my-site.com/returnurl";
+
+        $payIn->PaymentDetails = $payInDetails;
+        $payIn->ExecutionDetails = $executionDetails;
+
+        return $this->_api->PayIns->CreateRecurringPayIn($payIn, $idempotencyKey);
+    }
+
+    protected function createNewRecurringPayPalPayInMIT($recurringPayInRegistrationId, $idempotencyKey = null) {
+        $payIn = new PayIn();
+        $payIn->ExecutionType = "PAYPAL";
+        $payIn->PaymentType = "WEB";
+        $payIn->RecurringPayinRegistrationId = $recurringPayInRegistrationId;
+
+        $debitedFunds = new Money();
+        $debitedFunds->Amount = 1000;
+        $debitedFunds->Currency = "EUR";
+
+        $fees = new Money();
+        $fees->Amount = 0;
+        $fees->Currency = "EUR";
+
+        $payIn->DebitedFunds = $debitedFunds;
+        $payIn->Fees = $fees;
+
+        $lineItem = new LineItem();
+        $lineItem->Name = 'test item';
+        $lineItem->Quantity = 1;
+        $lineItem->UnitAmount = 1000;
+        $lineItem->TaxAmount = 0;
+
+        $payInDetails = new PayInPaymentDetailsPaypal();
+        $payInDetails->LineItems = [$lineItem];
+
+        $executionDetails = new PayInExecutionDetailsWeb();
+        $executionDetails->ReturnURL = "https://www.my-site.com/returnurl";
+
+        $payIn->PaymentDetails = $payInDetails;
+        $payIn->ExecutionDetails = $executionDetails;
+
+        return $this->_api->PayIns->CreateRecurringPayIn($payIn, $idempotencyKey);
     }
 
     protected function getRecurringPayinRegistrationPaypal()

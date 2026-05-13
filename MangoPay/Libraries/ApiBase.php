@@ -935,7 +935,12 @@ abstract class ApiBase
             'payouts_check_eligibility' => '\MangoPay\PayOutEligibilityResponse',
             'payment_method-metadata' => '\MangoPay\PaymentMethodMetadata',
             'payins_recurring_registration' => '\MangoPay\PayInRecurringRegistrationRequestResponse',
+//            'payins_recurring_registration' => '\MangoPay\RecurringPayInRegistration', TODO: un-comment after removing legacy code
             'payins_recurring_card_direct' => '\MangoPay\PayInRecurring',
+            'payins_recurring_card-direct_create' => '\MangoPay\PayIn',
+            'payins_recurring_applepay-direct_create' => '\MangoPay\PayIn',
+            'payins_recurring_googlepay-direct_create' => '\MangoPay\PayIn',
+            'payins_recurring_paypal-web_create' => '\MangoPay\PayIn',
             'reports_transactions_create' => '\MangoPay\ReportRequest',
             'reports_wallets_create' => '\MangoPay\ReportRequest',
             'reports_create' => '\MangoPay\Report',

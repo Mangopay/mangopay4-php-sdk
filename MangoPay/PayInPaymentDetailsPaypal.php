@@ -37,7 +37,7 @@ class PayInPaymentDetailsPaypal extends Libraries\Dto implements PayInPaymentDet
 
     /**
      * Information about the items bought by the customer
-     * @var array
+     * @var LineItem[]
      */
     public $LineItems;
 
@@ -88,7 +88,7 @@ class PayInPaymentDetailsPaypal extends Libraries\Dto implements PayInPaymentDet
     public $PaypalOrderID;
 
     /**
-     * @var array
+     * @var PayPalWebTracking[]
      */
     public $Trackings;
 
@@ -104,6 +104,8 @@ class PayInPaymentDetailsPaypal extends Libraries\Dto implements PayInPaymentDet
 
         $subObjects['ShippingAddress'] = '\MangoPay\ShippingAddress';
         $subObjects['Shipping'] = '\MangoPay\Shipping';
+        $subObjects['LineItems'] = ['array_single', '\MangoPay\LineItem'];
+        $subObjects['Trackings'] = ['array_single', '\MangoPay\PayPalWebTracking'];
 
         return $subObjects;
     }

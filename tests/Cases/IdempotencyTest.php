@@ -489,6 +489,31 @@ class IdempotencyTest extends Base
         $this->assertIdempotencyResource($key, '\MangoPay\PayInRecurring');
     }
 
+    public function test_GetIdempotencyKey_CreateRecurringPayInRegistration_Refactored()
+    {
+        // TODO
+        $this->markTestSkipped("should be enabled after removing legacy code");
+        $key = md5(uniqid());
+        $this->createNewRecurringPayInRegistration("CARD_DIRECT", $key);
+        $this->assertIdempotencyResource($key, '\MangoPay\RecurringPayInRegistration');
+    }
+
+    public function test_GetIdempotencyKey_CreateRecurringCardPayInCIT()
+    {
+        $key = md5(uniqid());
+        $recurringRegistration = $this->createNewRecurringPayInRegistration();
+        $this->createRecurringCardPayInCIT($recurringRegistration->Id, $key);
+        $this->assertIdempotencyResource($key, '\MangoPay\PayIn');
+    }
+
+    public function test_GetIdempotencyKey_CreateRecurringPayPalPayInCIT_Refactored()
+    {
+        $key = md5(uniqid());
+        $recurringRegistration = $this->createNewRecurringPayInRegistration("PAYPAL");
+        $this->createNewRecurringPayPalPayInCIT($recurringRegistration->Id, $key);
+        $this->assertIdempotencyResource($key, '\MangoPay\PayIn');
+    }
+
     public function test_GetIdempotencyKey_Reports_Create_CollectedFees()
     {
         $key = md5(uniqid());

@@ -37,7 +37,7 @@ class PayOutsTest extends Base
         $recipient = $this->_api->Recipients->Create($recipientDto, $john->Id);
 
         $payOutDto = $this->getNewPayOutDto($john->Id, $wallet->Id);
-        $payOutDto->RecipientId = $recipient->Id;
+        $payOutDto->MeanOfPaymentDetails->RecipientId = $recipient->Id;
         $payOut = $this->_api->PayOuts->Create($payOutDto);
 
         $this->assertNotNull($payOut->Id);

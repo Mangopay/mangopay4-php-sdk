@@ -152,6 +152,8 @@ class RecurringPayInRegistration extends Libraries\EntityBase
         $subObjects['NextTransactionDebitedFunds'] = '\MangoPay\Money';
         $subObjects['NextTransactionFees'] = '\MangoPay\Money';
 
+        // PaymentData is only used for creation; not returned by the API
+
         return $subObjects;
     }
 }

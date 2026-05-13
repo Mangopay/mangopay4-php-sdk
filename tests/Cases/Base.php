@@ -707,6 +707,20 @@ abstract class Base extends TestCase
         return $this->_api->Wallets->Get($wallet->Id);
     }
 
+    protected function getNewCardAndWalletWithMoney($userId, $amount = 1000)
+    {
+        $arr = [];
+        $wallet = $this->createNewWallet($userId);
+        $cardRegistration = $this->createNewCardRegistration($userId);
+        $this->createNewPayInCardDirect($userId, $cardRegistration->CardId, $wallet->Id, $amount);
+        $wallet = $this->_api->Wallets->Get($wallet->Id);
+
+        $arr["walletId"] = $wallet->Id;
+        $arr["cardId"] = $cardRegistration->CardId;
+
+        return $arr;
+    }
+
     private function createNewWallet($userId)
     {
         $wallet = new \MangoPay\Wallet();
@@ -2558,11 +2572,12 @@ abstract class Base extends TestCase
         return $this->_api->PayIns->CreateRecurringRegistration($payIn, $idempotencyKey);
     }
 
-    protected function createNewRecurringPayInRegistration($paymentType = "CARD_DIRECT", $idempotencyKey = null) {
-        $values = $this->getJohnsWalletWithMoneyAndCardId(1000, true);
+    protected function createNewRecurringPayInRegistration($paymentType = "CARD_DIRECT", $idempotencyKey = null)
+    {
+        $user = $this->_api->Users->Create($this->buildJohn());
+        $values = $this->getNewCardAndWalletWithMoney($user->Id);
         $walletId = $values["walletId"];
         $cardId = $values["cardId"];
-        $user = $this->getJohn();
 
         $recurringPayInRegistration = new RecurringPayInRegistration();
         $recurringPayInRegistration->AuthorId = $user->Id;
@@ -2593,15 +2608,6 @@ abstract class Base extends TestCase
         return $this->_api->PayIns->CreateRecurringPayInRegistration($recurringPayInRegistration, $idempotencyKey);
     }
 
-    protected function createNewRecurringPayPalPayInRegistration($idempotencyKey = null) {
-        if (self::$JohnsRecurringPayinRegistrationPaypal != null) {
-            return self::$JohnsRecurringPayinRegistrationPaypal;
-        }
-
-        self::$JohnsRecurringPayinRegistrationPaypal = $this->createNewRecurringPayInRegistration("PAYPAL", $idempotencyKey);
-        return self::$JohnsRecurringPayinRegistrationPaypal;
-    }
-
     protected function createRecurringPayInCIT($idempotencyKey = null)
     {
         self::$JohnsWalletWithMoney = null; // Reset the cache value
@@ -2619,7 +2625,8 @@ abstract class Base extends TestCase
         return $this->_api->PayIns->CreateRecurringPayInRegistrationCIT($cit, $idempotencyKey);
     }
 
-    protected function createRecurringCardPayInCIT($recurringPayInRegistrationId, $idempotencyKey = null) {
+    protected function createRecurringCardPayInCIT($recurringPayInRegistrationId, $idempotencyKey = null)
+    {
         $payIn = new PayIn();
         $payIn->ExecutionType = "DIRECT";
         $payIn->PaymentType = "CARD";
@@ -2638,7 +2645,8 @@ abstract class Base extends TestCase
         return $this->_api->PayIns->CreateRecurringPayIn($payIn, $idempotencyKey);
     }
 
-    protected function createRecurringCardPayInMIT($recurringPayInRegistrationId, $idempotencyKey = null) {
+    protected function createRecurringCardPayInMIT($recurringPayInRegistrationId, $idempotencyKey = null)
+    {
         $this->createRecurringCardPayInCIT($recurringPayInRegistrationId);
 
         $payIn = new PayIn();
@@ -2665,7 +2673,8 @@ abstract class Base extends TestCase
         return $this->_api->PayIns->CreateRecurringPayIn($payIn, $idempotencyKey);
     }
 
-    protected function createNewRecurringPayPalPayInCIT($recurringPayInRegistrationId, $idempotencyKey = null) {
+    protected function createNewRecurringPayPalPayInCIT($recurringPayInRegistrationId, $idempotencyKey = null)
+    {
         $payIn = new PayIn();
         $payIn->ExecutionType = "PAYPAL";
         $payIn->PaymentType = "WEB";
@@ -2689,7 +2698,8 @@ abstract class Base extends TestCase
         return $this->_api->PayIns->CreateRecurringPayIn($payIn, $idempotencyKey);
     }
 
-    protected function createNewRecurringPayPalPayInMIT($recurringPayInRegistrationId, $idempotencyKey = null) {
+    protected function createNewRecurringPayPalPayInMIT($recurringPayInRegistrationId, $idempotencyKey = null)
+    {
         $payIn = new PayIn();
         $payIn->ExecutionType = "PAYPAL";
         $payIn->PaymentType = "WEB";

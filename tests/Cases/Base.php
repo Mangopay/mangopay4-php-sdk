@@ -34,9 +34,11 @@ use MangoPay\PayInIntentSplit;
 use MangoPay\PayOut;
 use MangoPay\PayOutEligibilityRequest;
 use MangoPay\PayOutPaymentDetailsBankWire;
+use MangoPay\PayPalDepositPreauthorization;
 use MangoPay\Recipient;
 use MangoPay\RecurringPayInCIT;
 use MangoPay\RecurringPayPalPayInCIT;
+use MangoPay\Shipping;
 use MangoPay\ShippingPreference;
 use MangoPay\Tests\Mocks\MockStorageStrategy;
 use MangoPay\Ubo;
@@ -2253,6 +2255,46 @@ abstract class Base extends TestCase
 
         $deposit->Billing = $billing;
         $deposit->Shipping = $billing;
+
+        return $deposit;
+    }
+
+    protected function getNewPayPalDepositPreauthorization($authorId)
+    {
+        $deposit = new PayPalDepositPreauthorization();
+
+        $deposit->AuthorId = $authorId;
+
+        $deposit->DebitedFunds = new Money();
+        $deposit->DebitedFunds->Currency = 'EUR';
+        $deposit->DebitedFunds->Amount = 1000;
+
+        $deposit->ReturnURL = "https://mangopay-sandbox-test.com";
+
+        $address = new Address();
+        $address->AddressLine1 = 'Main Street no 5';
+        $address->City = 'Paris';
+        $address->Country = 'FR';
+        $address->PostalCode = '68400';
+        $address->Region = 'Europe';
+
+        $shipping = new Shipping();
+        $shipping->FirstName = 'John';
+        $shipping->LastName = 'Doe';
+        $shipping->Address = $address;
+
+        $deposit->Shipping = $shipping;
+        $deposit->ShippingPreference = ShippingPreference::SET_PROVIDED_ADDRESS;
+
+        $lineItem = new LineItem();
+        $lineItem->Name = 'running shoes';
+        $lineItem->Quantity = 1;
+        $lineItem->UnitAmount = 1000;
+        $lineItem->TaxAmount = 0;
+        $lineItem->Description = "seller1 ID";
+
+        $deposit->LineItems = [$lineItem];
+        $deposit->Reference = "1234";
 
         return $deposit;
     }

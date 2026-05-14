@@ -1156,4 +1156,13 @@ class IdempotencyTest extends Base
         $this->_api->Acquiring->CreateCardValidation("placeholder", $cardValidation, $key);
         $this->assertIdempotencyResource($key, '\MangoPay\CardValidation');
     }
+
+    public function test_GetIdempotencyKey_CreatePayPalDepositPreauthorization()
+    {
+        $user = $this->getJohn();
+        $key = md5(uniqid());
+        $this->_api->Deposits->CreatePayPalDepositPreauthorization($this->getNewPayPalDepositPreauthorization($user->Id), $key);
+
+        $this->assertIdempotencyResource($key, '\MangoPay\PayPalDepositPreauthorization');
+    }
 }

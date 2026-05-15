@@ -207,38 +207,22 @@ class ApiPayIns extends Libraries\ApiBase
 
     /**
      * Create Card PreAuthorized Deposit PayIn
-     * @param CreateCardPreAuthorizedDepositPayIn $payIn PayIn object to create
+     * @param CreatePreAuthorizedDepositPayIn $payIn PayIn object to create
      * @return PayIn Deposit object returned from API
+     * @deprecated Use 'CreateDepositPreauthorizedPayInWithoutComplement' instead
      */
-    public function CreateCardPreAuthorizedDepositPayIn(CreateCardPreAuthorizedDepositPayIn $payIn)
+    public function CreateCardPreAuthorizedDepositPayIn(CreatePreAuthorizedDepositPayIn $payIn)
     {
         return $this->CreateObject('payins_create_card_pre_authorized_deposit', $payIn, '\MangoPay\PayIn');
     }
 
     /**
-     * Create Card PreAuthorized Deposit PayIn
-     * @param CreatePayPalPreAuthorizedDepositPayIn $payIn PayIn object to create
-     * @return PayIn PayIn object returned from API
-     */
-    public function CreatePayPalPreAuthorizedDepositPayIn(CreatePayPalPreAuthorizedDepositPayIn $payIn, $idempotencyKey = null)
-    {
-        return $this->CreateObject(
-            'payins_create_card_pre_authorized_deposit',
-            $payIn,
-            '\MangoPay\PayIn',
-            null,
-            null,
-            $idempotencyKey
-        );
-    }
-
-    /**
      * Create a Deposit Preauthorized PayIn without complement
-     * @param CreateCardPreAuthorizedDepositPayIn $payIn PayIn object to create
+     * @param CreatePreAuthorizedDepositPayIn $payIn PayIn object to create
      * @param string $idempotencyKey Optional idempotency key
      * @return PayIn Deposit object returned from API
      */
-    public function CreateDepositPreauthorizedPayInWithoutComplement(CreateCardPreAuthorizedDepositPayIn $payIn, $idempotencyKey = null)
+    public function CreateDepositPreauthorizedPayInWithoutComplement(CreatePreAuthorizedDepositPayIn $payIn, $idempotencyKey = null)
     {
         return $this->CreateObject(
             'payins_create_card_pre_authorized_deposit',
@@ -252,10 +236,10 @@ class ApiPayIns extends Libraries\ApiBase
 
     /**
      * Create a Deposit Preauthorized PayIn prior to complement
-     * @param CreateCardPreAuthorizedDepositPayIn $payIn PayIn object to create
+     * @param CreatePreAuthorizedDepositPayIn $payIn PayIn object to create
      * @return PayIn Deposit object returned from API
      */
-    public function CreateDepositPreauthorizedPayInPriorToComplement(CreateCardPreAuthorizedDepositPayIn $payIn, $idempotencyKey = null)
+    public function CreateDepositPreauthorizedPayInPriorToComplement(CreatePreAuthorizedDepositPayIn $payIn, $idempotencyKey = null)
     {
         return $this->CreateObject(
             'payins_deposit_preauthorized_prior_to_complement',
@@ -269,10 +253,10 @@ class ApiPayIns extends Libraries\ApiBase
 
     /**
      * Create a Deposit Preauthorized PayIn complement
-     * @param CreateCardPreAuthorizedDepositPayIn $payIn PayIn object to create
+     * @param CreatePreAuthorizedDepositPayIn $payIn PayIn object to create
      * @return PayIn Deposit object returned from API
      */
-    public function CreateDepositPreauthorizedPayInComplement(CreateCardPreAuthorizedDepositPayIn $payIn, $idempotencyKey = null)
+    public function CreateDepositPreauthorizedPayInComplement(CreatePreAuthorizedDepositPayIn $payIn, $idempotencyKey = null)
     {
         return $this->CreateObject(
             'payins_deposit_preauthorized_complement',

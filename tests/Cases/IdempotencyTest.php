@@ -387,6 +387,14 @@ class IdempotencyTest extends Base
         $this->assertIdempotencyResource($key, '\MangoPay\PayIn');
     }
 
+    public function test_GetItempotencyKey_CreatePayPalDepositPreauthorizedPayIn()
+    {
+        $this->markTestSkipped("The Deposit Status value has to be up to SUCCEEDED");
+        $key = md5(uniqid());
+        $this->createPayPalDepositPreauthorizedPayIn($key);
+        $this->assertIdempotencyResource($key, '\MangoPay\PayIn');
+    }
+
     public function test_GetItempotencyKey_CreateDepositPreauthorizedPayInPriorToComplement()
     {
         $key = md5(uniqid());

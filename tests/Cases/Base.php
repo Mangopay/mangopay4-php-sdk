@@ -15,6 +15,7 @@ use MangoPay\CreateClientWalletsInstantConversion;
 use MangoPay\CreateClientWalletsQuotedConversion;
 use MangoPay\CreateDeposit;
 use MangoPay\CreateInstantConversion;
+use MangoPay\CreatePayPalPreAuthorizedDepositPayIn;
 use MangoPay\CreateQuotedConversion;
 use MangoPay\CurrencyIso;
 use MangoPay\CustomFees;
@@ -2489,6 +2490,33 @@ abstract class Base extends TestCase
         $dto->Fees = $fees;
 
         return $this->_api->PayIns->CreateDepositPreauthorizedPayInWithoutComplement($dto, $idempotencyKey);
+    }
+
+    protected function createPayPalDepositPreauthorizedPayIn($idempotencyKey = null)
+    {
+        $user = $this->getJohn();
+        $deposit = $this->_api->Deposits->CreatePayPalDepositPreauthorization(
+            $this->getNewPayPalDepositPreauthorization($user->Id)
+        );
+        $wallet = $this->getJohnsWallet();
+
+        $dto = new CreatePayPalPreAuthorizedDepositPayIn();
+        $dto->DepositId = $deposit->Id;
+        $dto->AuthorId = $user->Id;
+        $dto->CreditedWalletId = $wallet->Id;
+
+        $debitedFunds = new Money();
+        $debitedFunds->Amount = 1000;
+        $debitedFunds->Currency = "EUR";
+
+        $fees = new Money();
+        $fees->Amount = 0;
+        $fees->Currency = "EUR";
+
+        $dto->DebitedFunds = $debitedFunds;
+        $dto->Fees = $fees;
+
+        return $this->_api->PayIns->CreatePayPalPreAuthorizedDepositPayIn($dto, $idempotencyKey);
     }
 
     protected function createDepositPreauthorizedPayInPriorToComplement($idempotencyKey = null)

@@ -216,6 +216,23 @@ class ApiPayIns extends Libraries\ApiBase
     }
 
     /**
+     * Create Card PreAuthorized Deposit PayIn
+     * @param CreatePayPalPreAuthorizedDepositPayIn $payIn PayIn object to create
+     * @return PayIn PayIn object returned from API
+     */
+    public function CreatePayPalPreAuthorizedDepositPayIn(CreatePayPalPreAuthorizedDepositPayIn $payIn, $idempotencyKey = null)
+    {
+        return $this->CreateObject(
+            'payins_create_card_pre_authorized_deposit',
+            $payIn,
+            '\MangoPay\PayIn',
+            null,
+            null,
+            $idempotencyKey
+        );
+    }
+
+    /**
      * Create a Deposit Preauthorized PayIn without complement
      * @param CreateCardPreAuthorizedDepositPayIn $payIn PayIn object to create
      * @param string $idempotencyKey Optional idempotency key

@@ -1064,6 +1064,16 @@ class PayInsTest extends Base
         $this->assertNotNull($payIn->DepositId);
     }
 
+    public function test_createPayPalDepositPreauthorizedPayIn()
+    {
+        $this->markTestSkipped("The Deposit Status value has to be up to SUCCEEDED");
+        $payIn = $this->createPayPalDepositPreauthorizedPayIn();
+
+        $this->assertNotNull($payIn);
+        $this->assertEquals("SUCCEEDED", $payIn->Status);
+        $this->assertNotNull($payIn->DepositId);
+    }
+
     /**
      * @throws \Exception
      */

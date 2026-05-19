@@ -1,3 +1,18 @@
+## [5.0.0] - 2026-05-19
+
+### Breaking Changes
+- **`CreateCardPreAuthorizedDepositPayIn` renamed to `CreatePreAuthorizedDepositPayIn`** (#795) – The DTO is now used for both card and PayPal preauthorized-deposit pay-ins, so it was renamed for clarity. The class `MangoPay\CreateCardPreAuthorizedDepositPayIn` no longer exists; any `new CreateCardPreAuthorizedDepositPayIn()` calls and any `use MangoPay\CreateCardPreAuthorizedDepositPayIn;` imports must be updated to `CreatePreAuthorizedDepositPayIn`. The affected `ApiPayIns` methods (`CreateCardPreAuthorizedDepositPayIn`, `CreateDepositPreauthorizedPayInWithoutComplement`, `CreateDepositPreauthorizedPayInPriorToComplement`, `CreateDepositPreauthorizedPayInComplement`) now type-hint the renamed class.
+- **`ApiDeposits` read methods now return polymorphic results** (#795) – `ApiDeposits::Get()`, `Cancel()`, `Update()`, and `GetAllForUser()` now return either `Deposit` or `PayPalDepositPreauthorization` depending on the deposit's `PaymentType`. `PayPalDepositPreauthorization` extends `Deposit`, so existing code that only reads base `Deposit` fields keeps working, but strict type hints (`: Deposit` parameters or `instanceof Deposit` checks that exclude subclasses) must be widened to `Deposit|PayPalDepositPreauthorization`.
+
+### Deprecated
+- **`ApiPayIns::CreateCardPreAuthorizedDepositPayIn()`** (#795) – Use `ApiPayIns::CreateDepositPreauthorizedPayInWithoutComplement()` instead. The old method still works but will be removed in a future major version.
+
+### Added
+- **PayPal deposit preauthorizations** (#795) – New `PayPalDepositPreauthorization` entity (extends `Deposit`) with PayPal-specific fields (`PaypalPayerID`, `PaypalOrderID`, `BuyerFirstname`, `BuyerLastname`, `BuyerPhone`, `BuyerCountry`, `PaypalBuyerAccountEmail`, `CancelURL`, `Trackings`, `ShippingPreference`, `Reference`, `LineItems`, `RedirectURL`, `ReturnURL`, `DataCollectionId`). New method `ApiDeposits::CreatePayPalDepositPreauthorization()` (POST `/deposit-preauthorizations/payment-methods/paypal`) with optional `$idempotencyKey`. `ApiDeposits::Get`/`Cancel`/`Update`/`GetAllForUser` automatically hydrate PayPal deposits as `PayPalDepositPreauthorization`.
+- **`Report.DateFilterBy`** (#787) – New optional `DateFilterBy` property on `Report` to control which date field the report filter applies to.
+- **`LocalAccount` extra bank-identifier fields** (#793) – Added `BankCode` (4-digit bank code), `BSBCode` (6-digit Bank State Branch code), and `BCNumber` (5-digit bank clearing number). Existing properties (`Iban`, `Bic`, `AchNumber`, `FedWireNumber`, `AccountType`, `BranchCode`, `InstitutionNumber`) gained inline doc comments; behavior unchanged.
+- **Recipients pagination** (#792) – Verified/tested that `ApiRecipients::GetUserRecipients()` honours the `Pagination` argument; no API change.
+
 ## [4.0.0] - 2026-05-06
 
 ### Breaking Changes

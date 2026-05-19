@@ -104,6 +104,19 @@ class PayInRecurringRegistration extends Libraries\Dto
      */
     public $PaymentType;
 
+    public function GetSubObjects()
+    {
+        $subObjects = parent::GetSubObjects();
+        $subObjects['FirstTransactionDebitedFunds'] = '\MangoPay\Money';
+        $subObjects['FirstTransactionFees'] = '\MangoPay\Money';
+        $subObjects['Billing'] = '\MangoPay\Billing';
+        $subObjects['Shipping'] = '\MangoPay\Shipping';
+        $subObjects['NextTransactionDebitedFunds'] = '\MangoPay\Money';
+        $subObjects['NextTransactionFees'] = '\MangoPay\Money';
+
+        return $subObjects;
+    }
+
     /**
      * Get array with read-only properties
      * @return array

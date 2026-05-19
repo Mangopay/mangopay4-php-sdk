@@ -56,5 +56,9 @@ class BankingAliasTest extends Base
         $this->assertSame($bankingAliasIBAN->Id, $list[0]->Id);
         $this->assertSame(1, $pagination->Page);
         $this->assertSame(1, $pagination->ItemsPerPage);
+
+        if ($list[0]->LocalAccountDetails != null) {
+            $this->assertInstanceOf('\MangoPay\LocalAccountDetailsBankingAlias', $list[0]->LocalAccountDetails);
+        }
     }
 }

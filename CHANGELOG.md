@@ -1,3 +1,60 @@
+## [4.0.0] - 2026-05-06
+
+### Breaking Changes
+- **Sub-object casting** (#790) – Added missing `GetSubObjects()` mappings across response and request DTOs. Properties that were previously returned as raw `stdClass` are now hydrated as typed Mangopay entities. Code that read those nested properties as plain objects (e.g. via array-style access, `property_exists`, or by passing them to functions that expect `stdClass`) must be updated to use the typed classes. Affected classes:
+  - `BankingAliasIBAN` (`LocalAccountDetails` → `LocalAccountDetailsBankingAlias`)
+  - `BanksByCountry` (`Banks` → `Bank[]`)
+  - `CardPreAuthorization` (added `BrowserInfo` → `BrowserInfo`, `Shipping` → `Shipping`)
+  - `CardValidation` (added `CardInfo` → `CardInfo`)
+  - `Check` (`Data`, `Reasons` → `CheckData[]`)
+  - `Conversion` (`DebitedFunds`, `CreditedFunds`, `Fees` → `Money`; `RequestedFees` → `CustomFees`; `ConversionRateResponse` → `ConversionRate`; `MarginsResponse` → `MarginsResponse`)
+  - `ConversionQuote` (`DebitedFunds`, `CreditedFunds` → `Money`; `Fees`, `RequestedFees` → `CustomFees`; `ConversionRateResponse` → `ConversionRate`; `UserMargin` → `UserMargin`; `MarginsResponse` → `MarginsResponse`)
+  - `CreateClientWalletsInstantConversion` (`DebitedFunds`, `CreditedFunds` → `Money`)
+  - `CreateInstantConversion` (`DebitedFunds`, `CreditedFunds` → `Money`; `Fees` → `CustomFees`; `UserMargin` → `UserMargin`)
+  - `IdentityVerification` (`Checks` → `Check[]`)
+  - `InstantPayout` – now extends `Libraries\Dto`; `UnreachableReason` → `FallbackReason`
+  - `IntentSplits` (`Splits` → `PayInIntentSplit[]`)
+  - `InternationalAccountDetails` (`Address` → `VirtualAccountAddress`, `Account` → `InternationalAccount`)
+  - `LocalAccountDetails` (`Address` → `VirtualAccountAddress`, `Account` → `LocalAccount`)
+  - `MarginsResponse` (`Mangopay`, `User` → `UserMargin`)
+  - `PayIn` (`AuthenticationResult` → `AuthenticationResult`)
+  - `PayInExecutionDetailsExternalInstruction` (`DebitedBankAccount` → `DebitedBankAccount`)
+  - `PayInIntent` (`LineItems` → `PayInIntentLineItem[]`; `Captures` → `PayInIntentCapture[]`; `Capture` → `PayInIntentCapture`; `Refunds` → `PayInIntentRefund[]`; `Refund` → `PayInIntentRefund`; `Disputes` → `PayInIntentDispute[]`; `Dispute` → `PayInIntentDispute`; `Splits` → `PayInIntentSplitInfo[]`)
+  - `PayInIntentCapture`, `PayInIntentDispute`, `PayInIntentRefund`, `PayInIntentSplitInfo` (`LineItems` → `PayInIntentLineItem[]`)
+  - `PayInPaymentDetailsBlik` (`BrowserInfo` → `BrowserInfo`)
+  - `PayInPaymentDetailsCard` (`BrowserInfo` → `BrowserInfo`, `Shipping` → `Shipping`)
+  - `PayInRecurringRegistration` (`FirstTransactionDebitedFunds`, `FirstTransactionFees`, `NextTransactionDebitedFunds`, `NextTransactionFees` → `Money`; `Billing` → `Billing`; `Shipping` → `Shipping`)
+  - `PayInRecurringRegistrationGet` (`CurrentState` → `RecurringPayInCurrentState`)
+  - `PayInRecurringRegistrationRequestResponse` (`TotalAmount` → `Money`)
+  - `PayInRecurringRegistrationUpdate` (`Shipping` → `Shipping`, `Billing` → `Billing`)
+  - `PayOutEligibilityRequest` (`DebitedFunds`, `Fees` → `Money`)
+  - `PayOutEligibilityResponse` (`InstantPayout` → `InstantPayout`)
+  - `RecurringPayInCIT` (`BrowserInfo` → `BrowserInfo`; `DebitedFunds`, `Fees` → `Money`)
+  - `RecurringPayInCurrentState` (`CumulatedDebitedAmount`, `CumulatedFeesAmount` → `Money`)
+  - `RecurringPayInMIT` (`DebitedFunds`, `Fees` → `Money`)
+  - `RecurringPayPalPayInCIT` (`Shipping` → `Shipping`)
+  - `RecurringPayPalPayInMIT` (`DebitedFunds`, `Fees` → `Money`; `Shipping` → `Shipping`)
+  - `Report` (`Filters` → `ReportFilters`)
+  - `ReportRequest` (`Filters` → `FilterReports`)
+  - `ScaStatus` (`ConsentScope` → `ConsentScope`)
+  - `SettlementValidation` (`FooterErrors` → `SettlementValidationFooter[]`; `LinesErrors` → `SettlementValidationLine[]`)
+  - `SupportedBank` (`Countries` → `BanksByCountry[]`)
+  - `VirtualAccount` (`LocalAccountDetails` → `LocalAccountDetails`; `Capabilities` → `VirtualAccountCapabilities`; **see `InternationalAccountDetails` fix below**)
+  - `VirtualAccountAvailabilities` (`Collection`, `UserOwned` → `VirtualAccountAvailability[]`)
+- **`VirtualAccount.InternationalAccountDetails` type fix** (#790) – The `VirtualAccount.$InternationalAccountDetails` property is now correctly typed as `InternationalAccountDetails[]` (an array) instead of a single `InternationalAccountDetails` object, matching the API response. Code that previously accessed this property as a single object (e.g. `$virtualAccount->InternationalAccountDetails->Iban`) must be updated to iterate the array (e.g. `$virtualAccount->InternationalAccountDetails[0]->Iban`).
+
+## [3.52.0] - 2026-03-25
+
+### Breaking Changes
+- **Idempotency improvements** (#777) – `GetObjectForIdempotencyUrl` updated with missing/corrected mappings; previously unmapped POST endpoints now return typed entities instead of `stdClass`. Several API methods were missing the `$idempotencyKey` parameter; it has been added as an optional last argument to `ApiPayIns::CreateDepositPreauthorizedPayIn`, `ApiConversions::Create*`, `ApiDeposits::Create`, `ApiBankingAliases::Create`, and `ApiUsers::ValidateTheFormatOfUserData`.
+- **Payconiq removal** (#785) – Payconiq was discontinued on 4 December 2025. Removed `ApiPayIns::CreatePayconiq()`, `PayInPaymentDetailsPayconiq`, `PayInPaymentType::Payconiq`, and the related URL keys from `ApiBase`.
+
+### Added
+- **Acquiring API** (#783) – New `ApiAcquiring` class (`$api->Acquiring`) with `CreatePayIn`, `CreatePayPalDataCollection`, `CreatePayInRefund`, and `CreateCardValidation` methods supporting Card Direct, iDEAL, Apple Pay, Google Pay, and PayPal.
+- `PreferredCardNetwork` field on card pay-in payment details.
+- `SettlementId` field on report filters.
+- **Klarna `LineItem` discount** (#781) – `Discount` support added to `LineItem` objects used in Klarna pay-ins.
+
 ## [3.51.0] - 2026-03-19
 ### Added - mTLS certificates support
 - mTLS certificates are now configurable in the SDK via file paths or encoded strings

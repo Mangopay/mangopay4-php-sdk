@@ -24,4 +24,12 @@ class PayInExecutionDetailsExternalInstruction extends Libraries\Dto implements 
      * @var \MangoPay\DebitedBankAccount
      */
     public $DebitedBankAccount;
+
+    public function GetSubObjects()
+    {
+        $subObjects = parent::GetSubObjects();
+        $subObjects['DebitedBankAccount'] = '\MangoPay\DebitedBankAccount';
+
+        return $subObjects;
+    }
 }

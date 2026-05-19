@@ -15,4 +15,13 @@ class MarginsResponse extends Dto
      * @var UserMargin|null
      */
     public $User;
+
+    public function GetSubObjects()
+    {
+        $subObjects = parent::GetSubObjects();
+        $subObjects['Mangopay'] = '\MangoPay\UserMargin';
+        $subObjects['User'] = '\MangoPay\UserMargin';
+
+        return $subObjects;
+    }
 }

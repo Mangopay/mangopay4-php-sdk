@@ -2,6 +2,13 @@
 
 namespace MangoPay\Tests\Cases;
 
+use MangoPay\InternationalAccount;
+use MangoPay\InternationalAccountDetails;
+use MangoPay\LocalAccount;
+use MangoPay\LocalAccountDetails;
+use MangoPay\VirtualAccountAddress;
+use MangoPay\VirtualAccountCapabilities;
+
 /**
  * Tests basic methods for Virtual Accounts
  */
@@ -22,6 +29,13 @@ class VirtualAccountsTest extends Base
         $this->assertEquals("Success", $virtualAccount->ResultMessage);
         $this->assertEquals("000000", $virtualAccount->ResultCode);
         $this->assertNotNull($virtualAccount->LocalAccountDetails->BankName);
+        $this->assertInstanceOf(LocalAccountDetails::class, $virtualAccount->LocalAccountDetails);
+        $this->assertInstanceOf(InternationalAccountDetails::class, $virtualAccount->InternationalAccountDetails[0]);
+        $this->assertInstanceOf(VirtualAccountCapabilities::class, $virtualAccount->Capabilities);
+        $this->assertInstanceOf(VirtualAccountAddress::class, $virtualAccount->InternationalAccountDetails[0]->Address);
+        $this->assertInstanceOf(InternationalAccount::class, $virtualAccount->InternationalAccountDetails[0]->Account);
+        $this->assertInstanceOf(VirtualAccountAddress::class, $virtualAccount->LocalAccountDetails->Address);
+        $this->assertInstanceOf(LocalAccount::class, $virtualAccount->LocalAccountDetails->Account);
     }
 
     public function test_VirtualAccount_Get()
@@ -48,15 +62,13 @@ class VirtualAccountsTest extends Base
 
     public function test_VirtualAccount_Get_Availabilities()
     {
-//        TODO
-        $this->markTestIncomplete(
-            "API issue. To be re-enabled once fixed"
-        );
         $virtualAccountAvailabilities = $this->_api->VirtualAccounts->GetAvailabilities();
 
         $this->assertNotNull($virtualAccountAvailabilities);
         $this->assertTrue(is_array($virtualAccountAvailabilities->Collection), 'Expected an array');
         $this->assertTrue(is_array($virtualAccountAvailabilities->UserOwned), 'Expected an array');
+        $this->assertInstanceOf('\MangoPay\VirtualAccountAvailability', $virtualAccountAvailabilities->Collection[0]);
+        $this->assertInstanceOf('\MangoPay\VirtualAccountAvailability', $virtualAccountAvailabilities->UserOwned[0]);
     }
 
     public function test_VirtualAccount_Deactivate()

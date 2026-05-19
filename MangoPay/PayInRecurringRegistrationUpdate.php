@@ -31,4 +31,13 @@ class PayInRecurringRegistrationUpdate extends Dto
      * @var string
      */
     public $Status;
+
+    public function GetSubObjects()
+    {
+        $subObjects = parent::GetSubObjects();
+        $subObjects['Shipping'] = '\MangoPay\Shipping';
+        $subObjects['Billing'] = '\MangoPay\Billing';
+
+        return $subObjects;
+    }
 }

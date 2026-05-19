@@ -25,4 +25,13 @@ class RecurringPayInCurrentState extends Dto
      * @var string
      */
     public $LastPayinId;
+
+    public function GetSubObjects()
+    {
+        $subObjects = parent::GetSubObjects();
+        $subObjects['CumulatedDebitedAmount'] = '\MangoPay\Money';
+        $subObjects['CumulatedFeesAmount'] = '\MangoPay\Money';
+
+        return $subObjects;
+    }
 }

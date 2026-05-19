@@ -34,4 +34,12 @@ class PayInPaymentDetailsBlik extends Libraries\Dto implements PayInPaymentDetai
      * @var string
      */
     public $IpAddress;
+
+    public function GetSubObjects()
+    {
+        $subObjects = parent::GetSubObjects();
+        $subObjects['BrowserInfo'] = '\MangoPay\BrowserInfo';
+
+        return $subObjects;
+    }
 }

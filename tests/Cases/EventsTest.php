@@ -16,6 +16,7 @@ class EventsTest extends Base
         $filter->EventType = \MangoPay\EventType::PayinNormalCreated;
         $pagination = new \MangoPay\Pagination();
 
+        sleep(10);
         $result = $this->_api->Events->GetAll($pagination, $filter);
 
         $this->assertTrue(count($result) > 0);
@@ -100,6 +101,7 @@ class EventsTest extends Base
         $sorting->AddField("Date", \MangoPay\SortDirection::DESC);
         $pagination = new \MangoPay\Pagination();
 
+        sleep(5);
         $result = $this->_api->Events->GetAll($pagination, $filter, $sorting);
 
         $this->assertTrue($result[0]->Date >= $result[1]->Date);

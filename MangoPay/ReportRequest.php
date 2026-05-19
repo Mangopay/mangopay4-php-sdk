@@ -85,6 +85,14 @@ class ReportRequest extends Libraries\EntityBase
      */
     public $ResultMessage;
 
+    public function GetSubObjects()
+    {
+        $subObjects = parent::GetSubObjects();
+        $subObjects['Filters'] = '\MangoPay\FilterReports';
+
+        return $subObjects;
+    }
+
     /**
      * Get array with read-only properties
      * @return array

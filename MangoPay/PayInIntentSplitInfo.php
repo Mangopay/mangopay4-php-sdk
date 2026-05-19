@@ -39,4 +39,12 @@ class PayInIntentSplitInfo extends Libraries\Dto
      * @var PayInIntentLineItem[]
      */
     public $LineItems;
+
+    public function GetSubObjects()
+    {
+        $subObjects = parent::GetSubObjects();
+        $subObjects['LineItems'] = ['array_single', '\MangoPay\PayInIntentLineItem'];
+
+        return $subObjects;
+    }
 }

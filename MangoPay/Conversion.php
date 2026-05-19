@@ -109,4 +109,17 @@ class Conversion extends Libraries\EntityBase
      * @var MarginsResponse|null
      */
     public $MarginsResponse;
+
+    public function GetSubObjects()
+    {
+        $subObjects = parent::GetSubObjects();
+        $subObjects['DebitedFunds'] = '\MangoPay\Money';
+        $subObjects['CreditedFunds'] = '\MangoPay\Money';
+        $subObjects['Fees'] = '\MangoPay\Money';
+        $subObjects['RequestedFees'] = '\MangoPay\CustomFees';
+        $subObjects['ConversionRateResponse'] = '\MangoPay\ConversionRate';
+        $subObjects['MarginsResponse'] = '\MangoPay\MarginsResponse';
+
+        return $subObjects;
+    }
 }

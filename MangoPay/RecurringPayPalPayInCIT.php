@@ -79,4 +79,12 @@ class RecurringPayPalPayInCIT extends Libraries\Dto
      * @var string|null
      */
     public $DataCollectionId;
+
+    public function GetSubObjects()
+    {
+        $subObjects = parent::GetSubObjects();
+        $subObjects['Shipping'] = '\MangoPay\Shipping';
+
+        return $subObjects;
+    }
 }

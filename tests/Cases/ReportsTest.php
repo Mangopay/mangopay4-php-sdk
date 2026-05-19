@@ -2,6 +2,8 @@
 
 namespace MangoPay\Tests\Cases;
 
+use MangoPay\FilterReports;
+
 /**
  * Tests basic methods for report requests
  */
@@ -17,6 +19,7 @@ class ReportsTest extends Base
         $this->assertNotNull($createReportRequest);
         $this->assertNotNull($createReportRequest->Id);
         $this->assertSame($createReportRequest->ReportType, \MangoPay\ReportType::Transactions);
+        $this->assertInstanceOf(FilterReports::class, $createReportRequest->Filters);
     }
 
     public function test_ReportRequestWallets_Create()

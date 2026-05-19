@@ -48,4 +48,14 @@ class RecurringPayInCIT extends Libraries\Dto
      * @var string|null
      */
     public $PaymentCategory;
+
+    public function GetSubObjects()
+    {
+        $subObjects = parent::GetSubObjects();
+        $subObjects['BrowserInfo'] = '\MangoPay\BrowserInfo';
+        $subObjects['DebitedFunds'] = '\MangoPay\Money';
+        $subObjects['Fees'] = '\MangoPay\Money';
+
+        return $subObjects;
+    }
 }

@@ -48,4 +48,10 @@ class LineItem extends Libraries\Dto
      * @var string The unique identifier of the line item.
      */
     public $Sku;
+
+    /**
+     * The discount applied to the item.
+     * @var int|null
+     */
+    public $Discount;
 }

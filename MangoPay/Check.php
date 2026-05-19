@@ -50,4 +50,13 @@ class Check extends Dto
      * @var CheckData[]
      */
     public $Reasons;
+
+    public function GetSubObjects()
+    {
+        $subObjects = parent::GetSubObjects();
+        $subObjects['Data'] = ['array_single', '\MangoPay\CheckData'];
+        $subObjects['Reasons'] = ['array_single', '\MangoPay\CheckData'];
+
+        return $subObjects;
+    }
 }

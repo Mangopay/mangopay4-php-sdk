@@ -2,7 +2,7 @@
 
 namespace MangoPay;
 
-class CreateCardPreAuthorizedDepositPayIn extends Libraries\EntityBase
+class CreatePreAuthorizedDepositPayIn extends Libraries\EntityBase
 {
     /**
      * @var string

@@ -17,7 +17,17 @@ class LocalAccountDetails extends Libraries\Dto
     public $Account;
 
     /**
+     * The bank name
      * @var string
      */
     public $BankName;
+
+    public function GetSubObjects()
+    {
+        $subObjects = parent::GetSubObjects();
+        $subObjects['Address'] = '\MangoPay\VirtualAccountAddress';
+        $subObjects['Account'] = '\MangoPay\LocalAccount';
+
+        return $subObjects;
+    }
 }

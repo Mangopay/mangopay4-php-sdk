@@ -10,11 +10,12 @@ use MangoPay\Billing;
 use MangoPay\Birthplace;
 use MangoPay\BrowserInfo;
 use MangoPay\ConversionQuote;
-use MangoPay\CreateCardPreAuthorizedDepositPayIn;
+use MangoPay\CreatePreAuthorizedDepositPayIn;
 use MangoPay\CreateClientWalletsInstantConversion;
 use MangoPay\CreateClientWalletsQuotedConversion;
 use MangoPay\CreateDeposit;
 use MangoPay\CreateInstantConversion;
+use MangoPay\CreatePayPalPreAuthorizedDepositPayIn;
 use MangoPay\CreateQuotedConversion;
 use MangoPay\CurrencyIso;
 use MangoPay\CustomFees;
@@ -34,9 +35,11 @@ use MangoPay\PayInIntentSplit;
 use MangoPay\PayOut;
 use MangoPay\PayOutEligibilityRequest;
 use MangoPay\PayOutPaymentDetailsBankWire;
+use MangoPay\PayPalDepositPreauthorization;
 use MangoPay\Recipient;
 use MangoPay\RecurringPayInCIT;
 use MangoPay\RecurringPayPalPayInCIT;
+use MangoPay\Shipping;
 use MangoPay\ShippingPreference;
 use MangoPay\Tests\Mocks\MockStorageStrategy;
 use MangoPay\Ubo;
@@ -2257,6 +2260,46 @@ abstract class Base extends TestCase
         return $deposit;
     }
 
+    protected function getNewPayPalDepositPreauthorization($authorId)
+    {
+        $deposit = new PayPalDepositPreauthorization();
+
+        $deposit->AuthorId = $authorId;
+
+        $deposit->DebitedFunds = new Money();
+        $deposit->DebitedFunds->Currency = 'EUR';
+        $deposit->DebitedFunds->Amount = 1000;
+
+        $deposit->ReturnURL = "https://mangopay-sandbox-test.com";
+
+        $address = new Address();
+        $address->AddressLine1 = 'Main Street no 5';
+        $address->City = 'Paris';
+        $address->Country = 'FR';
+        $address->PostalCode = '68400';
+        $address->Region = 'Europe';
+
+        $shipping = new Shipping();
+        $shipping->FirstName = 'John';
+        $shipping->LastName = 'Doe';
+        $shipping->Address = $address;
+
+        $deposit->Shipping = $shipping;
+        $deposit->ShippingPreference = ShippingPreference::SET_PROVIDED_ADDRESS;
+
+        $lineItem = new LineItem();
+        $lineItem->Name = 'running shoes';
+        $lineItem->Quantity = 1;
+        $lineItem->UnitAmount = 1000;
+        $lineItem->TaxAmount = 0;
+        $lineItem->Description = "seller1 ID";
+
+        $deposit->LineItems = [$lineItem];
+        $deposit->Reference = "1234";
+
+        return $deposit;
+    }
+
     protected function getNewPayInIntentAuthorization($idempotencyKey = null)
     {
         $user = $this->getJohn();
@@ -2430,7 +2473,34 @@ abstract class Base extends TestCase
         $deposit = $this->_api->Deposits->Create($this->getNewDeposit($cardRegistration->CardId, $user->Id));
         $wallet = $this->getJohnsWallet();
 
-        $dto = new CreateCardPreAuthorizedDepositPayIn();
+        $dto = new CreatePreAuthorizedDepositPayIn();
+        $dto->DepositId = $deposit->Id;
+        $dto->AuthorId = $user->Id;
+        $dto->CreditedWalletId = $wallet->Id;
+
+        $debitedFunds = new Money();
+        $debitedFunds->Amount = 1000;
+        $debitedFunds->Currency = "EUR";
+
+        $fees = new Money();
+        $fees->Amount = 0;
+        $fees->Currency = "EUR";
+
+        $dto->DebitedFunds = $debitedFunds;
+        $dto->Fees = $fees;
+
+        return $this->_api->PayIns->CreateDepositPreauthorizedPayInWithoutComplement($dto, $idempotencyKey);
+    }
+
+    protected function createPayPalDepositPreauthorizedPayIn($idempotencyKey = null)
+    {
+        $user = $this->getJohn();
+        $deposit = $this->_api->Deposits->CreatePayPalDepositPreauthorization(
+            $this->getNewPayPalDepositPreauthorization($user->Id)
+        );
+        $wallet = $this->getJohnsWallet();
+
+        $dto = new CreatePreAuthorizedDepositPayIn();
         $dto->DepositId = $deposit->Id;
         $dto->AuthorId = $user->Id;
         $dto->CreditedWalletId = $wallet->Id;
@@ -2456,7 +2526,7 @@ abstract class Base extends TestCase
         $deposit = $this->_api->Deposits->Create($this->getNewDeposit($cardRegistration->CardId, $user->Id));
         $wallet = $this->getJohnsWallet();
 
-        $dto = new CreateCardPreAuthorizedDepositPayIn();
+        $dto = new CreatePreAuthorizedDepositPayIn();
         $dto->DepositId = $deposit->Id;
         $dto->AuthorId = $user->Id;
         $dto->CreditedWalletId = $wallet->Id;
@@ -2485,7 +2555,7 @@ abstract class Base extends TestCase
         $this->_api->Deposits->Update($deposit->Id, $updateDepositDto);
         $wallet = $this->getJohnsWallet();
 
-        $dto = new CreateCardPreAuthorizedDepositPayIn();
+        $dto = new CreatePreAuthorizedDepositPayIn();
         $dto->DepositId = $deposit->Id;
         $dto->AuthorId = $user->Id;
         $dto->CreditedWalletId = $wallet->Id;

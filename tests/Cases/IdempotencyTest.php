@@ -387,6 +387,14 @@ class IdempotencyTest extends Base
         $this->assertIdempotencyResource($key, '\MangoPay\PayIn');
     }
 
+    public function test_GetItempotencyKey_CreatePayPalDepositPreauthorizedPayIn()
+    {
+        $this->markTestSkipped("The Deposit Status value has to be up to SUCCEEDED");
+        $key = md5(uniqid());
+        $payIn = $this->createPayPalDepositPreauthorizedPayIn($key);
+        $this->assertIdempotencyResource($key, '\MangoPay\PayIn');
+    }
+
     public function test_GetItempotencyKey_CreateDepositPreauthorizedPayInPriorToComplement()
     {
         $key = md5(uniqid());
@@ -1155,5 +1163,14 @@ class IdempotencyTest extends Base
         $cardValidation->BrowserInfo = $this->getBrowserInfo();
         $this->_api->Acquiring->CreateCardValidation("placeholder", $cardValidation, $key);
         $this->assertIdempotencyResource($key, '\MangoPay\CardValidation');
+    }
+
+    public function test_GetIdempotencyKey_CreatePayPalDepositPreauthorization()
+    {
+        $user = $this->getJohn();
+        $key = md5(uniqid());
+        $this->_api->Deposits->CreatePayPalDepositPreauthorization($this->getNewPayPalDepositPreauthorization($user->Id), $key);
+
+        $this->assertIdempotencyResource($key, '\MangoPay\PayPalDepositPreauthorization');
     }
 }

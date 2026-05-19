@@ -273,6 +273,7 @@ abstract class ApiBase
         'country_authorization_all' => ['/countries/authorizations', RequestType::GET],
 
         'deposits_create' => ['/deposit-preauthorizations/card/direct', RequestType::POST],
+        'deposits_create_paypal' => ['/deposit-preauthorizations/payment-methods/paypal', RequestType::POST],
         'deposits_get' => ['/deposit-preauthorizations/%s', RequestType::GET],
         'deposits_update' => ['/deposit-preauthorizations/%s', RequestType::PUT],
         'deposits_get_all_for_user' => ['/users/%s/deposit-preauthorizations', RequestType::GET],
@@ -963,6 +964,7 @@ abstract class ApiBase
             'ubo_declaration_create' => '\MangoPay\UboDeclaration',
             'ubo_create' => '\MangoPay\Ubo',
             'deposits_create' => '\MangoPay\Deposit',
+            'deposits_create_paypal' => '\MangoPay\PayPalDepositPreauthorization',
             'create_instant_conversion' => '\MangoPay\Conversion',
             'create_client_wallets_instant_conversion' => '\MangoPay\Conversion',
             'create_quoted_conversion' => '\MangoPay\Conversion',

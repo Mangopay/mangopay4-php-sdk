@@ -17,6 +17,7 @@ class LocalAccountDetails extends Libraries\Dto
     public $Account;
 
     /**
+     * The bank name
      * @var string
      */
     public $BankName;

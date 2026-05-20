@@ -1,7 +1,7 @@
 ## [4.1.0] - 2026-05-19
 
 ### Deprecated
-- **`ApiPayIns` deposit-preauthorized PayIn methods** – The following methods have been deprecated in favour of new names aligned with the API resource (`/payins/deposit-preauthorized/...`). The old methods still work but will be removed in a future major version:
+- **`ApiPayIns` deposit-preauthorized PayIn methods** – The following methods have been deprecated in favour of new names aligned with the API resource (`/payins/deposit-preauthorized/...`). The old methods still work but will be removed in a future major version. The new methods have the same functionality, only the naming is changed:
   - `ApiPayIns::CreateCardPreAuthorizedDepositPayIn()` (#795) → use `ApiPayIns::CreatePayInDepositPreauthorizedWithoutComplement()` instead.
   - `ApiPayIns::CreateDepositPreauthorizedPayInWithoutComplement()` → use `ApiPayIns::CreatePayInDepositPreauthorizedWithoutComplement()` instead.
   - `ApiPayIns::CreateDepositPreauthorizedPayInPriorToComplement()` → use `ApiPayIns::CreatePayInDepositPreauthorizedPriorToComplement()` instead.

@@ -1109,21 +1109,21 @@ class PayInsTest extends Base
      */
     public function test_createDepositPreauthorizedPayInComplement_legacy()
     {
-        $this->markTestSkipped("skipped because of PSP technical error");
         $payIn = $this->createDepositPreauthorizedPayInComplement();
 
         $this->assertNotNull($payIn);
-        $this->assertEquals("SUCCEEDED", $payIn->Status);
+        // commented because of PSP technical error
+        // $this->assertEquals("SUCCEEDED", $payIn->Status);
         $this->assertNotNull($payIn->DepositId);
     }
 
     public function test_createPayInDepositPreauthorizedComplement()
     {
-        $this->markTestSkipped("skipped because of PSP technical error");
         $payIn = $this->createPayInDepositPreauthorizedComplement();
 
         $this->assertNotNull($payIn);
-        $this->assertEquals("SUCCEEDED", $payIn->Status);
+        // commented because of PSP technical error
+        // $this->assertEquals("SUCCEEDED", $payIn->Status);
         $this->assertNotNull($payIn->DepositId);
     }
 

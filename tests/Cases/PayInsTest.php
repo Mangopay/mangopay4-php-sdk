@@ -1055,9 +1055,18 @@ class PayInsTest extends Base
     /**
      * @throws \Exception
      */
-    public function test_createDepositPreauthorizedPayInWithoutComplement()
+    public function test_createDepositPreauthorizedPayInWithoutComplement_legacy()
     {
         $payIn = $this->createDepositPreauthorizedPayInWithoutComplement();
+
+        $this->assertNotNull($payIn);
+        $this->assertEquals("SUCCEEDED", $payIn->Status);
+        $this->assertNotNull($payIn->DepositId);
+    }
+
+    public function test_createPayInDepositPreauthorizedWithoutComplement()
+    {
+        $payIn = $this->createPayInDepositPreauthorizedWithoutComplement();
 
         $this->assertNotNull($payIn);
         $this->assertEquals("SUCCEEDED", $payIn->Status);
@@ -1077,9 +1086,18 @@ class PayInsTest extends Base
     /**
      * @throws \Exception
      */
-    public function test_createDepositPreauthorizedPayInPriorToComplement()
+    public function test_createDepositPreauthorizedPayInPriorToComplement_legacy()
     {
         $payIn = $this->createDepositPreauthorizedPayInPriorToComplement();
+
+        $this->assertNotNull($payIn);
+        $this->assertEquals("SUCCEEDED", $payIn->Status);
+        $this->assertNotNull($payIn->DepositId);
+    }
+
+    public function test_createPayInDepositPreauthorizedPriorToComplement()
+    {
+        $payIn = $this->createPayInDepositPreauthorizedPriorToComplement();
 
         $this->assertNotNull($payIn);
         $this->assertEquals("SUCCEEDED", $payIn->Status);
@@ -1089,10 +1107,20 @@ class PayInsTest extends Base
     /**
      * @throws \Exception
      */
-    public function test_createDepositPreauthorizedPayInComplement()
+    public function test_createDepositPreauthorizedPayInComplement_legacy()
     {
         $this->markTestSkipped("skipped because of PSP technical error");
         $payIn = $this->createDepositPreauthorizedPayInComplement();
+
+        $this->assertNotNull($payIn);
+        $this->assertEquals("SUCCEEDED", $payIn->Status);
+        $this->assertNotNull($payIn->DepositId);
+    }
+
+    public function test_createPayInDepositPreauthorizedComplement()
+    {
+        $this->markTestSkipped("skipped because of PSP technical error");
+        $payIn = $this->createPayInDepositPreauthorizedComplement();
 
         $this->assertNotNull($payIn);
         $this->assertEquals("SUCCEEDED", $payIn->Status);

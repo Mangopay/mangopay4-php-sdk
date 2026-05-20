@@ -10,12 +10,13 @@ use MangoPay\Billing;
 use MangoPay\Birthplace;
 use MangoPay\BrowserInfo;
 use MangoPay\ConversionQuote;
-use MangoPay\CreatePreAuthorizedDepositPayIn;
+use MangoPay\CreateCardPreAuthorizedDepositPayIn;
 use MangoPay\CreateClientWalletsInstantConversion;
 use MangoPay\CreateClientWalletsQuotedConversion;
 use MangoPay\CreateDeposit;
 use MangoPay\CreateInstantConversion;
 use MangoPay\CreatePayPalPreAuthorizedDepositPayIn;
+use MangoPay\CreatePreAuthorizedDepositPayIn;
 use MangoPay\CreateQuotedConversion;
 use MangoPay\CurrencyIso;
 use MangoPay\CustomFees;
@@ -2466,7 +2467,36 @@ abstract class Base extends TestCase
         return $this->_api->Disputes->CreateSettlementTransfer($settlementTransfer, $repudiationId, $idempotencyKey);
     }
 
+    /**
+     * @deprecated
+     */
     protected function createDepositPreauthorizedPayInWithoutComplement($idempotencyKey = null)
+    {
+        $user = $this->getJohn();
+        $cardRegistration = $this->getUpdatedCardRegistration($user->Id);
+        $deposit = $this->_api->Deposits->Create($this->getNewDeposit($cardRegistration->CardId, $user->Id));
+        $wallet = $this->getJohnsWallet();
+
+        $dto = new CreateCardPreAuthorizedDepositPayIn();
+        $dto->DepositId = $deposit->Id;
+        $dto->AuthorId = $user->Id;
+        $dto->CreditedWalletId = $wallet->Id;
+
+        $debitedFunds = new Money();
+        $debitedFunds->Amount = 1000;
+        $debitedFunds->Currency = "EUR";
+
+        $fees = new Money();
+        $fees->Amount = 0;
+        $fees->Currency = "EUR";
+
+        $dto->DebitedFunds = $debitedFunds;
+        $dto->Fees = $fees;
+
+        return $this->_api->PayIns->CreateDepositPreauthorizedPayInWithoutComplement($dto, $idempotencyKey);
+    }
+
+    protected function createPayInDepositPreauthorizedWithoutComplement($idempotencyKey = null)
     {
         $user = $this->getJohn();
         $cardRegistration = $this->getUpdatedCardRegistration($user->Id);
@@ -2489,7 +2519,7 @@ abstract class Base extends TestCase
         $dto->DebitedFunds = $debitedFunds;
         $dto->Fees = $fees;
 
-        return $this->_api->PayIns->CreateDepositPreauthorizedPayInWithoutComplement($dto, $idempotencyKey);
+        return $this->_api->PayIns->CreatePayInDepositPreauthorizedWithoutComplement($dto, $idempotencyKey);
     }
 
     protected function createPayPalDepositPreauthorizedPayIn($idempotencyKey = null)
@@ -2500,7 +2530,7 @@ abstract class Base extends TestCase
         );
         $wallet = $this->getJohnsWallet();
 
-        $dto = new CreatePreAuthorizedDepositPayIn();
+        $dto = new CreateCardPreAuthorizedDepositPayIn();
         $dto->DepositId = $deposit->Id;
         $dto->AuthorId = $user->Id;
         $dto->CreditedWalletId = $wallet->Id;
@@ -2519,6 +2549,9 @@ abstract class Base extends TestCase
         return $this->_api->PayIns->CreateDepositPreauthorizedPayInWithoutComplement($dto, $idempotencyKey);
     }
 
+    /**
+     * @deprecated
+     */
     protected function createDepositPreauthorizedPayInPriorToComplement($idempotencyKey = null)
     {
         $user = $this->getJohn();
@@ -2526,7 +2559,7 @@ abstract class Base extends TestCase
         $deposit = $this->_api->Deposits->Create($this->getNewDeposit($cardRegistration->CardId, $user->Id));
         $wallet = $this->getJohnsWallet();
 
-        $dto = new CreatePreAuthorizedDepositPayIn();
+        $dto = new CreateCardPreAuthorizedDepositPayIn();
         $dto->DepositId = $deposit->Id;
         $dto->AuthorId = $user->Id;
         $dto->CreditedWalletId = $wallet->Id;
@@ -2545,7 +2578,65 @@ abstract class Base extends TestCase
         return $this->_api->PayIns->CreateDepositPreauthorizedPayInPriorToComplement($dto, $idempotencyKey);
     }
 
+    protected function createPayInDepositPreauthorizedPriorToComplement($idempotencyKey = null)
+    {
+        $user = $this->getJohn();
+        $cardRegistration = $this->getUpdatedCardRegistration($user->Id);
+        $deposit = $this->_api->Deposits->Create($this->getNewDeposit($cardRegistration->CardId, $user->Id));
+        $wallet = $this->getJohnsWallet();
+
+        $dto = new CreatePreAuthorizedDepositPayIn();
+        $dto->DepositId = $deposit->Id;
+        $dto->AuthorId = $user->Id;
+        $dto->CreditedWalletId = $wallet->Id;
+
+        $debitedFunds = new Money();
+        $debitedFunds->Amount = 1000;
+        $debitedFunds->Currency = "EUR";
+
+        $fees = new Money();
+        $fees->Amount = 0;
+        $fees->Currency = "EUR";
+
+        $dto->DebitedFunds = $debitedFunds;
+        $dto->Fees = $fees;
+
+        return $this->_api->PayIns->CreatePayInDepositPreauthorizedPriorToComplement($dto, $idempotencyKey);
+    }
+
+    /**
+     * @deprecated
+     */
     protected function createDepositPreauthorizedPayInComplement($idempotencyKey = null)
+    {
+        $user = $this->getJohn();
+        $cardRegistration = $this->getUpdatedCardRegistration($user->Id);
+        $deposit = $this->_api->Deposits->Create($this->getNewDeposit($cardRegistration->CardId, $user->Id));
+        $updateDepositDto = new UpdateDeposit();
+        $updateDepositDto->PaymentStatus = "NO_SHOW_REQUESTED";
+        $this->_api->Deposits->Update($deposit->Id, $updateDepositDto);
+        $wallet = $this->getJohnsWallet();
+
+        $dto = new CreateCardPreAuthorizedDepositPayIn();
+        $dto->DepositId = $deposit->Id;
+        $dto->AuthorId = $user->Id;
+        $dto->CreditedWalletId = $wallet->Id;
+
+        $debitedFunds = new Money();
+        $debitedFunds->Amount = 1000;
+        $debitedFunds->Currency = "EUR";
+
+        $fees = new Money();
+        $fees->Amount = 0;
+        $fees->Currency = "EUR";
+
+        $dto->DebitedFunds = $debitedFunds;
+        $dto->Fees = $fees;
+
+        return $this->_api->PayIns->CreateDepositPreauthorizedPayInComplement($dto, $idempotencyKey);
+    }
+
+    protected function createPayInDepositPreauthorizedComplement($idempotencyKey = null)
     {
         $user = $this->getJohn();
         $cardRegistration = $this->getUpdatedCardRegistration($user->Id);
@@ -2571,7 +2662,7 @@ abstract class Base extends TestCase
         $dto->DebitedFunds = $debitedFunds;
         $dto->Fees = $fees;
 
-        return $this->_api->PayIns->CreateDepositPreauthorizedPayInComplement($dto, $idempotencyKey);
+        return $this->_api->PayIns->CreatePayInDepositPreauthorizedComplement($dto, $idempotencyKey);
     }
 
     protected function createPayOutCheckEligibility($payOut, $idempotencyKey = null)

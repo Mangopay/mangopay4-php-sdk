@@ -289,105 +289,112 @@ class IdempotencyTest extends Base
         $this->assertIdempotencyResource($key, '\MangoPay\PayIn');
     }
 
-    public function test_GetItempotencyKey_PayinsPaypalWebCreate()
+    public function test_GetIdempotencyKey_PayinsPaypalWebCreate()
     {
         $key = md5(uniqid());
         $this->getJohnsPayInPaypalWebV2($key);
         $this->assertIdempotencyResource($key, '\MangoPay\PayIn');
     }
 
-    public function test_GetItempotencyKey_PayinsMbwayWebCreate()
+    public function test_GetIdempotencyKey_PayinsMbwayWebCreate()
     {
         $key = md5(uniqid());
         $this->getNewPayInMbwayWeb(null, $key);
         $this->assertIdempotencyResource($key, '\MangoPay\PayIn');
     }
 
-    public function test_GetItempotencyKey_PayinsMultibancoWebCreate()
+    public function test_GetIdempotencyKey_PayinsMultibancoWebCreate()
     {
         $key = md5(uniqid());
         $this->getNewPayInMultibancoWeb(null, $key);
         $this->assertIdempotencyResource($key, '\MangoPay\PayIn');
     }
 
-    public function test_GetItempotencyKey_PayinsSatispayWebCreate()
+    public function test_GetIdempotencyKey_PayinsSatispayWebCreate()
     {
         $key = md5(uniqid());
         $this->getNewPayInSatispayWeb(null, $key);
         $this->assertIdempotencyResource($key, '\MangoPay\PayIn');
     }
 
-    public function test_GetItempotencyKey_PayinsBlikWebCreate()
+    public function test_GetIdempotencyKey_PayinsBlikWebCreate()
     {
         $key = md5(uniqid());
         $this->getNewPayInBlikWeb(null, false, $key);
         $this->assertIdempotencyResource($key, '\MangoPay\PayIn');
     }
 
-    public function test_GetItempotencyKey_PayinsKlarnaWebCreate()
+    public function test_GetIdempotencyKey_PayinsKlarnaWebCreate()
     {
         $key = md5(uniqid());
         $this->getNewPayInKlarnaWeb(null, $key);
         $this->assertIdempotencyResource($key, '\MangoPay\PayIn');
     }
 
-    public function test_GetItempotencyKey_PayinsIdealWebCreate()
+    public function test_GetIdempotencyKey_PayinsIdealWebCreate()
     {
         $key = md5(uniqid());
         $this->getNewPayInIdealWeb(null, $key);
         $this->assertIdempotencyResource($key, '\MangoPay\PayIn');
     }
 
-    public function test_GetItempotencyKey_PayinsGiropayWebCreate()
+    public function test_GetIdempotencyKey_PayinsGiropayWebCreate()
     {
         $key = md5(uniqid());
         $this->getNewPayInGiropayWeb(null, $key);
         $this->assertIdempotencyResource($key, '\MangoPay\PayIn');
     }
 
-    public function test_GetItempotencyKey_PayinsBancontactWebCreate()
+    public function test_GetIdempotencyKey_PayinsBancontactWebCreate()
     {
         $key = md5(uniqid());
         $this->getNewPayInBancontactWeb(null, $key);
         $this->assertIdempotencyResource($key, '\MangoPay\PayIn');
     }
 
-    public function test_GetItempotencyKey_PayinsBizumWebCreate()
+    public function test_GetIdempotencyKey_PayinsBizumWebCreate()
     {
         $key = md5(uniqid());
         $this->getNewPayInBizumWeb(null, true, $key);
         $this->assertIdempotencyResource($key, '\MangoPay\PayIn');
     }
 
-    public function test_GetItempotencyKey_PayinsSwishWebCreate()
+    public function test_GetIdempotencyKey_PayinsSwishWebCreate()
     {
         $key = md5(uniqid());
         $this->getNewPayInSwishWeb(null, $key);
         $this->assertIdempotencyResource($key, '\MangoPay\PayIn');
     }
 
-    public function test_GetItempotencyKey_PayinsTwintWebCreate()
+    public function test_GetIdempotencyKey_PayinsTwintWebCreate()
     {
         $key = md5(uniqid());
         $this->getNewPayInTwintWeb(null, $key);
         $this->assertIdempotencyResource($key, '\MangoPay\PayIn');
     }
 
-    public function test_GetItempotencyKey_PayinsPayByBankWebCreate()
+    public function test_GetIdempotencyKey_PayinsPayByBankWebCreate()
     {
         $key = md5(uniqid());
         $this->getNewPayInPayByBankWeb(null, $key);
         $this->assertIdempotencyResource($key, '\MangoPay\PayIn');
     }
 
-    public function test_GetItempotencyKey_CreateDepositPreauthorizedPayInWithoutComplement()
+    public function test_GetIdempotencyKey_CreateDepositPreauthorizedPayInWithoutComplement_legacy()
     {
         $key = md5(uniqid());
         $this->createDepositPreauthorizedPayInWithoutComplement($key);
         $this->assertIdempotencyResource($key, '\MangoPay\PayIn');
     }
 
-    public function test_GetItempotencyKey_CreatePayPalDepositPreauthorizedPayIn()
+    public function test_GetIdempotencyKey_CreatePayInDepositPreauthorizedWithoutComplement()
+    {
+        $key = md5(uniqid());
+        $this->createPayInDepositPreauthorizedWithoutComplement($key);
+        $this->assertIdempotencyResource($key, '\MangoPay\PayIn');
+    }
+
+    public function test_GetIdempotencyKey_CreatePayPalDepositPreauthorizedPayIn()
     {
         $this->markTestSkipped("The Deposit Status value has to be up to SUCCEEDED");
         $key = md5(uniqid());
@@ -395,18 +402,31 @@ class IdempotencyTest extends Base
         $this->assertIdempotencyResource($key, '\MangoPay\PayIn');
     }
 
-    public function test_GetItempotencyKey_CreateDepositPreauthorizedPayInPriorToComplement()
+    public function test_GetIdempotencyKey_CreateDepositPreauthorizedPayInPriorToComplement_legacy()
     {
         $key = md5(uniqid());
         $this->createDepositPreauthorizedPayInPriorToComplement($key);
         $this->assertIdempotencyResource($key, '\MangoPay\PayIn');
     }
 
-    public function test_GetItempotencyKey_CreateDepositPreauthorizedPayInComplement()
+    public function test_GetdtempotencyKey_CreatePayInDepositPreauthorizedPriorToComplement()
     {
-        $this->markTestSkipped("skipped because of PSP technical error");
+        $key = md5(uniqid());
+        $this->createPayInDepositPreauthorizedPriorToComplement($key);
+        $this->assertIdempotencyResource($key, '\MangoPay\PayIn');
+    }
+
+    public function test_GetIdempotencyKey_CreateDepositPreauthorizedPayInComplement()
+    {
         $key = md5(uniqid());
         $this->createDepositPreauthorizedPayInComplement($key);
+        $this->assertIdempotencyResource($key, '\MangoPay\PayIn');
+    }
+
+    public function test_GetIdempotencyKey_CreatePayInDepositPreauthorizedComplement()
+    {
+        $key = md5(uniqid());
+        $this->createPayInDepositPreauthorizedComplement($key);
         $this->assertIdempotencyResource($key, '\MangoPay\PayIn');
     }
 

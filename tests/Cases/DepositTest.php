@@ -4,7 +4,7 @@ namespace MangoPay\Tests\Cases;
 
 use MangoPay\CancelDeposit;
 use MangoPay\CardPreAuthorizationPaymentStatus;
-use MangoPay\CreatePreAuthorizedDepositPayIn;
+use MangoPay\CreateCardPreAuthorizedDepositPayIn;
 use MangoPay\DepositStatus;
 use MangoPay\Money;
 use MangoPay\PayInPaymentType;
@@ -203,7 +203,7 @@ class DepositTest extends Base
         $deposit = $this->_api->Deposits->Create($this->getNewDeposit($cardRegistration->CardId, $user->Id));
         $wallet = $this->getJohnsWallet();
 
-        $dto = new CreatePreAuthorizedDepositPayIn();
+        $dto = new CreateCardPreAuthorizedDepositPayIn();
         $dto->DepositId = $deposit->Id;
         $dto->AuthorId = $user->Id;
         $dto->CreditedWalletId = $wallet->Id;

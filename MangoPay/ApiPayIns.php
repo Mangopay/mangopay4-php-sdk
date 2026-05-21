@@ -60,6 +60,7 @@ class ApiPayIns extends Libraries\ApiBase
      * Create a recurring payment
      * @param \MangoPay\PayInRecurringRegistration $recurringRegistration
      * @return \MangoPay\PayInRecurringRegistrationRequestResponse
+     * @deprecated Use 'CreateRecurringPayInRegistration' instead
      */
     public function CreateRecurringRegistration($recurringRegistration, $idempotencyKey = null)
     {
@@ -74,9 +75,28 @@ class ApiPayIns extends Libraries\ApiBase
     }
 
     /**
+     * Create recurring pay-in registration
+     *
+     * @param RecurringPayInRegistration $recurringPayInRegistration
+     * @return RecurringPayInRegistration
+     */
+    public function CreateRecurringPayInRegistration($recurringPayInRegistration, $idempotencyKey = null)
+    {
+        return $this->CreateObject(
+            'payins_recurring_registration',
+            $recurringPayInRegistration,
+            '\MangoPay\RecurringPayInRegistration',
+            null,
+            null,
+            $idempotencyKey
+        );
+    }
+
+    /**
      * Get recurring payment
      * @param string $recurringRegistrationId
      * @return \MangoPay\PayInRecurringRegistrationGet
+     * @deprecated Use 'GetRecurringPayInRegistration' instead
      */
     public function GetRecurringRegistration($recurringRegistrationId, $idempotencyKey = null)
     {
@@ -84,19 +104,70 @@ class ApiPayIns extends Libraries\ApiBase
     }
 
     /**
-    * Update recurring payment
-    * @param PayInRecurringRegistrationUpdate $recurringUpdate
-    * @return \MangoPay\PayInRecurringRegistrationGet
-    */
+     * Get recurring pay-in registration
+     *
+     * @param string $id
+     * @return RecurringPayInRegistration
+     */
+    public function GetRecurringPayInRegistration($id)
+    {
+        return $this->GetObject(
+            'payins_recurring_registration_get',
+            '\MangoPay\RecurringPayInRegistration',
+            $id
+        );
+    }
+
+    /**
+     * Update recurring payment
+     * @param PayInRecurringRegistrationUpdate $recurringUpdate
+     * @return \MangoPay\PayInRecurringRegistrationGet
+     * @deprecated Use 'UpdateRecurringPayInRegistration' instead
+     */
     public function UpdateRecurringRegistration($recurringUpdate, $idempotencyKey = null)
     {
         return $this->SaveObject('payins_recurring_registration_put', $recurringUpdate, '\MangoPay\PayInRecurringRegistrationGet');
     }
 
     /**
+     * Update recurring pay-in registration
+     *
+     * @param RecurringPayInRegistration $payInRegistration
+     * @return RecurringPayInRegistration
+     */
+    public function UpdateRecurringPayInRegistration($payInRegistration)
+    {
+        return $this->SaveObject(
+            'payins_recurring_registration_put',
+            $payInRegistration,
+            '\MangoPay\RecurringPayInRegistration'
+        );
+    }
+
+    /**
+     * Create a Recurring PayIn, using the same pattern as non-recurring PayIns
+     * @param PayIn $recurringPayIn
+     * @return PayIn
+     */
+    public function CreateRecurringPayIn($recurringPayIn, $idempotencyKey = null)
+    {
+        $paymentKey = $this->GetPaymentKey($recurringPayIn);
+        $executionKey = $this->GetExecutionKey($recurringPayIn);
+        return $this->CreateObject(
+            'payins_recurring_' . $paymentKey . '-' . $executionKey . '_create',
+            $recurringPayIn,
+            '\MangoPay\PayIn',
+            null,
+            null,
+            $idempotencyKey
+        );
+    }
+
+    /**
      * Create a Recurring PayIn CIT
      * @param \MangoPay\RecurringPayInCIT $recurringPayInRegistrationCIT
      * @return \MangoPay\PayInRecurring
+     * @deprecated Use `CreateRecurringPayIn` instead
      */
     public function CreateRecurringPayInRegistrationCIT($recurringPayInRegistrationCIT, $idempotencyKey = null)
     {
@@ -114,6 +185,7 @@ class ApiPayIns extends Libraries\ApiBase
      * Create a Recurring PayIn MIT
      * @param \MangoPay\RecurringPayInMIT $recurringPayInRegistrationMIT
      * @return \MangoPay\PayInRecurring
+     * @deprecated Use `CreateRecurringPayIn` instead
      */
     public function CreateRecurringPayInRegistrationMIT($recurringPayInRegistrationMIT, $idempotencyKey = null)
     {
@@ -131,6 +203,7 @@ class ApiPayIns extends Libraries\ApiBase
      * Create a Recurring PayPal PayIn CIT
      * @param \MangoPay\RecurringPayPalPayInCIT $recurringPayPalPayInCIT
      * @return \MangoPay\PayInRecurring
+     * @deprecated Use `CreateRecurringPayIn` instead
      */
     public function CreateRecurringPayPalPayInCIT($recurringPayPalPayInCIT, $idempotencyKey = null)
     {
@@ -148,6 +221,7 @@ class ApiPayIns extends Libraries\ApiBase
      * Create a Recurring PayPal PayIn MIT
      * @param \MangoPay\RecurringPayPalPayInMIT $recurringPayPalPayInMIT
      * @return \MangoPay\PayInRecurring
+     * @deprecated Use `CreateRecurringPayIn` instead
      */
     public function CreateRecurringPayPalPayInMIT($recurringPayPalPayInMIT, $idempotencyKey = null)
     {
@@ -209,6 +283,7 @@ class ApiPayIns extends Libraries\ApiBase
      * Create Card PreAuthorized Deposit PayIn
      * @param CreateCardPreAuthorizedDepositPayIn $payIn PayIn object to create
      * @return PayIn Deposit object returned from API
+     * @deprecated Use 'CreatePayInDepositPreauthorizedWithoutComplement' instead
      */
     public function CreateCardPreAuthorizedDepositPayIn(CreateCardPreAuthorizedDepositPayIn $payIn)
     {
@@ -220,8 +295,27 @@ class ApiPayIns extends Libraries\ApiBase
      * @param CreateCardPreAuthorizedDepositPayIn $payIn PayIn object to create
      * @param string $idempotencyKey Optional idempotency key
      * @return PayIn Deposit object returned from API
+     * @deprecated Use 'CreatePayInDepositPreauthorizedWithoutComplement' instead
      */
     public function CreateDepositPreauthorizedPayInWithoutComplement(CreateCardPreAuthorizedDepositPayIn $payIn, $idempotencyKey = null)
+    {
+        return $this->CreateObject(
+            'payins_create_card_pre_authorized_deposit',
+            $payIn,
+            '\MangoPay\PayIn',
+            null,
+            null,
+            $idempotencyKey
+        );
+    }
+
+    /**
+     * Create a Deposit Preauthorized PayIn without complement
+     * @param CreatePreAuthorizedDepositPayIn $payIn PayIn object to create
+     * @param string $idempotencyKey Optional idempotency key
+     * @return PayIn Deposit object returned from API
+     */
+    public function CreatePayInDepositPreauthorizedWithoutComplement(CreatePreAuthorizedDepositPayIn $payIn, $idempotencyKey = null)
     {
         return $this->CreateObject(
             'payins_create_card_pre_authorized_deposit',
@@ -237,8 +331,26 @@ class ApiPayIns extends Libraries\ApiBase
      * Create a Deposit Preauthorized PayIn prior to complement
      * @param CreateCardPreAuthorizedDepositPayIn $payIn PayIn object to create
      * @return PayIn Deposit object returned from API
+     * @deprecated Use 'CreatePayInDepositPreauthorizedPriorToComplement' instead
      */
     public function CreateDepositPreauthorizedPayInPriorToComplement(CreateCardPreAuthorizedDepositPayIn $payIn, $idempotencyKey = null)
+    {
+        return $this->CreateObject(
+            'payins_deposit_preauthorized_prior_to_complement',
+            $payIn,
+            '\MangoPay\PayIn',
+            null,
+            null,
+            $idempotencyKey
+        );
+    }
+
+    /**
+     * Create a Deposit Preauthorized PayIn prior to complement
+     * @param CreatePreAuthorizedDepositPayIn $payIn PayIn object to create
+     * @return PayIn Deposit object returned from API
+     */
+    public function CreatePayInDepositPreauthorizedPriorToComplement(CreatePreAuthorizedDepositPayIn $payIn, $idempotencyKey = null)
     {
         return $this->CreateObject(
             'payins_deposit_preauthorized_prior_to_complement',
@@ -254,8 +366,26 @@ class ApiPayIns extends Libraries\ApiBase
      * Create a Deposit Preauthorized PayIn complement
      * @param CreateCardPreAuthorizedDepositPayIn $payIn PayIn object to create
      * @return PayIn Deposit object returned from API
+     * @deprecated Use 'CreatePayInDepositPreauthorizedComplement' instead
      */
     public function CreateDepositPreauthorizedPayInComplement(CreateCardPreAuthorizedDepositPayIn $payIn, $idempotencyKey = null)
+    {
+        return $this->CreateObject(
+            'payins_deposit_preauthorized_complement',
+            $payIn,
+            '\MangoPay\PayIn',
+            null,
+            null,
+            $idempotencyKey
+        );
+    }
+
+    /**
+     * Create a Deposit Preauthorized PayIn complement
+     * @param CreatePreAuthorizedDepositPayIn $payIn PayIn object to create
+     * @return PayIn Deposit object returned from API
+     */
+    public function CreatePayInDepositPreauthorizedComplement(CreatePreAuthorizedDepositPayIn $payIn, $idempotencyKey = null)
     {
         return $this->CreateObject(
             'payins_deposit_preauthorized_complement',

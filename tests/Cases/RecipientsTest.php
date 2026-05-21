@@ -6,6 +6,7 @@ use Exception;
 use MangoPay\CurrencyIso;
 use MangoPay\FilterRecipients;
 use MangoPay\IndividualRecipient;
+use MangoPay\Pagination;
 use MangoPay\Recipient;
 use MangoPay\Tests\Cases\Base;
 use MangoPay\UserCategory;
@@ -75,8 +76,9 @@ class RecipientsTest extends Base
     {
         $john = $this->getJohnSca(UserCategory::Owner, false);
         $this->getNewRecipient();
-        $userRecipients = $this->_api->Recipients->GetUserRecipients($john->Id);
-        self::assertTrue(sizeof($userRecipients) > 0);
+        $pagination = new Pagination(1, 1);
+        $userRecipients = $this->_api->Recipients->GetUserRecipients($john->Id, $pagination);
+        self::assertTrue(sizeof($userRecipients) == 1);
     }
 
     public function test_Recipient_GetUserRecipients_Payout()

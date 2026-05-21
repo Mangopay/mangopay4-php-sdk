@@ -23,6 +23,7 @@ use MangoPay\PayInRecurringRegistrationUpdate;
 use MangoPay\PayInStatus;
 use MangoPay\RecurringPayInCIT;
 use MangoPay\RecurringPayInCurrentState;
+use MangoPay\RecurringPayInRegistration;
 use MangoPay\RecurringPayPalPayInMIT;
 use MangoPay\Shipping;
 use MangoPay\TransactionStatus;
@@ -563,6 +564,76 @@ class PayInsTest extends Base
         $this->assertNotNull($updatedResult);
     }
 
+    public function test_Create_Recurring_Card_Pay_In_Registration()
+    {
+        $created = $this->createNewRecurringPayInRegistration();
+        $fetched = $this->_api->PayIns->GetRecurringPayInRegistration($created->Id);
+
+        $this->assertNotNull($created);
+        $this->assertNotNull($fetched);
+        $this->assertInstanceOf(RecurringPayInRegistration::class, $created);
+        $this->assertNotNull($created->Id);
+        $this->assertNotNull($created->CurrentState);
+        $this->assertInstanceOf(Money::class, $created->FirstTransactionDebitedFunds);
+        $this->assertInstanceOf(Billing::class, $created->Billing);
+        $this->assertInstanceOf(Shipping::class, $created->Shipping);
+        $this->assertEquals("CREATED", $created->Status);
+        $this->assertEquals($created->Id, $fetched->Id);
+        $this->assertEquals($created->Status, $fetched->Status);
+    }
+
+    public function test_Create_Recurring_ApplePay_Pay_In_Registration()
+    {
+        $this->markTestSkipped('Manual PaymentData creation needed for testing');
+        $created = $this->createNewRecurringPayInRegistration('APPLEPAY');
+        $fetched = $this->_api->PayIns->GetRecurringPayInRegistration($created->Id);
+
+        $this->assertNotNull($created);
+        $this->assertNotNull($fetched);
+        $this->assertInstanceOf(RecurringPayInRegistration::class, $created);
+        $this->assertNotNull($created->Id);
+        $this->assertNotNull($created->CurrentState);
+        $this->assertEquals("CREATED", $created->Status);
+        $this->assertEquals($created->Id, $fetched->Id);
+        $this->assertEquals($created->Status, $fetched->Status);
+        $this->assertEquals("APPLEPAY", $created->PaymentType);
+        $this->assertEquals($created->PaymentType, $fetched->PaymentType);
+    }
+
+    public function test_Create_Recurring_GooglePay_Pay_In_Registration()
+    {
+        $this->markTestSkipped('Manual PaymentData creation needed for testing');
+        $created = $this->createNewRecurringPayInRegistration('GOOGLEPAY');
+        $fetched = $this->_api->PayIns->GetRecurringPayInRegistration($created->Id);
+
+        $this->assertNotNull($created);
+        $this->assertNotNull($fetched);
+        $this->assertInstanceOf(RecurringPayInRegistration::class, $created);
+        $this->assertNotNull($created->Id);
+        $this->assertNotNull($created->CurrentState);
+        $this->assertEquals("CREATED", $created->Status);
+        $this->assertEquals($created->Id, $fetched->Id);
+        $this->assertEquals($created->Status, $fetched->Status);
+        $this->assertEquals("APPLEPAY", $created->PaymentType);
+        $this->assertEquals($created->PaymentType, $fetched->PaymentType);
+    }
+
+    public function test_Update_Recurring_Pay_In_Registration()
+    {
+        $created = $this->createNewRecurringPayInRegistration();
+
+        $this->assertNotNull($created);
+        $this->assertEquals("CREATED", $created->Status);
+
+        $toUpdate = new RecurringPayInRegistration();
+        $toUpdate->Id = $created->Id;
+        $toUpdate->Status = "ENDED";
+
+        $updated = $this->_api->PayIns->UpdateRecurringPayInRegistration($toUpdate);
+        $this->assertNotNull($updated);
+        $this->assertEquals("ENDED", $updated->Status);
+    }
+
     public function test_Create_Recurring_PayIn_CIT()
     {
         $result = $this->createRecurringPayInCIT();
@@ -698,9 +769,59 @@ class PayInsTest extends Base
         $this->assertNotNull($result->RecurringPayinRegistrationId);
         $this->assertEquals("PAYPAL", $result->PaymentType);
         $this->assertEquals("WEB", $result->ExecutionType);
-//        $this->assertEquals("CREATED", $result->Status);
+        $this->assertEquals("CREATED", $result->Status);
         $this->assertEquals("PAYIN", $result->Type);
         $this->assertEquals("REGULAR", $result->Nature);
+    }
+
+    public function test_Create_Recurring_Card_Pay_In_CIT()
+    {
+        $payInRegistration = $this->createNewRecurringPayInRegistration();
+        $created = $this->createRecurringCardPayInCIT($payInRegistration->Id);
+
+        $this->assertNotNull($created);
+        $this->assertEquals("SUCCEEDED", $created->Status);
+        $this->assertNotNull($created->AuthenticationResult);
+        $this->assertNotNull($created->RecurringPayinRegistrationId);
+        $this->assertEquals("CARD", $created->PaymentType);
+        $this->assertEquals("DIRECT", $created->ExecutionType);
+    }
+
+    public function test_Create_Recurring_Card_Pay_In_MIT()
+    {
+        $payInRegistration = $this->createNewRecurringPayInRegistration();
+        $created = $this->createRecurringCardPayInMIT($payInRegistration->Id);
+
+        $this->assertNotNull($created);
+        $this->assertEquals("SUCCEEDED", $created->Status);
+        $this->assertNotNull($created->AuthenticationResult);
+        $this->assertNotNull($created->RecurringPayinRegistrationId);
+        $this->assertEquals("CARD", $created->PaymentType);
+        $this->assertEquals("DIRECT", $created->ExecutionType);
+    }
+
+    public function test_Create_Recurring_PayPal_Pay_In_CIT()
+    {
+        $payInRegistration = $this->createNewRecurringPayInRegistration("PAYPAL");
+        $created = $this->createNewRecurringPayPalPayInCIT($payInRegistration->Id);
+
+        $this->assertNotNull($created);
+        $this->assertEquals("CREATED", $created->Status);
+        $this->assertNotNull($created->RecurringPayinRegistrationId);
+        $this->assertEquals("PAYPAL", $created->PaymentType);
+        $this->assertEquals("WEB", $created->ExecutionType);
+    }
+
+    public function test_Create_Recurring_PayPal_Pay_In_MIT()
+    {
+        $payInRegistration = $this->createNewRecurringPayInRegistration("PAYPAL");
+        $created = $this->createNewRecurringPayPalPayInMIT($payInRegistration->Id);
+
+        $this->assertNotNull($created);
+        $this->assertEquals("CREATED", $created->Status);
+        $this->assertNotNull($created->RecurringPayinRegistrationId);
+        $this->assertEquals("PAYPAL", $created->PaymentType);
+        $this->assertEquals("WEB", $created->ExecutionType);
     }
 
     public function test_PayIns_Google_Pay_Create()
@@ -1055,7 +1176,7 @@ class PayInsTest extends Base
     /**
      * @throws \Exception
      */
-    public function test_createDepositPreauthorizedPayInWithoutComplement()
+    public function test_createDepositPreauthorizedPayInWithoutComplement_legacy()
     {
         $payIn = $this->createDepositPreauthorizedPayInWithoutComplement();
 
@@ -1064,12 +1185,19 @@ class PayInsTest extends Base
         $this->assertNotNull($payIn->DepositId);
     }
 
-    /**
-     * @throws \Exception
-     */
-    public function test_createDepositPreauthorizedPayInPriorToComplement()
+    public function test_createPayInDepositPreauthorizedWithoutComplement()
     {
-        $payIn = $this->createDepositPreauthorizedPayInPriorToComplement();
+        $payIn = $this->createPayInDepositPreauthorizedWithoutComplement();
+
+        $this->assertNotNull($payIn);
+        $this->assertEquals("SUCCEEDED", $payIn->Status);
+        $this->assertNotNull($payIn->DepositId);
+    }
+
+    public function test_createPayPalDepositPreauthorizedPayIn()
+    {
+        $this->markTestSkipped("The Deposit Status value has to be up to SUCCEEDED");
+        $payIn = $this->createPayPalDepositPreauthorizedPayIn();
 
         $this->assertNotNull($payIn);
         $this->assertEquals("SUCCEEDED", $payIn->Status);
@@ -1079,13 +1207,44 @@ class PayInsTest extends Base
     /**
      * @throws \Exception
      */
-    public function test_createDepositPreauthorizedPayInComplement()
+    public function test_createDepositPreauthorizedPayInPriorToComplement_legacy()
     {
-        $this->markTestSkipped("skipped because of PSP technical error");
-        $payIn = $this->createDepositPreauthorizedPayInComplement();
+        $payIn = $this->createDepositPreauthorizedPayInPriorToComplement();
 
         $this->assertNotNull($payIn);
         $this->assertEquals("SUCCEEDED", $payIn->Status);
+        $this->assertNotNull($payIn->DepositId);
+    }
+
+    public function test_createPayInDepositPreauthorizedPriorToComplement()
+    {
+        $payIn = $this->createPayInDepositPreauthorizedPriorToComplement();
+
+        $this->assertNotNull($payIn);
+        $this->assertEquals("SUCCEEDED", $payIn->Status);
+        $this->assertNotNull($payIn->DepositId);
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function test_createDepositPreauthorizedPayInComplement_legacy()
+    {
+        $payIn = $this->createDepositPreauthorizedPayInComplement();
+
+        $this->assertNotNull($payIn);
+        // commented because of PSP technical error
+        // $this->assertEquals("SUCCEEDED", $payIn->Status);
+        $this->assertNotNull($payIn->DepositId);
+    }
+
+    public function test_createPayInDepositPreauthorizedComplement()
+    {
+        $payIn = $this->createPayInDepositPreauthorizedComplement();
+
+        $this->assertNotNull($payIn);
+        // commented because of PSP technical error
+        // $this->assertEquals("SUCCEEDED", $payIn->Status);
         $this->assertNotNull($payIn->DepositId);
     }
 

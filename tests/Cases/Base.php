@@ -15,6 +15,8 @@ use MangoPay\CreateClientWalletsInstantConversion;
 use MangoPay\CreateClientWalletsQuotedConversion;
 use MangoPay\CreateDeposit;
 use MangoPay\CreateInstantConversion;
+use MangoPay\CreatePayPalPreAuthorizedDepositPayIn;
+use MangoPay\CreatePreAuthorizedDepositPayIn;
 use MangoPay\CreateQuotedConversion;
 use MangoPay\CurrencyIso;
 use MangoPay\CustomFees;
@@ -25,18 +27,28 @@ use MangoPay\LegalRepresentative;
 use MangoPay\Libraries\Exception;
 use MangoPay\LineItem;
 use MangoPay\Money;
+use MangoPay\PayIn;
+use MangoPay\PayInExecutionDetailsDirect;
+use MangoPay\PayInExecutionDetailsWeb;
 use MangoPay\PayInIntent;
 use MangoPay\PayInIntentBuyer;
 use MangoPay\PayInIntentExternalData;
 use MangoPay\PayInIntentLineItem;
 use MangoPay\PayInIntentSeller;
 use MangoPay\PayInIntentSplit;
+use MangoPay\PayInPaymentDetailsCard;
+use MangoPay\PayInPaymentDetailsPaypal;
+use MangoPay\PaymentData;
 use MangoPay\PayOut;
 use MangoPay\PayOutEligibilityRequest;
 use MangoPay\PayOutPaymentDetailsBankWire;
+use MangoPay\PayPalDepositPreauthorization;
 use MangoPay\Recipient;
+use MangoPay\RecurringPayIn;
 use MangoPay\RecurringPayInCIT;
+use MangoPay\RecurringPayInRegistration;
 use MangoPay\RecurringPayPalPayInCIT;
+use MangoPay\Shipping;
 use MangoPay\ShippingPreference;
 use MangoPay\Tests\Mocks\MockStorageStrategy;
 use MangoPay\Ubo;
@@ -698,6 +710,20 @@ abstract class Base extends TestCase
         $cardRegistration = $this->createNewCardRegistration($userId);
         $this->createNewPayInCardDirect($userId, $cardRegistration->CardId, $wallet->Id, $amount);
         return $this->_api->Wallets->Get($wallet->Id);
+    }
+
+    protected function getNewCardAndWalletWithMoney($userId, $amount = 1000)
+    {
+        $arr = [];
+        $wallet = $this->createNewWallet($userId);
+        $cardRegistration = $this->createNewCardRegistration($userId);
+        $this->createNewPayInCardDirect($userId, $cardRegistration->CardId, $wallet->Id, $amount);
+        $wallet = $this->_api->Wallets->Get($wallet->Id);
+
+        $arr["walletId"] = $wallet->Id;
+        $arr["cardId"] = $cardRegistration->CardId;
+
+        return $arr;
     }
 
     private function createNewWallet($userId)
@@ -2257,6 +2283,46 @@ abstract class Base extends TestCase
         return $deposit;
     }
 
+    protected function getNewPayPalDepositPreauthorization($authorId)
+    {
+        $deposit = new PayPalDepositPreauthorization();
+
+        $deposit->AuthorId = $authorId;
+
+        $deposit->DebitedFunds = new Money();
+        $deposit->DebitedFunds->Currency = 'EUR';
+        $deposit->DebitedFunds->Amount = 1000;
+
+        $deposit->ReturnURL = "https://mangopay-sandbox-test.com";
+
+        $address = new Address();
+        $address->AddressLine1 = 'Main Street no 5';
+        $address->City = 'Paris';
+        $address->Country = 'FR';
+        $address->PostalCode = '68400';
+        $address->Region = 'Europe';
+
+        $shipping = new Shipping();
+        $shipping->FirstName = 'John';
+        $shipping->LastName = 'Doe';
+        $shipping->Address = $address;
+
+        $deposit->Shipping = $shipping;
+        $deposit->ShippingPreference = ShippingPreference::SET_PROVIDED_ADDRESS;
+
+        $lineItem = new LineItem();
+        $lineItem->Name = 'running shoes';
+        $lineItem->Quantity = 1;
+        $lineItem->UnitAmount = 1000;
+        $lineItem->TaxAmount = 0;
+        $lineItem->Description = "seller1 ID";
+
+        $deposit->LineItems = [$lineItem];
+        $deposit->Reference = "1234";
+
+        return $deposit;
+    }
+
     protected function getNewPayInIntentAuthorization($idempotencyKey = null)
     {
         $user = $this->getJohn();
@@ -2423,6 +2489,9 @@ abstract class Base extends TestCase
         return $this->_api->Disputes->CreateSettlementTransfer($settlementTransfer, $repudiationId, $idempotencyKey);
     }
 
+    /**
+     * @deprecated
+     */
     protected function createDepositPreauthorizedPayInWithoutComplement($idempotencyKey = null)
     {
         $user = $this->getJohn();
@@ -2449,6 +2518,62 @@ abstract class Base extends TestCase
         return $this->_api->PayIns->CreateDepositPreauthorizedPayInWithoutComplement($dto, $idempotencyKey);
     }
 
+    protected function createPayInDepositPreauthorizedWithoutComplement($idempotencyKey = null)
+    {
+        $user = $this->getJohn();
+        $cardRegistration = $this->getUpdatedCardRegistration($user->Id);
+        $deposit = $this->_api->Deposits->Create($this->getNewDeposit($cardRegistration->CardId, $user->Id));
+        $wallet = $this->getJohnsWallet();
+
+        $dto = new CreatePreAuthorizedDepositPayIn();
+        $dto->DepositId = $deposit->Id;
+        $dto->AuthorId = $user->Id;
+        $dto->CreditedWalletId = $wallet->Id;
+
+        $debitedFunds = new Money();
+        $debitedFunds->Amount = 1000;
+        $debitedFunds->Currency = "EUR";
+
+        $fees = new Money();
+        $fees->Amount = 0;
+        $fees->Currency = "EUR";
+
+        $dto->DebitedFunds = $debitedFunds;
+        $dto->Fees = $fees;
+
+        return $this->_api->PayIns->CreatePayInDepositPreauthorizedWithoutComplement($dto, $idempotencyKey);
+    }
+
+    protected function createPayPalDepositPreauthorizedPayIn($idempotencyKey = null)
+    {
+        $user = $this->getJohn();
+        $deposit = $this->_api->Deposits->CreatePayPalDepositPreauthorization(
+            $this->getNewPayPalDepositPreauthorization($user->Id)
+        );
+        $wallet = $this->getJohnsWallet();
+
+        $dto = new CreateCardPreAuthorizedDepositPayIn();
+        $dto->DepositId = $deposit->Id;
+        $dto->AuthorId = $user->Id;
+        $dto->CreditedWalletId = $wallet->Id;
+
+        $debitedFunds = new Money();
+        $debitedFunds->Amount = 1000;
+        $debitedFunds->Currency = "EUR";
+
+        $fees = new Money();
+        $fees->Amount = 0;
+        $fees->Currency = "EUR";
+
+        $dto->DebitedFunds = $debitedFunds;
+        $dto->Fees = $fees;
+
+        return $this->_api->PayIns->CreateDepositPreauthorizedPayInWithoutComplement($dto, $idempotencyKey);
+    }
+
+    /**
+     * @deprecated
+     */
     protected function createDepositPreauthorizedPayInPriorToComplement($idempotencyKey = null)
     {
         $user = $this->getJohn();
@@ -2475,6 +2600,35 @@ abstract class Base extends TestCase
         return $this->_api->PayIns->CreateDepositPreauthorizedPayInPriorToComplement($dto, $idempotencyKey);
     }
 
+    protected function createPayInDepositPreauthorizedPriorToComplement($idempotencyKey = null)
+    {
+        $user = $this->getJohn();
+        $cardRegistration = $this->getUpdatedCardRegistration($user->Id);
+        $deposit = $this->_api->Deposits->Create($this->getNewDeposit($cardRegistration->CardId, $user->Id));
+        $wallet = $this->getJohnsWallet();
+
+        $dto = new CreatePreAuthorizedDepositPayIn();
+        $dto->DepositId = $deposit->Id;
+        $dto->AuthorId = $user->Id;
+        $dto->CreditedWalletId = $wallet->Id;
+
+        $debitedFunds = new Money();
+        $debitedFunds->Amount = 1000;
+        $debitedFunds->Currency = "EUR";
+
+        $fees = new Money();
+        $fees->Amount = 0;
+        $fees->Currency = "EUR";
+
+        $dto->DebitedFunds = $debitedFunds;
+        $dto->Fees = $fees;
+
+        return $this->_api->PayIns->CreatePayInDepositPreauthorizedPriorToComplement($dto, $idempotencyKey);
+    }
+
+    /**
+     * @deprecated
+     */
     protected function createDepositPreauthorizedPayInComplement($idempotencyKey = null)
     {
         $user = $this->getJohn();
@@ -2502,6 +2656,35 @@ abstract class Base extends TestCase
         $dto->Fees = $fees;
 
         return $this->_api->PayIns->CreateDepositPreauthorizedPayInComplement($dto, $idempotencyKey);
+    }
+
+    protected function createPayInDepositPreauthorizedComplement($idempotencyKey = null)
+    {
+        $user = $this->getJohn();
+        $cardRegistration = $this->getUpdatedCardRegistration($user->Id);
+        $deposit = $this->_api->Deposits->Create($this->getNewDeposit($cardRegistration->CardId, $user->Id));
+        $updateDepositDto = new UpdateDeposit();
+        $updateDepositDto->PaymentStatus = "NO_SHOW_REQUESTED";
+        $this->_api->Deposits->Update($deposit->Id, $updateDepositDto);
+        $wallet = $this->getJohnsWallet();
+
+        $dto = new CreatePreAuthorizedDepositPayIn();
+        $dto->DepositId = $deposit->Id;
+        $dto->AuthorId = $user->Id;
+        $dto->CreditedWalletId = $wallet->Id;
+
+        $debitedFunds = new Money();
+        $debitedFunds->Amount = 1000;
+        $debitedFunds->Currency = "EUR";
+
+        $fees = new Money();
+        $fees->Amount = 0;
+        $fees->Currency = "EUR";
+
+        $dto->DebitedFunds = $debitedFunds;
+        $dto->Fees = $fees;
+
+        return $this->_api->PayIns->CreatePayInDepositPreauthorizedComplement($dto, $idempotencyKey);
     }
 
     protected function createPayOutCheckEligibility($payOut, $idempotencyKey = null)
@@ -2551,6 +2734,59 @@ abstract class Base extends TestCase
         return $this->_api->PayIns->CreateRecurringRegistration($payIn, $idempotencyKey);
     }
 
+    protected function createNewRecurringPayInRegistration($paymentType = "CARD_DIRECT", $idempotencyKey = null)
+    {
+        $user = $this->_api->Users->Create($this->buildJohn());
+        $values = $this->getNewCardAndWalletWithMoney($user->Id);
+        $walletId = $values["walletId"];
+        $cardId = $values["cardId"];
+
+        $recurringPayInRegistration = new RecurringPayInRegistration();
+        $recurringPayInRegistration->AuthorId = $user->Id;
+        $recurringPayInRegistration->CreditedUserId = $user->Id;
+        $recurringPayInRegistration->CreditedWalletId = $walletId;
+        $recurringPayInRegistration->FirstTransactionDebitedFunds = new \MangoPay\Money();
+        $recurringPayInRegistration->FirstTransactionDebitedFunds->Amount = 1000;
+        $recurringPayInRegistration->FirstTransactionDebitedFunds->Currency = 'EUR';
+        $recurringPayInRegistration->FirstTransactionFees = new \MangoPay\Money();
+        $recurringPayInRegistration->FirstTransactionFees->Amount = 0;
+        $recurringPayInRegistration->FirstTransactionFees->Currency = 'EUR';
+        $recurringPayInRegistration->FreeCycles = 0;
+        $recurringPayInRegistration->PaymentType = $paymentType;
+
+        switch ($paymentType) {
+            case 'CARD_DIRECT':
+                $recurringPayInRegistration->CardId = $cardId;
+                break;
+            case 'APPLEPAY':
+                $paymentData = new PaymentData();
+                $paymentData->TransactionId = "placeholder";
+                $paymentData->Network = "placeholder";
+                $paymentData->TokenData = "placeholder";
+                $recurringPayInRegistration->PaymentData = $paymentData;
+                break;
+            case 'GOOGLEPAY':
+                $recurringPayInRegistration->PaymentData = "placeholder";
+                break;
+            default:
+                break;
+        }
+
+        $billing = new \MangoPay\Billing();
+        $billing->FirstName = 'John';
+        $billing->LastName = 'Doe';
+        $billing->Address = $this->getNewAddress();
+        $recurringPayInRegistration->Billing = $billing;
+
+        $shipping = new \MangoPay\Shipping();
+        $shipping->FirstName = 'John';
+        $shipping->LastName = 'Doe';
+        $shipping->Address = $this->getNewAddress();
+        $recurringPayInRegistration->Shipping = $shipping;
+
+        return $this->_api->PayIns->CreateRecurringPayInRegistration($recurringPayInRegistration, $idempotencyKey);
+    }
+
     protected function createRecurringPayInCIT($idempotencyKey = null)
     {
         self::$JohnsWalletWithMoney = null; // Reset the cache value
@@ -2566,6 +2802,115 @@ abstract class Base extends TestCase
         $cit->BrowserInfo = $this->getBrowserInfo();
 
         return $this->_api->PayIns->CreateRecurringPayInRegistrationCIT($cit, $idempotencyKey);
+    }
+
+    protected function createRecurringCardPayInCIT($recurringPayInRegistrationId, $idempotencyKey = null)
+    {
+        $payIn = new PayIn();
+        $payIn->ExecutionType = "DIRECT";
+        $payIn->PaymentType = "CARD";
+        $payIn->RecurringPayinRegistrationId = $recurringPayInRegistrationId;
+
+        $payInDetails = new PayInPaymentDetailsCard();
+        $payInDetails->IpAddress = "2001:0620:0000:0000:0211:24FF:FE80:C12C";
+        $payInDetails->BrowserInfo = $this->getBrowserInfo();
+
+        $executionDetails = new PayInExecutionDetailsDirect();
+        $executionDetails->SecureModeReturnURL = "https://www.my-site.com/returnurl";
+
+        $payIn->PaymentDetails = $payInDetails;
+        $payIn->ExecutionDetails = $executionDetails;
+
+        return $this->_api->PayIns->CreateRecurringPayIn($payIn, $idempotencyKey);
+    }
+
+    protected function createRecurringCardPayInMIT($recurringPayInRegistrationId, $idempotencyKey = null)
+    {
+        $this->createRecurringCardPayInCIT($recurringPayInRegistrationId);
+
+        $payIn = new PayIn();
+        $payIn->ExecutionType = "DIRECT";
+        $payIn->PaymentType = "CARD";
+        $payIn->RecurringPayinRegistrationId = $recurringPayInRegistrationId;
+
+        $debitedFunds = new Money();
+        $debitedFunds->Amount = 100;
+        $debitedFunds->Currency = "EUR";
+
+        $fees = new Money();
+        $fees->Amount = 0;
+        $fees->Currency = "EUR";
+
+        $payIn->DebitedFunds = $debitedFunds;
+        $payIn->Fees = $fees;
+
+        $payInDetails = new PayInPaymentDetailsCard();
+        $executionDetails = new PayInExecutionDetailsDirect();
+        $payIn->PaymentDetails = $payInDetails;
+        $payIn->ExecutionDetails = $executionDetails;
+
+        return $this->_api->PayIns->CreateRecurringPayIn($payIn, $idempotencyKey);
+    }
+
+    protected function createNewRecurringPayPalPayInCIT($recurringPayInRegistrationId, $idempotencyKey = null)
+    {
+        $payIn = new PayIn();
+        $payIn->ExecutionType = "PAYPAL";
+        $payIn->PaymentType = "WEB";
+        $payIn->RecurringPayinRegistrationId = $recurringPayInRegistrationId;
+
+        $lineItem = new LineItem();
+        $lineItem->Name = 'test item';
+        $lineItem->Quantity = 1;
+        $lineItem->UnitAmount = 1000;
+        $lineItem->TaxAmount = 0;
+
+        $payInDetails = new PayInPaymentDetailsPaypal();
+        $payInDetails->LineItems = [$lineItem];
+
+        $executionDetails = new PayInExecutionDetailsWeb();
+        $executionDetails->ReturnURL = "https://www.my-site.com/returnurl";
+
+        $payIn->PaymentDetails = $payInDetails;
+        $payIn->ExecutionDetails = $executionDetails;
+
+        return $this->_api->PayIns->CreateRecurringPayIn($payIn, $idempotencyKey);
+    }
+
+    protected function createNewRecurringPayPalPayInMIT($recurringPayInRegistrationId, $idempotencyKey = null)
+    {
+        $payIn = new PayIn();
+        $payIn->ExecutionType = "PAYPAL";
+        $payIn->PaymentType = "WEB";
+        $payIn->RecurringPayinRegistrationId = $recurringPayInRegistrationId;
+
+        $debitedFunds = new Money();
+        $debitedFunds->Amount = 1000;
+        $debitedFunds->Currency = "EUR";
+
+        $fees = new Money();
+        $fees->Amount = 0;
+        $fees->Currency = "EUR";
+
+        $payIn->DebitedFunds = $debitedFunds;
+        $payIn->Fees = $fees;
+
+        $lineItem = new LineItem();
+        $lineItem->Name = 'test item';
+        $lineItem->Quantity = 1;
+        $lineItem->UnitAmount = 1000;
+        $lineItem->TaxAmount = 0;
+
+        $payInDetails = new PayInPaymentDetailsPaypal();
+        $payInDetails->LineItems = [$lineItem];
+
+        $executionDetails = new PayInExecutionDetailsWeb();
+        $executionDetails->ReturnURL = "https://www.my-site.com/returnurl";
+
+        $payIn->PaymentDetails = $payInDetails;
+        $payIn->ExecutionDetails = $executionDetails;
+
+        return $this->_api->PayIns->CreateRecurringPayIn($payIn, $idempotencyKey);
     }
 
     protected function getRecurringPayinRegistrationPaypal()

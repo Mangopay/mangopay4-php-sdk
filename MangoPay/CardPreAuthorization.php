@@ -205,7 +205,7 @@ class CardPreAuthorization extends Libraries\EntityBase
             'RemainingFunds' => '\MangoPay\Money',
             'BrowserInfo' => '\MangoPay\BrowserInfo',
             'Shipping' => '\MangoPay\Shipping',
-            'AuthenticationResult' => '\MangoPay\AuthenticationResult',
+            'AuthenticationResult' => '\MangoPay\AuthenticationResult'
         ];
     }
 

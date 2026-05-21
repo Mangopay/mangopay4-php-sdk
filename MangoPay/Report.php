@@ -85,6 +85,11 @@ class Report extends Libraries\EntityBase
      */
     public $Columns;
 
+    /**
+     * @var string|null
+     */
+    public $DateFilterBy;
+
     public function GetSubObjects()
     {
         $subObjects = parent::GetSubObjects();

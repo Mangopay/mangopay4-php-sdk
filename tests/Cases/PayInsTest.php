@@ -564,7 +564,7 @@ class PayInsTest extends Base
         $this->assertNotNull($updatedResult);
     }
 
-    public function test_Create_Recurring_Pay_In_Registration()
+    public function test_Create_Recurring_Card_Pay_In_Registration()
     {
         $created = $this->createNewRecurringPayInRegistration();
         $fetched = $this->_api->PayIns->GetRecurringPayInRegistration($created->Id);
@@ -580,6 +580,42 @@ class PayInsTest extends Base
         $this->assertEquals("CREATED", $created->Status);
         $this->assertEquals($created->Id, $fetched->Id);
         $this->assertEquals($created->Status, $fetched->Status);
+    }
+
+    public function test_Create_Recurring_ApplePay_Pay_In_Registration()
+    {
+        $this->markTestSkipped('Manual PaymentData creation needed for testing');
+        $created = $this->createNewRecurringPayInRegistration('APPLEPAY');
+        $fetched = $this->_api->PayIns->GetRecurringPayInRegistration($created->Id);
+
+        $this->assertNotNull($created);
+        $this->assertNotNull($fetched);
+        $this->assertInstanceOf(RecurringPayInRegistration::class, $created);
+        $this->assertNotNull($created->Id);
+        $this->assertNotNull($created->CurrentState);
+        $this->assertEquals("CREATED", $created->Status);
+        $this->assertEquals($created->Id, $fetched->Id);
+        $this->assertEquals($created->Status, $fetched->Status);
+        $this->assertEquals("APPLEPAY", $created->PaymentType);
+        $this->assertEquals($created->PaymentType, $fetched->PaymentType);
+    }
+
+    public function test_Create_Recurring_GooglePay_Pay_In_Registration()
+    {
+        $this->markTestSkipped('Manual PaymentData creation needed for testing');
+        $created = $this->createNewRecurringPayInRegistration('GOOGLEPAY');
+        $fetched = $this->_api->PayIns->GetRecurringPayInRegistration($created->Id);
+
+        $this->assertNotNull($created);
+        $this->assertNotNull($fetched);
+        $this->assertInstanceOf(RecurringPayInRegistration::class, $created);
+        $this->assertNotNull($created->Id);
+        $this->assertNotNull($created->CurrentState);
+        $this->assertEquals("CREATED", $created->Status);
+        $this->assertEquals($created->Id, $fetched->Id);
+        $this->assertEquals($created->Status, $fetched->Status);
+        $this->assertEquals("APPLEPAY", $created->PaymentType);
+        $this->assertEquals($created->PaymentType, $fetched->PaymentType);
     }
 
     public function test_Update_Recurring_Pay_In_Registration()

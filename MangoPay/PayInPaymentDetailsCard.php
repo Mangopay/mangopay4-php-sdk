@@ -60,7 +60,7 @@ class PayInPaymentDetailsCard extends Libraries\Dto implements PayInPaymentDetai
 
     /**
      * Information of the card
-     * @var CardInfo
+     * @var object
      */
     public $CardInfo;
 
@@ -77,7 +77,6 @@ class PayInPaymentDetailsCard extends Libraries\Dto implements PayInPaymentDetai
         $subObjects = parent::GetSubObjects();
         $subObjects['BrowserInfo'] = '\MangoPay\BrowserInfo';
         $subObjects['Shipping'] = '\MangoPay\Shipping';
-        $subObjects['CardInfo'] = '\MangoPay\CardInfo';
 
         return $subObjects;
     }

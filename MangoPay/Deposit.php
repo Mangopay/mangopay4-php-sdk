@@ -119,7 +119,7 @@ class Deposit extends Libraries\EntityBase
 
     /**
      * Information of the card
-     * @var CardInfo
+     * @var object
      */
     public $CardInfo;
 
@@ -142,7 +142,6 @@ class Deposit extends Libraries\EntityBase
         $subObjects['Billing'] = '\MangoPay\Billing';
         $subObjects['Shipping'] = '\MangoPay\Shipping';
         $subObjects['AuthenticationResult'] = '\MangoPay\AuthenticationResult';
-        $subObjects['CardInfo'] = '\MangoPay\CardInfo';
 
         return $subObjects;
     }

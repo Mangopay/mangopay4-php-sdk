@@ -38,6 +38,7 @@ use MangoPay\PayInIntentSeller;
 use MangoPay\PayInIntentSplit;
 use MangoPay\PayInPaymentDetailsCard;
 use MangoPay\PayInPaymentDetailsPaypal;
+use MangoPay\PaymentData;
 use MangoPay\PayOut;
 use MangoPay\PayOutEligibilityRequest;
 use MangoPay\PayOutPaymentDetailsBankWire;
@@ -2742,7 +2743,6 @@ abstract class Base extends TestCase
 
         $recurringPayInRegistration = new RecurringPayInRegistration();
         $recurringPayInRegistration->AuthorId = $user->Id;
-        $recurringPayInRegistration->CardId = $cardId;
         $recurringPayInRegistration->CreditedUserId = $user->Id;
         $recurringPayInRegistration->CreditedWalletId = $walletId;
         $recurringPayInRegistration->FirstTransactionDebitedFunds = new \MangoPay\Money();
@@ -2753,6 +2753,24 @@ abstract class Base extends TestCase
         $recurringPayInRegistration->FirstTransactionFees->Currency = 'EUR';
         $recurringPayInRegistration->FreeCycles = 0;
         $recurringPayInRegistration->PaymentType = $paymentType;
+
+        switch ($paymentType) {
+            case 'CARD_DIRECT':
+                $recurringPayInRegistration->CardId = $cardId;
+                break;
+            case 'APPLEPAY':
+                $paymentData = new PaymentData();
+                $paymentData->TransactionId = "placeholder";
+                $paymentData->Network = "placeholder";
+                $paymentData->TokenData = "placeholder";
+                $recurringPayInRegistration->PaymentData = $paymentData;
+                break;
+            case 'GOOGLEPAY':
+                $recurringPayInRegistration->PaymentData = "placeholder";
+                break;
+            default:
+                break;
+        }
 
         $billing = new \MangoPay\Billing();
         $billing->FirstName = 'John';

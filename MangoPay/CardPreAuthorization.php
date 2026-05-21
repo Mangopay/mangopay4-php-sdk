@@ -174,7 +174,7 @@ class CardPreAuthorization extends Libraries\EntityBase
 
     /**
      * Information of the card
-     * @var CardInfo
+     * @var object
      */
     public $CardInfo;
 
@@ -205,8 +205,7 @@ class CardPreAuthorization extends Libraries\EntityBase
             'RemainingFunds' => '\MangoPay\Money',
             'BrowserInfo' => '\MangoPay\BrowserInfo',
             'Shipping' => '\MangoPay\Shipping',
-            'AuthenticationResult' => '\MangoPay\AuthenticationResult',
-            'CardInfo' => '\MangoPay\CardInfo',
+            'AuthenticationResult' => '\MangoPay\AuthenticationResult'
         ];
     }
 

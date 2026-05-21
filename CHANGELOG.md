@@ -6,10 +6,24 @@
   - `ApiPayIns::CreateDepositPreauthorizedPayInWithoutComplement()` → use `ApiPayIns::CreatePayInDepositPreauthorizedWithoutComplement()` instead.
   - `ApiPayIns::CreateDepositPreauthorizedPayInPriorToComplement()` → use `ApiPayIns::CreatePayInDepositPreauthorizedPriorToComplement()` instead.
   - `ApiPayIns::CreateDepositPreauthorizedPayInComplement()` → use `ApiPayIns::CreatePayInDepositPreauthorizedComplement()` instead.
+- **`ApiPayIns` recurring PayIn methods** (#794) – The following methods have been deprecated in favour of new names and a unified creation entry point. The old methods still work but will be removed in a future major version:
+  - `ApiPayIns::CreateRecurringRegistration()` → use `ApiPayIns::CreateRecurringPayInRegistration()` instead.
+  - `ApiPayIns::GetRecurringRegistration()` → use `ApiPayIns::GetRecurringPayInRegistration()` instead.
+  - `ApiPayIns::UpdateRecurringRegistration()` → use `ApiPayIns::UpdateRecurringPayInRegistration()` instead.
+  - `ApiPayIns::CreateRecurringPayInRegistrationCIT()` → use `ApiPayIns::CreateRecurringPayIn()` instead.
+  - `ApiPayIns::CreateRecurringPayInRegistrationMIT()` → use `ApiPayIns::CreateRecurringPayIn()` instead.
+  - `ApiPayIns::CreateRecurringPayPalPayInCIT()` → use `ApiPayIns::CreateRecurringPayIn()` instead.
+  - `ApiPayIns::CreateRecurringPayPalPayInMIT()` → use `ApiPayIns::CreateRecurringPayIn()` instead.
 
 ### Added
 - **PayPal deposit preauthorizations** (#795) – New `PayPalDepositPreauthorization` entity (extends `Deposit`) with PayPal-specific fields (`PaypalPayerID`, `PaypalOrderID`, `BuyerFirstname`, `BuyerLastname`, `BuyerPhone`, `BuyerCountry`, `PaypalBuyerAccountEmail`, `CancelURL`, `Trackings`, `ShippingPreference`, `Reference`, `LineItems`, `RedirectURL`, `ReturnURL`, `DataCollectionId`). New method `ApiDeposits::CreatePayPalDepositPreauthorization()` (POST `/deposit-preauthorizations/payment-methods/paypal`) with optional `$idempotencyKey`.
   - **Automatic hydration:** `ApiDeposits::Get` / `Cancel` / `Update` / `GetAllForUser` now **automatically hydrate** PayPal deposits as `PayPalDepositPreauthorization` (instead of the base `Deposit` type), so PayPal-specific fields are accessible without any extra casting.
+- **Recurring PayIns – Apple Pay & Google Pay support and unified creation** (#794):
+  - New `RecurringPayInRegistration` entity returned by the new registration methods (with `Status`, `ResultCode`, `ResultMessage`, `CurrentState`, `RecurringType`, `TotalAmount`, `CycleNumber`, `AuthorId`, `CreditedUserId`, `CreditedWalletId`, `Billing`, `Shipping`, `EndDate`, `Frequency`, `FixedNextAmount`, `FractionedPayment`, `FreeCycles`, `FirstTransactionDebitedFunds`, `FirstTransactionFees`, `NextTransactionDebitedFunds`, `NextTransactionFees`, `ProfilingAttemptReference`, `PaymentType`, `CardInfo`, `CardId`, `Migration`, `PaymentData`).
+  - New `ApiPayIns::CreateRecurringPayInRegistration()`, `ApiPayIns::GetRecurringPayInRegistration()`, and `ApiPayIns::UpdateRecurringPayInRegistration()` methods returning the new `RecurringPayInRegistration` type.
+  - New unified `ApiPayIns::CreateRecurringPayIn()` method which dispatches to the correct endpoint based on the PayIn's `PaymentType` / `ExecutionType`, replacing the per-scheme CIT/MIT methods.
+  - **Apple Pay** recurring PayIns are now supported via the new endpoint `POST /payins/payment-methods/applepay/recurring`.
+  - **Google Pay** recurring PayIns are now supported via the new endpoint `POST /payins/payment-methods/googlepay/recurring`.
 - **`Report.DateFilterBy`** (#787) – New optional `DateFilterBy` property on `Report` to control which date field the report filter applies to.
 - **`LocalAccount` extra bank-identifier fields** (#793) – Added `BankCode` (4-digit bank code), `BSBCode` (6-digit Bank State Branch code), and `BCNumber` (5-digit bank clearing number). Existing properties (`Iban`, `Bic`, `AchNumber`, `FedWireNumber`, `AccountType`, `BranchCode`, `InstitutionNumber`) gained inline doc comments; behavior unchanged.
 - **Recipients pagination** (#792) – Verified/tested that `ApiRecipients::GetUserRecipients()` honours the `Pagination` argument; no API change.

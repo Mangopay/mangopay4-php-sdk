@@ -28,13 +28,18 @@ class HooksTest extends Base
 
     public function test_Hooks_Update()
     {
+        $url = "https://test123.com";
+        $email = md5(uniqid()) . "@mangopay.com";
+
         $hook = $this->getJohnHook();
-        $hook->Url = "https://test123.com";
+        $hook->Url = $url;
+        $hook->Email = $email;
 
         $saveHook = $this->_api->Hooks->Update($hook);
 
         $this->assertSame($hook->Id, $saveHook->Id);
-        $this->assertSame("https://test123.com", $saveHook->Url);
+        $this->assertSame($url, $saveHook->Url);
+        $this->assertSame($email, $saveHook->Email);
     }
 
     public function test_Hooks_All()

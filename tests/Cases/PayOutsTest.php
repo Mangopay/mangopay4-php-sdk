@@ -36,6 +36,8 @@ class PayOutsTest extends Base
         $recipientDto->Currency = CurrencyIso::EUR;
         $recipient = $this->_api->Recipients->Create($recipientDto, $john->Id);
 
+        sleep(5);
+
         $payOutDto = $this->getNewPayOutDto($john->Id, $wallet->Id);
         $payOutDto->MeanOfPaymentDetails->RecipientId = $recipient->Id;
         $payOut = $this->_api->PayOuts->Create($payOutDto);

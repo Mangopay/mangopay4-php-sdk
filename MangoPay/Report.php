@@ -88,7 +88,7 @@ class Report extends Libraries\EntityBase
     /**
      * @var string|null
      */
-    public $DateFilterBy;
+    public $DateRangeBy;
 
     public function GetSubObjects()
     {

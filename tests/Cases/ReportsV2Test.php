@@ -46,7 +46,7 @@ class ReportsV2Test extends Base
         $report->DownloadFormat = "CSV";
         $report->AfterDate = 1740787200;
         $report->BeforeDate = 1743544740;
-        $report->DateFilterBy = "CreationDate";
+        $report->DateRangeBy = "CreationDate";
         $created = $this->_api->ReportsV2->Create($report);
 
         $this->assertNotNull($created);

@@ -30,4 +30,9 @@ class Hook extends Libraries\EntityBase
      * @see \MangoPay\EventType
      */
     public $EventType;
+
+    /**
+     * @var string
+     */
+    public $Email;
 }

@@ -580,6 +580,8 @@ class PayInsTest extends Base
         $this->assertEquals("CREATED", $created->Status);
         $this->assertEquals($created->Id, $fetched->Id);
         $this->assertEquals($created->Status, $fetched->Status);
+        $this->assertNotNull($created->FlowDescriptor);
+        $this->assertNotNull($created->FlowDescriptor->Beneficiaries[0]->UserId);
     }
 
     public function test_Create_Recurring_ApplePay_Pay_In_Registration()
@@ -1097,6 +1099,8 @@ class PayInsTest extends Base
 
         $fetchedPayIn = $this->_api->PayIns->Get($payIn->Id);
         $this->assertEquals($payIn->Id, $fetchedPayIn->Id);
+        $this->assertNotNull($payIn->FlowDescriptor);
+        $this->assertNotNull($payIn->FlowDescriptor->Beneficiaries[0]->UserId);
     }
 
     public function test_PayIns_Create_Bancontact_Web()

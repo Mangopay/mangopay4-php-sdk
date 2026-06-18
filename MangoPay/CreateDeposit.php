@@ -56,6 +56,12 @@ class CreateDeposit extends Libraries\Dto
     public $Shipping;
 
     /**
+     * Flow descriptor
+     * @var FlowDescriptor|null
+     */
+    public $FlowDescriptor;
+
+    /**
      * Get array with mapping which property is object and what type of object
      * @return array
      */
@@ -66,6 +72,7 @@ class CreateDeposit extends Libraries\Dto
         $subObjects['BrowserInfo'] = '\MangoPay\BrowserInfo';
         $subObjects['Billing'] = '\MangoPay\Billing';
         $subObjects['Shipping'] = '\MangoPay\Shipping';
+        $subObjects['FlowDescriptor'] = '\MangoPay\FlowDescriptor';
 
         return $subObjects;
     }

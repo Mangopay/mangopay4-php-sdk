@@ -25,6 +25,7 @@ class CardPreAuthorizationsTest extends Base
         $this->assertSame(AVSResult::NO_CHECK, $cardPreAuthorization->SecurityInfo->AVSResult);
         $this->assertInstanceOf(BrowserInfo::class, $cardPreAuthorization->BrowserInfo);
         $this->assertInstanceOf(Shipping::class, $cardPreAuthorization->Shipping);
+        $this->assertNotNull($cardPreAuthorization->FlowDescriptor);
     }
 
     public function test_CardPreAuthorization_Get()

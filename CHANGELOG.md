@@ -1,3 +1,12 @@
+## [4.2.0] - 2026-06-23
+
+### Added
+- **Flow descriptors** – New `FlowDescriptor` class (`FlowId`, `Beneficiaries`) and `FlowDescriptorBeneficiary` class (`UserId`). A new optional `FlowDescriptor` property was added to `CardPreAuthorization`, `CreateDeposit`, `Deposit`, `PayIn`, and `RecurringPayInRegistration`, with the appropriate `GetSubObjects()` mappings.
+- **Hook.Email** – New optional `Email` property on `Hook` to set/retrieve the notification email associated with a hook.
+
+### Changed
+- **`Report.DateFilterBy` renamed to `Report.DateRangeBy`** – The `DateFilterBy` property introduced in 4.1.0 has been renamed to `DateRangeBy` to align with the API. Update any code that set `Report::$DateFilterBy` to use `Report::$DateRangeBy` instead.
+
 ## [4.1.0] - 2026-05-21
 
 ### Deprecated

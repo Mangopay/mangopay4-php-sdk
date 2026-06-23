@@ -64,10 +64,17 @@ class PayIn extends Transaction
      */
     public $AuthenticationResult;
 
+    /**
+     * Flow descriptor
+     * @var FlowDescriptor|null
+     */
+    public $FlowDescriptor;
+
     public function GetSubObjects()
     {
         $subObjects = parent::GetSubObjects();
         $subObjects['AuthenticationResult'] = '\MangoPay\AuthenticationResult';
+        $subObjects['FlowDescriptor'] = '\MangoPay\FlowDescriptor';
 
         return $subObjects;
     }

@@ -20,6 +20,8 @@ use MangoPay\CreatePreAuthorizedDepositPayIn;
 use MangoPay\CreateQuotedConversion;
 use MangoPay\CurrencyIso;
 use MangoPay\CustomFees;
+use MangoPay\FlowDescriptor;
+use MangoPay\FlowDescriptorBeneficiary;
 use MangoPay\IndividualRecipient;
 use MangoPay\IntentSplits;
 use MangoPay\LegalPersonType;
@@ -1389,6 +1391,12 @@ abstract class Base extends TestCase
         $payIn->ExecutionDetails->ReturnURL = "http://www.my-site.com/returnURL?test.com";
 
         $payIn->Tag = "Twint tag";
+
+        $beneficiary = new FlowDescriptorBeneficiary();
+        $beneficiary->UserId = $userId;
+        $flowDescriptor = new FlowDescriptor();
+        $flowDescriptor->Beneficiaries = [$beneficiary];
+        $payIn->FlowDescriptor = $flowDescriptor;
 
         return $this->_api->PayIns->Create($payIn, $idempotencyKey);
     }
@@ -2783,6 +2791,12 @@ abstract class Base extends TestCase
         $shipping->LastName = 'Doe';
         $shipping->Address = $this->getNewAddress();
         $recurringPayInRegistration->Shipping = $shipping;
+
+        $beneficiary = new FlowDescriptorBeneficiary();
+        $beneficiary->UserId = $user->Id;
+        $flowDescriptor = new FlowDescriptor();
+        $flowDescriptor->Beneficiaries = [$beneficiary];
+        $recurringPayInRegistration->FlowDescriptor = $flowDescriptor;
 
         return $this->_api->PayIns->CreateRecurringPayInRegistration($recurringPayInRegistration, $idempotencyKey);
     }

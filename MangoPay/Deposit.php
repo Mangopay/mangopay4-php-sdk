@@ -130,6 +130,12 @@ class Deposit extends Libraries\EntityBase
     public $AuthenticationResult;
 
     /**
+     * Flow descriptor
+     * @var FlowDescriptor|null
+     */
+    public $FlowDescriptor;
+
+    /**
      * Get array with mapping which property is object and what type of object
      * @return array
      */
@@ -142,6 +148,7 @@ class Deposit extends Libraries\EntityBase
         $subObjects['Billing'] = '\MangoPay\Billing';
         $subObjects['Shipping'] = '\MangoPay\Shipping';
         $subObjects['AuthenticationResult'] = '\MangoPay\AuthenticationResult';
+        $subObjects['FlowDescriptor'] = '\MangoPay\FlowDescriptor';
 
         return $subObjects;
     }

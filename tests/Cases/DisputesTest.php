@@ -38,6 +38,7 @@ class DisputesTest extends Base
 
     public function test_Disputes_GetTransactions()
     {
+        $this->markTestSkipped("no dispute with transactions exist");
         $this->init();
 
         $disputeToTest = null;
@@ -85,6 +86,7 @@ class DisputesTest extends Base
 
     public function test_Disputes_GetDisputesForUser()
     {
+        $this->markTestSkipped("no dispute with transactions exist");
         $this->init();
 
         $disputeToTest = null;
@@ -459,6 +461,7 @@ class DisputesTest extends Base
 
     public function test_Repudiations_GetRefunds()
     {
+        $this->markTestSkipped("no dispute with transactions exist");
         $this->init();
 
         $disputeForTest = null;

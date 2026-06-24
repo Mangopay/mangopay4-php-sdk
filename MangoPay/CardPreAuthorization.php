@@ -193,6 +193,12 @@ class CardPreAuthorization extends Libraries\EntityBase
     public $AuthenticationResult;
 
     /**
+     * Flow descriptor
+     * @var FlowDescriptor|null
+     */
+    public $FlowDescriptor;
+
+    /**
      * Get array with mapping which property is object and what type of object
      * @return array
      */
@@ -205,7 +211,8 @@ class CardPreAuthorization extends Libraries\EntityBase
             'RemainingFunds' => '\MangoPay\Money',
             'BrowserInfo' => '\MangoPay\BrowserInfo',
             'Shipping' => '\MangoPay\Shipping',
-            'AuthenticationResult' => '\MangoPay\AuthenticationResult'
+            'AuthenticationResult' => '\MangoPay\AuthenticationResult',
+            'FlowDescriptor' => '\MangoPay\FlowDescriptor',
         ];
     }
 

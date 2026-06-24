@@ -88,6 +88,12 @@ class Report extends Libraries\EntityBase
     /**
      * @var string|null
      */
+    public $DateRangeBy;
+
+    /**
+     * @var string|null
+     * @deprecated Use 'DateRangeBy' instead
+     */
     public $DateFilterBy;
 
     public function GetSubObjects()

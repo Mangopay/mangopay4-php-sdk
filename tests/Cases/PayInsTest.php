@@ -44,6 +44,7 @@ class PayInsTest extends Base
         $this->assertInstanceOf('\MangoPay\PayInExecutionDetailsWeb', $payIn->ExecutionDetails);
         $this->assertNotNull($payIn->ExecutionDetails->Billing);
         $this->assertInstanceOf(Shipping::class, $payIn->PaymentDetails->Shipping);
+        $this->assertNotNull($payIn->FlowDescriptor);
     }
 
     public function test_PayIns_Get_CardWeb()
@@ -310,6 +311,7 @@ class PayInsTest extends Base
         $this->assertEquals("EUR", $createPayIn->Fees->Currency);
         $this->assertNotNull($createPayIn->ExecutionDetails->ReturnURL);
         $this->assertNotNull($createPayIn->ExecutionDetails->RedirectURL);
+        $this->assertNotNull($createPayIn->FlowDescriptor);
     }
 
     public function test_PayIns_Create_DirectDebitDirect()
@@ -332,6 +334,7 @@ class PayInsTest extends Base
         $this->assertEquals($user->Id, $payIn->AuthorId);
         $this->assertEquals('FAILED', $payIn->Status);
         $this->assertEquals('PAYIN', $payIn->Type);
+        $this->assertNotNull($payIn->FlowDescriptor);
     }
 
     public function test_PayIns_Create_PaypalWeb()
@@ -344,11 +347,11 @@ class PayInsTest extends Base
         $this->assertSame('WEB', $payIn->ExecutionType);
         $this->assertInstanceOf('\MangoPay\PayInExecutionDetailsWeb', $payIn->ExecutionDetails);
         $this->assertSame('FR', $payIn->ExecutionDetails->Culture);
+        $this->assertNotNull($payIn->FlowDescriptor);
     }
 
     public function test_PayIns_Create_PaypalWebV2()
     {
-//        $this->markTestSkipped("skipped because of external error");
         $payIn = $this->getJohnsPayInPaypalWebV2();
 
         $this->assertNotNull($payIn->Id);
@@ -361,6 +364,7 @@ class PayInsTest extends Base
         $this->assertNotNull($payIn->PaymentDetails->LineItems);
         $this->assertNotNull($payIn->ExecutionDetails->RedirectURL);
         $this->assertNotNull($payIn->ExecutionDetails->ReturnURL);
+        $this->assertNotNull($payIn->FlowDescriptor);
 
         $fetched = $this->_api->PayIns->Get($payIn->Id);
         $this->assertSame($fetched->Id, $payIn->Id);
@@ -580,6 +584,8 @@ class PayInsTest extends Base
         $this->assertEquals("CREATED", $created->Status);
         $this->assertEquals($created->Id, $fetched->Id);
         $this->assertEquals($created->Status, $fetched->Status);
+        $this->assertNotNull($created->FlowDescriptor);
+        $this->assertNotNull($created->FlowDescriptor->Beneficiaries[0]->UserId);
     }
 
     public function test_Create_Recurring_ApplePay_Pay_In_Registration()
@@ -906,6 +912,7 @@ class PayInsTest extends Base
         $this->assertEquals(PayInStatus::Created, $payIn->Status);
         $this->assertEquals('PAYIN', $payIn->Type);
         $this->assertEquals('REGULAR', $payIn->Nature);
+        $this->assertNotNull($payIn->FlowDescriptor);
 
         $fetchedPayIn = $this->_api->PayIns->Get($payIn->Id);
         $this->assertEquals($payIn->Id, $fetchedPayIn->Id);
@@ -940,6 +947,7 @@ class PayInsTest extends Base
         $this->assertEquals(PayInStatus::Created, $payIn->Status);
         $this->assertEquals('PAYIN', $payIn->Type);
         $this->assertEquals('REGULAR', $payIn->Nature);
+        $this->assertNotNull($payIn->FlowDescriptor);
 
         $fetchedPayIn = $this->_api->PayIns->Get($payIn->Id);
         $this->assertEquals($payIn->Id, $fetchedPayIn->Id);
@@ -957,6 +965,7 @@ class PayInsTest extends Base
         $this->assertEquals(PayInStatus::Created, $payIn->Status);
         $this->assertEquals('PAYIN', $payIn->Type);
         $this->assertEquals('REGULAR', $payIn->Nature);
+        $this->assertNotNull($payIn->FlowDescriptor);
 
         $fetchedPayIn = $this->_api->PayIns->Get($payIn->Id);
         $this->assertEquals($payIn->Id, $fetchedPayIn->Id);
@@ -974,6 +983,7 @@ class PayInsTest extends Base
         $this->assertEquals(PayInStatus::Created, $payIn->Status);
         $this->assertEquals('PAYIN', $payIn->Type);
         $this->assertEquals('REGULAR', $payIn->Nature);
+        $this->assertNotNull($payIn->FlowDescriptor);
 
         $fetchedPayIn = $this->_api->PayIns->Get($payIn->Id);
         $this->assertEquals($payIn->Id, $fetchedPayIn->Id);
@@ -1011,6 +1021,7 @@ class PayInsTest extends Base
         $this->assertEquals('PAYIN', $payIn->Type);
         $this->assertEquals('REGULAR', $payIn->Nature);
         $this->assertEquals(10, $payIn->PaymentDetails->LineItems[0]->Discount);
+        $this->assertNotNull($payIn->FlowDescriptor);
 
         $fetchedPayIn = $this->_api->PayIns->Get($payIn->Id);
         $this->assertEquals($payIn->Id, $fetchedPayIn->Id);
@@ -1029,6 +1040,7 @@ class PayInsTest extends Base
         $this->assertEquals('PAYIN', $payIn->Type);
         $this->assertEquals('REGULAR', $payIn->Nature);
         $this->assertNotNull($payIn->PaymentDetails->BankName);
+        $this->assertNotNull($payIn->FlowDescriptor);
     }
 
     public function test_PayIns_Create_IdealWeb()
@@ -1077,6 +1089,7 @@ class PayInsTest extends Base
         $this->assertEquals(PayInStatus::Created, $payIn->Status);
         $this->assertEquals('PAYIN', $payIn->Type);
         $this->assertEquals('REGULAR', $payIn->Nature);
+        $this->assertNotNull($payIn->FlowDescriptor);
 
         $fetchedPayIn = $this->_api->PayIns->Get($payIn->Id);
         $this->assertEquals($payIn->Id, $fetchedPayIn->Id);
@@ -1094,9 +1107,12 @@ class PayInsTest extends Base
         $this->assertEquals(PayInStatus::Created, $payIn->Status);
         $this->assertEquals('PAYIN', $payIn->Type);
         $this->assertEquals('REGULAR', $payIn->Nature);
+        $this->assertNotNull($payIn->FlowDescriptor);
 
         $fetchedPayIn = $this->_api->PayIns->Get($payIn->Id);
         $this->assertEquals($payIn->Id, $fetchedPayIn->Id);
+        $this->assertNotNull($payIn->FlowDescriptor);
+        $this->assertNotNull($payIn->FlowDescriptor->Beneficiaries[0]->UserId);
     }
 
     public function test_PayIns_Create_Bancontact_Web()
@@ -1111,6 +1127,7 @@ class PayInsTest extends Base
         $this->assertEquals(PayInStatus::Created, $payIn->Status);
         $this->assertEquals('PAYIN', $payIn->Type);
         $this->assertEquals('REGULAR', $payIn->Nature);
+        $this->assertNotNull($payIn->FlowDescriptor);
 
         $fetchedPayIn = $this->_api->PayIns->Get($payIn->Id);
         $this->assertEquals($payIn->Id, $fetchedPayIn->Id);
@@ -1128,6 +1145,7 @@ class PayInsTest extends Base
         $this->assertEquals(PayInStatus::Created, $payIn->Status);
         $this->assertEquals('PAYIN', $payIn->Type);
         $this->assertNotNull($payIn->PaymentDetails->Phone);
+        $this->assertNotNull($payIn->FlowDescriptor);
 
         $fetchedPayIn = $this->_api->PayIns->Get($payIn->Id);
         $this->assertEquals($payIn->Id, $fetchedPayIn->Id);

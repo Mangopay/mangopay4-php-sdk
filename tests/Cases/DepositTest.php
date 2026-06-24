@@ -25,6 +25,7 @@ class DepositTest extends Base
         $this->assertInstanceOf('\MangoPay\Deposit', $deposit);
         $this->assertNotInstanceOf('\MangoPay\PayPalDepositPreauthorization', $deposit);
         $this->assertNotNull($deposit->AuthenticationResult);
+        $this->assertNotNull($deposit->FlowDescriptor);
     }
 
     public function test_Deposits_CreatePayPalPreauthorization()
@@ -43,6 +44,7 @@ class DepositTest extends Base
         $this->assertEquals(PayInPaymentType::PayPal, $created->PaymentType);
         $this->assertEquals(CardPreAuthorizationPaymentStatus::Waiting, $created->PaymentStatus);
         $this->assertEquals(DepositStatus::Created, $created->Status);
+        $this->assertNotNull($created->FlowDescriptor);
     }
 
     /**

@@ -139,6 +139,12 @@ class RecurringPayInRegistration extends Libraries\EntityBase
      */
     public $PaymentData;
 
+    /**
+     * Flow descriptor
+     * @var FlowDescriptor|null
+     */
+    public $FlowDescriptor;
+
     public function GetSubObjects()
     {
         $subObjects = parent::GetSubObjects();
@@ -151,6 +157,7 @@ class RecurringPayInRegistration extends Libraries\EntityBase
         $subObjects['FirstTransactionFees'] = '\MangoPay\Money';
         $subObjects['NextTransactionDebitedFunds'] = '\MangoPay\Money';
         $subObjects['NextTransactionFees'] = '\MangoPay\Money';
+        $subObjects['FlowDescriptor'] = '\MangoPay\FlowDescriptor';
 
         // PaymentData is only used for creation; not returned by the API
 

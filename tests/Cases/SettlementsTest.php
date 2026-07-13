@@ -49,14 +49,37 @@ class SettlementsTest extends Base
         self::assertEquals(200, $result['httpCode']);
     }
 
-    public function test_GetValidations()
+    public function test_GetValidations_BadFooter()
     {
-        $settlement = $this->createAndUploadSettlement('/../settlement_sample_bad.csv')['settlement'];
+        $settlement = $this->createAndUploadSettlement('/../settlement_sample_bad_footer.csv')['settlement'];
+        sleep(10);
         $pagination = new Pagination();
-        $pagination->Page = 1;
-        $pagination->Limit = 10;
+        $pagination->Page = 0;
+        $pagination->ItemsPerPage = 10;
         $validations = $this->_api->Settlements->GetValidations($settlement->SettlementId, $pagination);
         self::assertNotNull($validations);
+        self::assertNotEmpty($validations->FooterErrors);
+        self::assertNotNull($validations->FooterErrors[0]->FooterName);
+        self::assertNotNull($validations->FooterErrors[0]->Code);
+        self::assertNotNull($validations->FooterErrors[0]->Description);
+    }
+
+    public function test_GetValidations_BadLine()
+    {
+        $settlement = $this->createAndUploadSettlement('/../settlement_sample_bad_line.csv')['settlement'];
+        sleep(10);
+        $pagination = new Pagination();
+        $pagination->Page = 0;
+        $pagination->ItemsPerPage = 10;
+        $validations = $this->_api->Settlements->GetValidations($settlement->SettlementId, $pagination);
+        self::assertNotNull($validations);
+        self::assertNotEmpty($validations->LinesErrors);
+        $line = $validations->LinesErrors[0];
+        self::assertNotNull($line->ExternalProviderReference);
+        self::assertNotNull($line->ExternalTransactionType);
+        self::assertNotEmpty($line->Details);
+        self::assertNotNull($line->Details[0]->Code);
+        self::assertNotNull($line->Details[0]->Description);
     }
 
     public function test_CancelSettlement()

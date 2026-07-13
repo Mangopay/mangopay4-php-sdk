@@ -4,7 +4,6 @@ namespace MangoPay;
 
 /**
  * UserNatural entity
- * @deprecated Use 'UserNaturalSca' instead
  */
 class UserNatural extends User
 {

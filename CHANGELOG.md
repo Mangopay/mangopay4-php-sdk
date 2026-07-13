@@ -1,11 +1,9 @@
 ## [4.3.0] - 2026-07-13
 
 ### Deprecated
-- **Non-SCA user methods and models** (#805) – The following are deprecated in favour of their SCA equivalents. They still work but will be removed in a future major version:
+- **Non-SCA user methods** (#805) – The following are deprecated in favour of their SCA equivalents. They still work but will be removed in a future major version:
   - `ApiUsers::Get()` → use `ApiUsers::GetSca()` instead.
   - `ApiUsers::Update()` → use `ApiUsers::UpdateSca()` instead.
-  - `UserLegal` → use `UserLegalSca` instead.
-  - `UserNatural` → use `UserNaturalSca` instead.
 - **Deposit-preauthorized complement PayIn methods** (#805) – The following methods are deprecated and will be removed in a future version:
   - `ApiPayIns::CreatePayInDepositPreauthorizedPriorToComplement()`
   - `ApiPayIns::CreatePayInDepositPreauthorizedComplement()`

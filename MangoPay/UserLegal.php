@@ -4,7 +4,6 @@ namespace MangoPay;
 
 /**
  * UserLegal entity
- * @deprecated Use 'UserLegalSca' instead
  */
 class UserLegal extends User
 {

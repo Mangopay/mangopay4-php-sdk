@@ -349,6 +349,7 @@ class ApiPayIns extends Libraries\ApiBase
      * Create a Deposit Preauthorized PayIn prior to complement
      * @param CreatePreAuthorizedDepositPayIn $payIn PayIn object to create
      * @return PayIn Deposit object returned from API
+     * @deprecated This method will be removed in the future.
      */
     public function CreatePayInDepositPreauthorizedPriorToComplement(CreatePreAuthorizedDepositPayIn $payIn, $idempotencyKey = null)
     {
@@ -384,6 +385,7 @@ class ApiPayIns extends Libraries\ApiBase
      * Create a Deposit Preauthorized PayIn complement
      * @param CreatePreAuthorizedDepositPayIn $payIn PayIn object to create
      * @return PayIn Deposit object returned from API
+     * @deprecated This method will be removed in the future.
      */
     public function CreatePayInDepositPreauthorizedComplement(CreatePreAuthorizedDepositPayIn $payIn, $idempotencyKey = null)
     {

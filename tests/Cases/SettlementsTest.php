@@ -52,7 +52,7 @@ class SettlementsTest extends Base
     public function test_GetValidations_BadFooter()
     {
         $settlement = $this->createAndUploadSettlement('/../settlement_sample_bad_footer.csv')['settlement'];
-        sleep(10);
+        sleep(20);
         $pagination = new Pagination();
         $pagination->Page = 0;
         $pagination->ItemsPerPage = 10;
@@ -67,7 +67,7 @@ class SettlementsTest extends Base
     public function test_GetValidations_BadLine()
     {
         $settlement = $this->createAndUploadSettlement('/../settlement_sample_bad_line.csv')['settlement'];
-        sleep(10);
+        sleep(20);
         $pagination = new Pagination();
         $pagination->Page = 0;
         $pagination->ItemsPerPage = 10;

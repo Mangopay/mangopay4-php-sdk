@@ -1,3 +1,16 @@
+## [4.3.0] - 2026-07-13
+
+### Deprecated
+- **Non-SCA user methods** (#805) – The following are deprecated in favour of their SCA equivalents. They still work but will be removed in a future major version:
+  - `ApiUsers::Get()` → use `ApiUsers::GetSca()` instead.
+  - `ApiUsers::Update()` → use `ApiUsers::UpdateSca()` instead.
+- **Deposit-preauthorized complement PayIn methods** (#805) – The following methods are deprecated and will be removed in a future version:
+  - `ApiPayIns::CreatePayInDepositPreauthorizedPriorToComplement()`
+  - `ApiPayIns::CreatePayInDepositPreauthorizedComplement()`
+
+### Fixed
+- **Settlement validation lines** (#806) – Fixed the hydration of `SettlementValidationLine`. The `Code` and `Description` properties are replaced by a `Details` property (`SettlementValidationLineDetail[]`, each carrying `Code` and `Description`), matching the JSON actually returned by the API. This is not a breaking change: the previous `Code`/`Description` properties were never populated.
+
 ## [4.2.0] - 2026-06-24
 
 ### Added

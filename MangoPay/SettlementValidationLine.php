@@ -17,12 +17,15 @@ class SettlementValidationLine extends Dto
     public $ExternalTransactionType;
 
     /**
-     * @var string|null
+     * @var SettlementValidationLineDetail[]|null
      */
-    public $Code;
+    public $Details;
 
-    /**
-     * @var string|null
-     */
-    public $Description;
+    public function GetSubObjects()
+    {
+        $subObjects = parent::GetSubObjects();
+        $subObjects['Details'] = ['array_single', '\MangoPay\SettlementValidationLineDetail'];
+
+        return $subObjects;
+    }
 }

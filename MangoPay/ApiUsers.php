@@ -55,6 +55,7 @@ class ApiUsers extends Libraries\ApiBase
      * Get natural or legal user by ID
      * @param string $userId User identifier
      * @return UserLegal|UserNatural User object returned from API
+     * @deprecated Use 'GetSca' instead
      */
     public function Get($userId)
     {
@@ -122,6 +123,7 @@ class ApiUsers extends Libraries\ApiBase
      * @param UserLegal|UserNatural $user
      * @return UserLegal|UserNatural User object returned from API
      * @throws Libraries\Exception If occur Wrong entity class for user
+     * @deprecated Use 'UpdateSca' instead
      */
     public function Update($user)
     {

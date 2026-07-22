@@ -3143,6 +3143,7 @@ abstract class Base extends TestCase
         $split = new PayInIntentSplit();
         $split->LineItemId = $intent->LineItems[0]->Id;
         $split->SplitAmount = 10;
+        $split->Tag = 'custom tag';
 
         $splitsArray = [$split];
         $splitsPost = new IntentSplits();

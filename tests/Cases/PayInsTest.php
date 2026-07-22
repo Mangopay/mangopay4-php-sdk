@@ -1364,6 +1364,7 @@ class PayInsTest extends Base
         $this->assertNotNull($createdSplits->Splits);
         $this->assertTrue(sizeof($createdSplits->Splits) == 1);
         $this->assertInstanceOf('\MangoPay\PayInIntentSplit', $createdSplits->Splits[0]);
+        $this->assertNotNull($createdSplits->Splits[0]->Tag);
 
         $fetched = $this->_api->PayIns->GetPayInIntent($intent->Id);
         $this->assertInstanceOf('\MangoPay\PayInIntentSplitInfo', $fetched->Splits[0]);
@@ -1396,6 +1397,7 @@ class PayInsTest extends Base
         $split = $this->createNewSplits($intent)->Splits[0];
         $fetched =  $this->_api->PayIns->GetPayInIntentSplit($intent->Id, $split->Id);
         $this->assertEquals($split->Status, $fetched->Status);
+        $this->assertNotNull($split->Tag);
     }
 
     public function test_UpdatePayInIntentSplit()
@@ -1406,8 +1408,10 @@ class PayInsTest extends Base
         $toUpdate->Id = $split->Id;
         $toUpdate->Description = 'updated description';
         $toUpdate->LineItemId = $split->LineItemId;
+        $toUpdate->Tag = 'updated tag';
         $updated =  $this->_api->PayIns->UpdatePayInIntentSplit($intent->Id, $toUpdate);
         $this->assertEquals('updated description', $updated->Description);
+        $this->assertEquals('updated tag', $updated->Tag);
     }
 
     public function test_CreateFullPayInIntentRefund()

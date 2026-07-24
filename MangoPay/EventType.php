@@ -98,6 +98,7 @@ class EventType
     const IdentityVerificationInconclusive = "IDENTITY_VERIFICATION_INCONCLUSIVE";
     const IdentityVerificationOutdated = "IDENTITY_VERIFICATION_OUTDATED";
     const IdentityVerificationPending = "IDENTITY_VERIFICATION_PENDING";
+    const IdentityVerificationExpired = "IDENTITY_VERIFICATION_EXPIRED";
 
     const RecipientActive = "RECIPIENT_ACTIVE";
     const RecipientCanceled = "RECIPIENT_CANCELED";

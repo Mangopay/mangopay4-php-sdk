@@ -1628,4 +1628,13 @@ class PayInsTest extends Base
         $this->assertNotNull($result);
         $this->assertEquals("DEFENDED", $result->Decision);
     }
+
+    public function test_GetExternalProvidersList()
+    {
+        $response = $this->_api->PayIns->GetExternalProvidersList();
+
+        $this->assertNotNull($response);
+        $this->assertNotEmpty($response);
+        $this->assertContains("Mangopay", $response);
+    }
 }

@@ -120,6 +120,7 @@ abstract class ApiBase
         'payins_intent_reverse_refund' => ['/payins/intents/%s/refunds/%s/reverse', RequestType::POST, 'V3.0'],
         'payins_intent_create_dispute' => ['/payins/intents/%s/captures/%s/disputes', RequestType::POST, 'V3.0'],
         'payins_intent_update_dispute_outcome' => ['/payins/intents/%s/captures/%s/disputes/%s/decision', RequestType::PUT, 'V3.0'],
+        'payins_intent_get_external_providers_list' => ['/payins/intents/external-providers', RequestType::GET, 'V3.0'],
 
         'repudiation_get' => ['/repudiations/%s', RequestType::GET],
 

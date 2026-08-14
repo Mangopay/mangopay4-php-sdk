@@ -302,6 +302,7 @@ abstract class ApiBase
         'identity_verification_create' => ['/users/%s/identity-verifications', RequestType::POST],
         'identity_verification_get' => ['/identity-verifications/%s', RequestType::GET],
         'identity_verification_get_all' => ['/users/%s/identity-verifications', RequestType::GET],
+        'identity_verification_retry_psc' => ['/identity-verifications/%s/pscs/%s/retry', RequestType::PUT],
 
         'recipients_create' => ['/users/%s/recipients', RequestType::POST],
         'recipients_get' => ['/recipients/%s', RequestType::GET],

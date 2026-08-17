@@ -36,4 +36,20 @@ class ApiIdentityVerification extends Libraries\ApiBase
     {
         return $this->GetList('identity_verification_get_all', $pagination, '\MangoPay\IdentityVerification', $userId, $filter, $sorting);
     }
+
+    /**
+     * Request the retry of a PSC session
+     * @param string $identityVerificationId The unique identifier of the identity verification
+     * @param string $pscId The unique identifier of the PSC
+     * @param Psc $psc PSC object; it can be empty or contain values to be updated
+     * @return \MangoPay\Psc Updated Psc object returned from API
+     */
+    public function RetryPsc($identityVerificationId, $pscId, $psc = null)
+    {
+        if (is_null($psc)) {
+            $psc = new Psc();
+        }
+
+        return $this->UpdateObject('identity_verification_retry_psc', $psc, '\MangoPay\Psc', $identityVerificationId, $pscId);
+    }
 }

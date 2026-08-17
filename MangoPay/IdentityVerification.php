@@ -44,10 +44,16 @@ class IdentityVerification extends Libraries\EntityBase
      */
     public $Checks;
 
+    /**
+     * @var Psc[]
+     */
+    public $PSCs;
+
     public function GetSubObjects()
     {
         $subObjects = parent::GetSubObjects();
         $subObjects['Checks'] = ['array_single', '\MangoPay\Check'];
+        $subObjects['PSCs'] = ['array_single', '\MangoPay\Psc'];
 
         return $subObjects;
     }

@@ -2365,6 +2365,7 @@ abstract class Base extends TestCase
         $toCreate->ExternalData = $externalData;
         $toCreate->Buyer = $buyer;
         $toCreate->LineItems = $lineItems;
+        $toCreate->Tag = 'intent tag';
 
         return $this->_api->PayIns->CreatePayInIntentAuthorization($toCreate, $idempotencyKey);
     }
@@ -2407,6 +2408,7 @@ abstract class Base extends TestCase
 
         $fullCapture = new PayInIntent();
         $fullCapture->ExternalData = $externalData;
+        $fullCapture->Tag = 'capture tag';
 
         return $this->_api->PayIns->CreatePayInIntentCapture($intentAuthorization->Id, $fullCapture, $idempotencyKey);
     }
@@ -2424,6 +2426,7 @@ abstract class Base extends TestCase
 
         $refundDto = new PayInIntent();
         $refundDto->ExternalData = $externalData;
+        $refundDto->Tag = 'refund tag';
 
         return $this->_api->PayIns->CreatePayInIntentRefund($fullCapture->Id, $refundDto, $idempotencyKey);
     }
@@ -3143,6 +3146,7 @@ abstract class Base extends TestCase
         $split = new PayInIntentSplit();
         $split->LineItemId = $intent->LineItems[0]->Id;
         $split->SplitAmount = 10;
+        $split->Tag = 'custom tag';
 
         $splitsArray = [$split];
         $splitsPost = new IntentSplits();

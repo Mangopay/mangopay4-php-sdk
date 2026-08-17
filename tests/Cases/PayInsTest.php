@@ -1291,6 +1291,7 @@ class PayInsTest extends Base
         $this->assertNotNull($intentAuthorization->UnfundedAmount);
         $this->assertNotNull($intentAuthorization->LineItems[0]->UnfundedSellerAmount);
         $this->assertInstanceOf('\MangoPay\PayInIntentLineItem', $intentAuthorization->LineItems[0]);
+        $this->assertEquals('intent tag', $intentAuthorization->Tag);
     }
 
     public function test_CreatePayInIntentFullCapture()
@@ -1304,6 +1305,7 @@ class PayInsTest extends Base
         $fetched = $this->_api->PayIns->GetPayInIntent($result->Id);
         $this->assertInstanceOf('\MangoPay\PayInIntentCapture', $fetched->Captures[0]);
         $this->assertInstanceOf('\MangoPay\PayInIntentLineItem', $fetched->Captures[0]->LineItems[0]);
+        $this->assertEquals('intent tag', $fetched->Tag);
     }
 
     public function test_CreatePayInIntentPartialCapture()
@@ -1342,6 +1344,7 @@ class PayInsTest extends Base
         $fetched = $this->_api->PayIns->GetPayInIntent($intent->Id);
         $this->assertNotNull($intent->Status);
         $this->assertEquals($intent->Status, $fetched->Status);
+        $this->assertEquals('intent tag', $fetched->Tag);
     }
 
     public function test_CancelPayInIntent()
@@ -1364,6 +1367,7 @@ class PayInsTest extends Base
         $this->assertNotNull($createdSplits->Splits);
         $this->assertTrue(sizeof($createdSplits->Splits) == 1);
         $this->assertInstanceOf('\MangoPay\PayInIntentSplit', $createdSplits->Splits[0]);
+        $this->assertNotNull($createdSplits->Splits[0]->Tag);
 
         $fetched = $this->_api->PayIns->GetPayInIntent($intent->Id);
         $this->assertInstanceOf('\MangoPay\PayInIntentSplitInfo', $fetched->Splits[0]);
@@ -1396,6 +1400,7 @@ class PayInsTest extends Base
         $split = $this->createNewSplits($intent)->Splits[0];
         $fetched =  $this->_api->PayIns->GetPayInIntentSplit($intent->Id, $split->Id);
         $this->assertEquals($split->Status, $fetched->Status);
+        $this->assertNotNull($split->Tag);
     }
 
     public function test_UpdatePayInIntentSplit()
@@ -1406,8 +1411,10 @@ class PayInsTest extends Base
         $toUpdate->Id = $split->Id;
         $toUpdate->Description = 'updated description';
         $toUpdate->LineItemId = $split->LineItemId;
+        $toUpdate->Tag = 'updated tag';
         $updated =  $this->_api->PayIns->UpdatePayInIntentSplit($intent->Id, $toUpdate);
         $this->assertEquals('updated description', $updated->Description);
+        $this->assertEquals('updated tag', $updated->Tag);
     }
 
     public function test_CreateFullPayInIntentRefund()
@@ -1417,10 +1424,12 @@ class PayInsTest extends Base
         $this->assertNotNull($intentRefund);
         $this->assertEquals("REFUNDED", $intentRefund->Status);
         $this->assertInstanceOf('\MangoPay\PayInIntentRefund', $intentRefund->Refund);
+        $this->assertEquals('refund tag', $intentRefund->Tag);
 
         $fetched = $this->_api->PayIns->GetPayInIntent($intentRefund->Id);
         $this->assertInstanceOf('\MangoPay\PayInIntentRefund', $fetched->Refunds[0]);
         $this->assertInstanceOf('\MangoPay\PayInIntentLineItem', $fetched->Refunds[0]->LineItems[0]);
+        $this->assertEquals('intent tag', $fetched->Tag);
     }
 
     public function test_CreatePartialPayInIntentRefund()
@@ -1437,6 +1446,7 @@ class PayInsTest extends Base
         $refundDto = new PayInIntent();
         $refundDto->ExternalData = $externalData;
         $refundDto->Amount = 1000;
+        $refundDto->Tag = 'refund tag';
 
         $lineItem = new PayInIntentLineItem();
         $lineItem->Id = $fullCapture->LineItems[0]->Id;
@@ -1447,6 +1457,7 @@ class PayInsTest extends Base
 
         $this->assertNotNull($intentRefund);
         $this->assertEquals("REFUNDED", $intentRefund->Status);
+        $this->assertEquals('refund tag', $intentRefund->Tag);
     }
 
     public function test_FullyReversePayInIntentRefund()
@@ -1566,16 +1577,19 @@ class PayInsTest extends Base
 
         $disputeDto = new PayInIntent();
         $disputeDto->ExternalData = $externalData;
+        $disputeDto->Tag = 'dispute tag';
 
         $intentDispute = $this->_api->PayIns->CreatePayInIntentDispute($fullCapture->Id, $fullCapture->Capture->Id, $disputeDto);
 
         $this->assertNotNull($intentDispute);
         $this->assertEquals("DISPUTED", $intentDispute->Status);
         $this->assertInstanceOf('\MangoPay\PayInIntentDispute', $intentDispute->Dispute);
+        $this->assertEquals('dispute tag', $intentDispute->Tag);
 
         $fetched = $this->_api->PayIns->GetPayInIntent($intentDispute->Id);
         $this->assertInstanceOf('\MangoPay\PayInIntentDispute', $fetched->Disputes[0]);
         $this->assertInstanceOf('\MangoPay\PayInIntentLineItem', $fetched->Disputes[0]->LineItems[0]);
+        $this->assertEquals('intent tag', $fetched->Tag);
     }
 
     public function test_createPartialPayInIntentDispute()
@@ -1592,6 +1606,7 @@ class PayInsTest extends Base
         $disputeDto = new PayInIntent();
         $disputeDto->ExternalData = $externalData;
         $disputeDto->Amount = 1000;
+        $disputeDto->Tag = 'dispute tag';
 
         $lineItem = new PayInIntentLineItem();
         $lineItem->Id = $fullCapture->LineItems[0]->Id;
@@ -1602,6 +1617,7 @@ class PayInsTest extends Base
 
         $this->assertNotNull($intentDispute);
         $this->assertEquals("DISPUTED", $intentDispute->Status);
+        $this->assertEquals('dispute tag', $intentDispute->Tag);
     }
 
     public function test_updatePayInIntentDisputeOutcome()

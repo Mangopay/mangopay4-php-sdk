@@ -3,6 +3,7 @@
 namespace Cases;
 
 use MangoPay\IdentityVerification;
+use MangoPay\Psc;
 use MangoPay\Tests\Cases\Base;
 
 /**
@@ -11,6 +12,8 @@ use MangoPay\Tests\Cases\Base;
 class IdentityVerificationTest extends Base
 {
     public static $identityVerification;
+    private static $idvIdWithPscs = "idnver_01KZXBHDH1DWC887PW6T46NVTV";
+    private static $pscId = "psc_x_01KZXBT5F8FGGSK9JXGCYMNWRP";
 
     public function test_IdentityVerification_Create()
     {
@@ -41,6 +44,47 @@ class IdentityVerificationTest extends Base
         self::assertNotNull($fetched);
         self::assertTrue(is_array($fetched));
         self::assertTrue(sizeof($fetched) > 0);
+    }
+
+    public function test_IdentityVerification_GetWithPscs()
+    {
+        $fetched = $this->_api->IdentityVerifications->Get(self::$idvIdWithPscs);
+
+        self::assertNotNull($fetched);
+        self::assertNotNull($fetched->PSCs);
+        self::assertTrue(sizeof($fetched->PSCs) > 0);
+        self::assertTrue(sizeof($fetched->PSCs[0]->Data) > 0);
+    }
+
+    public function test_IdentityVerification_RetryPsc_WithoutUpdateParams()
+    {
+        $this->markTestSkipped("PSC must be manually invalidated before testing");
+
+        $psc = $this->_api->IdentityVerifications->RetryPsc(self::$idvIdWithPscs, self::$pscId, new Psc());
+
+        self::assertNotNull($psc);
+        self::assertNotNull($psc->HostedUrl);
+        self::assertEquals('PENDING_VALIDATION', $psc->Status);
+    }
+
+    public function test_IdentityVerification_RetryPsc_UpdateParams()
+    {
+        $this->markTestSkipped("PSC must be manually invalidated before testing");
+
+        $firstName = uniqid('firstName_');
+        $lastName = uniqid('lastName_');
+
+        $pscUpdate = new Psc();
+        $pscUpdate->FirstName = $firstName;
+        $pscUpdate->LastName = $lastName;
+
+        $psc = $this->_api->IdentityVerifications->RetryPsc(self::$idvIdWithPscs, self::$pscId, $pscUpdate);
+
+        self::assertNotNull($psc);
+        self::assertNotNull($psc->HostedUrl);
+        self::assertEquals('PENDING_VALIDATION', $psc->Status);
+        self::assertEquals($firstName, $psc->FirstName);
+        self::assertEquals($lastName, $psc->LastName);
     }
 
     private function getNewIdentityVerification()

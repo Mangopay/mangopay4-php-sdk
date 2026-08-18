@@ -704,4 +704,13 @@ class ApiPayIns extends Libraries\ApiBase
             $disputeId
         );
     }
+
+    /**
+     * Get the list of external payment providers
+     * @return string[] List of external provider names returned from API
+     */
+    public function GetExternalProvidersList()
+    {
+        return $this->GetObject('payins_intent_get_external_providers_list', null);
+    }
 }

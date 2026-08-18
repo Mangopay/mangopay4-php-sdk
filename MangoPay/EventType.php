@@ -98,6 +98,12 @@ class EventType
     const IdentityVerificationInconclusive = "IDENTITY_VERIFICATION_INCONCLUSIVE";
     const IdentityVerificationOutdated = "IDENTITY_VERIFICATION_OUTDATED";
     const IdentityVerificationPending = "IDENTITY_VERIFICATION_PENDING";
+    const IdentityVerificationExpired = "IDENTITY_VERIFICATION_EXPIRED";
+    const IdentityVerificationPendingPscAction = "IDENTITY_VERIFICATION_PENDING_PSC_ACTION";
+    const IdentityVerificationPscPending = "IDENTITY_VERIFICATION_PSC_PENDING";
+    const IdentityVerificationPscValidated = "IDENTITY_VERIFICATION_PSC_VALIDATED";
+    const IdentityVerificationPscRejected = "IDENTITY_VERIFICATION_PSC_REJECTED";
+    const IdentityVerificationPscAbandoned = "IDENTITY_VERIFICATION_PSC_ABANDONED";
 
     const RecipientActive = "RECIPIENT_ACTIVE";
     const RecipientCanceled = "RECIPIENT_CANCELED";

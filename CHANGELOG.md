@@ -3,7 +3,7 @@
 ### Added
 - **PSC on identity verifications** (#811) – New `Psc` entity (`FirstName`, `LastName`, `Email`, `DateOfBirth`, `Country`, `Nationality`, `PscType`, `Status`, `ValidationDate`, `HostedUrl`, `Data`, `LastUpdate`) and new `PscData` DTO (`Type`, `Value`). `IdentityVerification` gained a `PSCs` property (`Psc[]`) with the matching `GetSubObjects()` mapping.
   - New method `ApiIdentityVerification::RetryPsc($identityVerificationId, $pscId, $psc = null)` (PUT `/identity-verifications/{IdentityVerificationId}/pscs/{PscId}/retry`) to request the retry of a PSC session. The `$psc` argument is optional and may carry the values to update.
-- **New event types** (#811) – `IDENTITY_VERIFICATION_EXPIRED`, `IDENTITY_VERIFICATION_PENDING_PSC_ACTION`, `PSC_IDENTITY_VERIFICATION_PENDING`, `PSC_IDENTITY_VERIFICATION_VALIDATED`, `PSC_IDENTITY_VERIFICATION_FAILED`, `PSC_IDENTITY_VERIFICATION_EXPIRED`, and `PSC_IDENTITY_VERIFICATION_ABANDONED` on `EventType`.
+- **New event types** (#811) – `IDENTITY_VERIFICATION_EXPIRED`, `IDENTITY_VERIFICATION_PENDING_PSC_ACTION`, `IDENTITY_VERIFICATION_PSC_PENDING`, `IDENTITY_VERIFICATION_PSC_VALIDATED`, `IDENTITY_VERIFICATION_PSC_REJECTED`, and `IDENTITY_VERIFICATION_PSC_ABANDONED` on `EventType`.
 - **External payment providers list** (#809) – New method `ApiPayIns::GetExternalProvidersList()` (GET `/payins/intents/external-providers`) returning the list of external payment provider names.
 
 ### Improved

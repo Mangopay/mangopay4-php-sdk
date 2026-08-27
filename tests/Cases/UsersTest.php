@@ -924,6 +924,16 @@ class UsersTest extends Base
         $this->assertNotNull($regulatory);
     }
 
+    public function test_get_user_block_regulatory_with_kyc_information()
+    {
+        $regulatory = $this->_api->Users->GetRegulatory('user_m_01M114G394FJCE0QZJP97QADYZ');
+
+        $this->assertNotNull($regulatory);
+        $this->assertNotNull($regulatory->KycInformation);
+        $this->assertNotNull($regulatory->KycInformation->LastKycDate);
+        $this->assertNotNull($regulatory->KycInformation->KycRenewalDeadline);
+    }
+
     public function test_validate_the_format_of_user_data()
     {
         $companyNumberDetails = new \MangoPay\CompanyNumberDetails();

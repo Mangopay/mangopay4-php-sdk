@@ -177,6 +177,16 @@ class AcquiringTest extends Base
         $this->assertNotNull($created->dataCollectionId);
     }
 
+    public function test_PayIns_Get_PayPal_DataCollection()
+    {
+        $this->markTestSkipped("to be tested manually");
+        $dataCollectionId = "placeholder";
+
+        $fetched = $this->_api->Acquiring->GetPayPalDataCollection($dataCollectionId);
+
+        $this->assertNotNull($fetched);
+    }
+
     public function test_PayIns_CreateRefund()
     {
         $this->markTestSkipped("to be tested manually");

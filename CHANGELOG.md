@@ -1,3 +1,9 @@
+## [4.5.0] - 2026-08-28
+
+### Added
+- **KYC information on the regulatory endpoint** (#813) – New `KycInformation` DTO (`LastKycDate`, `KycRenewalDeadline`) and a new `KycInformation` property on `UserBlockStatus`, with the matching `GetSubObjects()` mapping. It is populated by `ApiUsers::GetRegulatory()` (GET `/users/{UserId}/regulatory`).
+- **Get PayPal data collection** (#814) – New method `ApiAcquiring::GetPayPalDataCollection($dataCollectionId)` (GET `/acquiring/payins/payment-methods/paypal/data-collection/{DataCollectionId}`) to retrieve a data collection previously sent for a PayPal payment.
+
 ## [4.4.0] - 2026-08-17
 
 ### Added

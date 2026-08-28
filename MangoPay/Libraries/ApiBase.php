@@ -319,6 +319,7 @@ abstract class ApiBase
         'acquiring_payins_googlepay-direct_create' => ['/acquiring/payins/payment-methods/googlepay', RequestType::POST],
         'acquiring_payins_paypal-web_create' => ['/acquiring/payins/payment-methods/paypal', RequestType::POST],
         'acquiring_payins_paypal_data_collection_create' => ['/acquiring/payins/payment-methods/paypal/data-collection', RequestType::POST],
+        'acquiring_payins_paypal_data_collection_get' => ['/acquiring/payins/payment-methods/paypal/data-collection/%s', RequestType::GET],
         'acquiring_payins_createrefunds' => ['/acquiring/payins/%s/refunds', RequestType::POST],
         'acquiring_card_validate' => ['/acquiring/cards/%s/validation', RequestType::POST]
     ];

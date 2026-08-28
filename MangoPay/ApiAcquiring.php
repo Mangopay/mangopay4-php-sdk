@@ -46,6 +46,22 @@ class ApiAcquiring extends Libraries\ApiBase
     }
 
     /**
+     * Get the data collection previously sent for a PayPal payment
+     *
+     * @param string $dataCollectionId Data collection identifier
+     * @return \stdClass
+     * @throws Libraries\Exception
+     */
+    public function GetPayPalDataCollection($dataCollectionId)
+    {
+        return $this->GetObject(
+            'acquiring_payins_paypal_data_collection_get',
+            null,
+            $dataCollectionId
+        );
+    }
+
+    /**
      * Create refund for pay-in object
      * @param string $payInId Pay-in identifier
      * @param \MangoPay\Refund $refund Refund object to create

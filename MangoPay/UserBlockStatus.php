@@ -15,6 +15,11 @@ class UserBlockStatus extends Libraries\EntityBase
     public $ActionCode;
 
     /**
+     * @var KycInformation
+     */
+    public $KycInformation;
+
+    /**
      * Get array with mapping which property is object and what type of object
      * @return array
      */
@@ -23,6 +28,7 @@ class UserBlockStatus extends Libraries\EntityBase
         $subObjects = parent::GetSubObjects();
 
         $subObjects['ScopeBlocked'] = '\MangoPay\ScopeBlocked';
+        $subObjects['KycInformation'] = '\MangoPay\KycInformation';
 
         return $subObjects;
     }

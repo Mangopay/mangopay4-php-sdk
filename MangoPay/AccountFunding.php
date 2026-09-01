@@ -2,22 +2,22 @@
 
 namespace MangoPay;
 
-class UserBlockStatus extends Libraries\EntityBase
+class AccountFunding extends Libraries\Dto
 {
     /**
-     * @var ScopeBlocked
+     * @var \MangoPay\AccountFundingSender
      */
-    public $ScopeBlocked;
+    public $Sender;
 
     /**
      * @var string
      */
-    public $ActionCode;
+    public $Purpose;
 
     /**
-     * @var KycInformation
+     * @var string
      */
-    public $KycInformation;
+    public $Type;
 
     /**
      * Get array with mapping which property is object and what type of object
@@ -26,9 +26,7 @@ class UserBlockStatus extends Libraries\EntityBase
     public function GetSubObjects()
     {
         $subObjects = parent::GetSubObjects();
-
-        $subObjects['ScopeBlocked'] = '\MangoPay\ScopeBlocked';
-        $subObjects['KycInformation'] = '\MangoPay\KycInformation';
+        $subObjects['Sender'] = '\MangoPay\AccountFundingSender';
 
         return $subObjects;
     }

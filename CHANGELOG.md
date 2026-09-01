@@ -1,4 +1,4 @@
-## [4.5.0] - 2026-08-28
+## [4.5.0] - 2026-09-01
 
 ### Added
 - **KYC information on the regulatory endpoint** (#813) – New `KycInformation` DTO (`LastKycDate`, `KycRenewalDeadline`) and a new `KycInformation` property on `UserBlockStatus`, with the matching `GetSubObjects()` mapping. It is populated by `ApiUsers::GetRegulatory()` (GET `/users/{UserId}/regulatory`).

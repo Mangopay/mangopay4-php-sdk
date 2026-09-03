@@ -46,23 +46,23 @@ class CardPreAuthorizationsTest extends Base
         $getCardPreAuthorization = $this->_api->CardPreAuthorizations->Get($cardPreAuthorization->Id);
 
         $this->assertNotNull($getCardPreAuthorization->CardInfo);
-//        $this->assertNotNull($getCardPreAuthorization->CardInfo->Type);
-//        $this->assertNotNull($getCardPreAuthorization->CardInfo->Brand);
-//        $this->assertNotNull($getCardPreAuthorization->CardInfo->IssuingBank);
+        //        $this->assertNotNull($getCardPreAuthorization->CardInfo->Type);
+        //        $this->assertNotNull($getCardPreAuthorization->CardInfo->Brand);
+        //        $this->assertNotNull($getCardPreAuthorization->CardInfo->IssuingBank);
     }
 
 
-//    function test_CardPreAuthorization_Update()
-//    {
-        //TO BE FIXED
-        /* $cardPreAuthorization = $this->getJohnsCardPreAuthorization();
-        $cardPreAuthorization->PaymentStatus = \MangoPay\CardPreAuthorizationPaymentStatus::Canceled;
+    //    function test_CardPreAuthorization_Update()
+    //    {
+    //TO BE FIXED
+    /* $cardPreAuthorization = $this->getJohnsCardPreAuthorization();
+    $cardPreAuthorization->PaymentStatus = \MangoPay\CardPreAuthorizationPaymentStatus::Canceled;
 
-        $resultCardPreAuthorization = $this->_api->CardPreAuthorizations->Update($cardPreAuthorization);
+    $resultCardPreAuthorization = $this->_api->CardPreAuthorizations->Update($cardPreAuthorization);
 
-        $this->assertSame(\MangoPay\CardPreAuthorizationStatus::Succeeded, $resultCardPreAuthorization->Status);
-        $this->assertSame(\MangoPay\CardPreAuthorizationPaymentStatus::Canceled, $resultCardPreAuthorization->PaymentStatus);
+    $this->assertSame(\MangoPay\CardPreAuthorizationStatus::Succeeded, $resultCardPreAuthorization->Status);
+    $this->assertSame(\MangoPay\CardPreAuthorizationPaymentStatus::Canceled, $resultCardPreAuthorization->PaymentStatus);
 
-        */
-//    }
+    */
+    //    }
 }

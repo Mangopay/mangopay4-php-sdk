@@ -11,7 +11,7 @@ class ApiResponses extends Libraries\ApiBase
     /**
      * Get response from previous call by idempotency key
      * @param string $idempotencyKey Idempotency key
-     * @return \MangoPay\Response Entity of Response object
+     * @return Response Entity of Response object
      */
     public function Get($idempotencyKey)
     {

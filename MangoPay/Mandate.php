@@ -53,7 +53,7 @@ class Mandate extends Libraries\EntityBase
     /**
      * Status of the mandate
      * @var string
-     * @see \MangoPay\MandateStatus
+     * @see MandateStatus
      */
     public $Status;
 

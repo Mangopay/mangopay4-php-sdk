@@ -7,25 +7,25 @@ namespace MangoPay;
  */
 class PayInPaymentType
 {
-    const BankWire = 'BANK_WIRE';
-    const Card = 'CARD';
-    const DirectDebit = 'DIRECT_DEBIT';
-    const DirectDebitDirect = 'DIRECT_DEBIT_DIRECT';
-    const Preauthorized = 'PREAUTHORIZED';
-    const PayPal = 'PAYPAL';
-    const ApplePay = 'APPLEPAY';
-    const GooglePay = 'GOOGLEPAY';
-    const GooglePayV2 = 'GOOGLE_PAY';
-    const Mbway = 'MBWAY';
-    const Multibanco = 'MULTIBANCO';
-    const Satispay = 'SATISPAY';
-    const Blik = 'BLIK';
-    const Klarna = 'KLARNA';
-    const Ideal = 'IDEAL';
-    const Giropay = 'GIROPAY';
-    const Bancontact = 'BCMC';
-    const Bizum = 'BIZUM';
-    const Swish = 'SWISH';
-    const Twint = 'TWINT';
-    const PayByBank = 'PAY_BY_BANK';
+    public const BankWire = 'BANK_WIRE';
+    public const Card = 'CARD';
+    public const DirectDebit = 'DIRECT_DEBIT';
+    public const DirectDebitDirect = 'DIRECT_DEBIT_DIRECT';
+    public const Preauthorized = 'PREAUTHORIZED';
+    public const PayPal = 'PAYPAL';
+    public const ApplePay = 'APPLEPAY';
+    public const GooglePay = 'GOOGLEPAY';
+    public const GooglePayV2 = 'GOOGLE_PAY';
+    public const Mbway = 'MBWAY';
+    public const Multibanco = 'MULTIBANCO';
+    public const Satispay = 'SATISPAY';
+    public const Blik = 'BLIK';
+    public const Klarna = 'KLARNA';
+    public const Ideal = 'IDEAL';
+    public const Giropay = 'GIROPAY';
+    public const Bancontact = 'BCMC';
+    public const Bizum = 'BIZUM';
+    public const Swish = 'SWISH';
+    public const Twint = 'TWINT';
+    public const PayByBank = 'PAY_BY_BANK';
 }

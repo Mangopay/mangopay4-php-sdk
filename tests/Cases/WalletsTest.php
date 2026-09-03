@@ -79,7 +79,7 @@ class WalletsTest extends Base
          * doesn't fail.
          * https://travis-ci.org/Mangopay/mangopay2-php-sdk/builds/208607353#L349
          */
-//        $this->assertIdenticalInputProps($transactions[0], $payIn);
+        //        $this->assertIdenticalInputProps($transactions[0], $payIn);
     }
 
     public function test_Wallets_Transactions_Sca()

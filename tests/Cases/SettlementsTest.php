@@ -6,6 +6,7 @@ use MangoPay\BankAccount;
 use MangoPay\BankAccountDetailsOTHER;
 use MangoPay\Pagination;
 use MangoPay\Settlement;
+
 use function PHPUnit\Framework\assertEquals;
 
 /**
@@ -54,7 +55,7 @@ class SettlementsTest extends Base
         $settlement = $this->createAndUploadSettlement('/../settlement_sample_bad_footer.csv')['settlement'];
         sleep(20);
         $pagination = new Pagination();
-        $pagination->Page = 0;
+        $pagination->Page = 1;
         $pagination->ItemsPerPage = 10;
         $validations = $this->_api->Settlements->GetValidations($settlement->SettlementId, $pagination);
         self::assertNotNull($validations);
@@ -116,7 +117,6 @@ class SettlementsTest extends Base
 
         curl_exec($curlHandle);
         $httpCode = curl_getinfo($curlHandle, CURLINFO_HTTP_CODE);
-        curl_close($curlHandle);
 
         return [
             'settlement' => $created,

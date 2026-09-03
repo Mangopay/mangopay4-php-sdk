@@ -10,7 +10,7 @@ class RecurringPayInCIT extends Libraries\Dto
     public $RecurringPayinRegistrationId;
 
     /**
-     * @var \MangoPay\BrowserInfo
+     * @var BrowserInfo
      */
     public $BrowserInfo;
 

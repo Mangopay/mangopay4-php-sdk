@@ -30,22 +30,22 @@ class PayInRecurringRegistration extends Libraries\Dto
     public $CreditedWalletId;
 
     /**
-     * @var \MangoPay\Money
+     * @var Money
      */
     public $FirstTransactionDebitedFunds;
 
     /**
-     * @var \MangoPay\Money
+     * @var Money
      */
     public $FirstTransactionFees;
 
     /**
-     * @var \MangoPay\Billing
+     * @var Billing
      */
     public $Billing;
 
     /**
-     * @var \MangoPay\Shipping
+     * @var Shipping
      */
     public $Shipping;
 
@@ -75,12 +75,12 @@ class PayInRecurringRegistration extends Libraries\Dto
     public $Migration;
 
     /**
-     * @var \MangoPay\Money
+     * @var Money
      */
     public $NextTransactionDebitedFunds;
 
     /**
-     * @var \MangoPay\Money
+     * @var Money
      */
     public $NextTransactionFees;
 

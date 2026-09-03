@@ -5,7 +5,7 @@ namespace MangoPay;
 class AccountFunding extends Libraries\Dto
 {
     /**
-     * @var \MangoPay\AccountFundingSender
+     * @var AccountFundingSender
      */
     public $Sender;
 

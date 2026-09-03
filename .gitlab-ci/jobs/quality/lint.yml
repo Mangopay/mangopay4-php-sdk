@@ -1,0 +1,17 @@
+lint:
+  stage: lint
+  image: $PHP_IMAGE
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "master"
+    - if: $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH == "master"
+  environment:
+    name: secret/nexus_url
+    action: access
+  variables:
+    COMPOSER_HOME: /tmp/.composer
+  script:
+    - composer validate
+    - composer audit --locked
+    - composer config -g repositories.packagist composer "$NEXUS_URL"
+    - composer install --no-interaction --no-progress --prefer-dist
+    - vendor/bin/php-cs-fixer fix --dry-run --diff

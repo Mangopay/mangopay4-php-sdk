@@ -10,7 +10,7 @@ class ApiBankingAliases extends Libraries\ApiBase
     /**
      * Get a banking alias
      * @param string $bankingAliasId Banking alias identifier
-     * @return \MangoPay\BankingAlias returned from API
+     * @return BankingAlias returned from API
      */
     public function Get($bankingAliasId)
     {
@@ -20,8 +20,8 @@ class ApiBankingAliases extends Libraries\ApiBase
 
     /**
      * Create a banking alias
-     * @param \MangoPay\BankingAlias $bankingAlias Banking alias
-     * @return \MangoPay\BankingAlias returned from API
+     * @param BankingAlias $bankingAlias Banking alias
+     * @return BankingAlias returned from API
      * @throws Libraries\Exception
      */
     public function Create($bankingAlias, $idempotencyKey = null)
@@ -46,8 +46,8 @@ class ApiBankingAliases extends Libraries\ApiBase
 
     /**
      * Update banking alias
-     * @param \MangoPay\BankingAlias $bankingAlias Card object to save
-     * @return \MangoPay\BankingAlias Card object returned from API
+     * @param BankingAlias $bankingAlias Card object to save
+     * @return BankingAlias Card object returned from API
      */
     public function Update($bankingAlias)
     {
@@ -57,10 +57,10 @@ class ApiBankingAliases extends Libraries\ApiBase
 
     /**
      * Get all banking aliases
-     * @param \MangoPay\Pagination $pagination Pagination object
-     * @param \MangoPay\Sorting $sorting Object to sorting data
+     * @param Pagination $pagination Pagination object
+     * @param Sorting $sorting Object to sorting data
      * @param string $walletId Wallet identifier
-     * @return \MangoPay\BankingAlias[] List of banking aliases
+     * @return BankingAlias[] List of banking aliases
      */
     public function GetAll($walletId, &$pagination = null, $sorting = null)
     {
@@ -71,8 +71,8 @@ class ApiBankingAliases extends Libraries\ApiBase
     /**
      * Get correct banking alias object
      * @param object $response Response from API
-     * @return \MangoPay\BankingAlias BankingAlias object returned from API
-     * @throws \MangoPay\Libraries\Exception If occur unexpected response from API
+     * @return BankingAlias BankingAlias object returned from API
+     * @throws Libraries\Exception If occur unexpected response from API
      */
     private function GetBankingAliasResponse($response)
     {

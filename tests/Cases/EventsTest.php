@@ -80,6 +80,7 @@ class EventsTest extends Base
         $filter->EventType = \MangoPay\EventType::KycCreated;
         $pagination = new \MangoPay\Pagination();
 
+        sleep(20);
         $result = $this->_api->Events->GetAll($pagination, $filter);
 
         $this->assertTrue(count($result) > 0);

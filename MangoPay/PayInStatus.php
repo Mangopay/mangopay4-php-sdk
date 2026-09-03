@@ -7,7 +7,7 @@ namespace MangoPay;
  */
 class PayInStatus
 {
-    const Created = 'CREATED';
-    const Succeeded = 'SUCCEEDED';
-    const Failed = 'FAILED';
+    public const Created = 'CREATED';
+    public const Succeeded = 'SUCCEEDED';
+    public const Failed = 'FAILED';
 }

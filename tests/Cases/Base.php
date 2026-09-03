@@ -117,12 +117,12 @@ abstract class Base extends TestCase
      */
     public static $MatrixUboDeclaration;
     /**
-     * @var \MangoPay\Ubo
+     * @var Ubo
      */
     public static $MatrixUbo;
     /**
      * Test bank account belonging to John - access by getJohnsAccount()
-     * @var \MangoPay\BankAccount
+     * @var BankAccount
      */
     public static $JohnsAccount;
     /**
@@ -143,16 +143,16 @@ abstract class Base extends TestCase
     public static $JohnsWalletWithMoney;
     /**
      * Test pay-ins Card Web object
-     * @var \MangoPay\PayIn
+     * @var PayIn
      */
     public static $JohnsPayInCardWeb;
-    /** @var \MangoPay\PayInPaymentDetailsCard */
+    /** @var PayInPaymentDetailsCard */
     public static $PayInPaymentDetailsCard;
-    /** @var \MangoPay\PayInExecutionDetailsWeb */
+    /** @var PayInExecutionDetailsWeb */
     public static $PayInExecutionDetailsWeb;
     /**
      * Test pay-ins Card Web object
-     * @var \MangoPay\PayIn
+     * @var PayIn
      */
     public static $JohnsPayInPaypalWeb;
 
@@ -160,7 +160,7 @@ abstract class Base extends TestCase
 
     /**
      * Test pay-outs objects
-     * @var \MangoPay\PayOut
+     * @var PayOut
      */
     public static $JohnsPayOutBankWire;
     public static $JohnsPayOutForCardDirect;
@@ -188,9 +188,9 @@ abstract class Base extends TestCase
     /** @var \MangoPay\MangoPayApi */
     protected $_api;
 
-    public function __construct()
+    protected function setUp(): void
     {
-        parent::__construct();
+        parent::setUp();
         $this->_api = $this->buildNewMangoPayApi();
     }
 
@@ -223,7 +223,7 @@ abstract class Base extends TestCase
     /**
      * @return UserNatural
      */
-    protected function buildJohn($bypass_sca=true)
+    protected function buildJohn($bypass_sca = true)
     {
         $user = new UserNatural();
         $user->FirstName = "John";
@@ -392,7 +392,7 @@ abstract class Base extends TestCase
         return self::$JohnScaOwner;
     }
 
-    protected function getJohnScaOwnerDto($bypass_sca=true)
+    protected function getJohnScaOwnerDto($bypass_sca = true)
     {
         $user = new UserNaturalSca();
         $user->FirstName = "John SCA";
@@ -417,7 +417,7 @@ abstract class Base extends TestCase
 
     /**
      * @return \MangoPay\UserLegal|UserNatural
-     * @throws \MangoPay\Libraries\Exception
+     * @throws Exception
      */
     protected function getJohnWithTermsAccepted()
     {
@@ -538,7 +538,7 @@ abstract class Base extends TestCase
 
     /**
      * Creates Pay-In Card Web object
-     * @return \MangoPay\PayIn
+     * @return PayIn
      */
     protected function getJohnsPayInCardWeb()
     {
@@ -546,13 +546,13 @@ abstract class Base extends TestCase
             $wallet = $this->getJohnsWallet();
             $user = $this->getJohn();
 
-            $payIn = new \MangoPay\PayIn();
+            $payIn = new PayIn();
             $payIn->AuthorId = $user->Id;
             $payIn->CreditedUserId = $user->Id;
-            $payIn->DebitedFunds = new \MangoPay\Money();
+            $payIn->DebitedFunds = new Money();
             $payIn->DebitedFunds->Currency = 'EUR';
             $payIn->DebitedFunds->Amount = 1000;
-            $payIn->Fees = new \MangoPay\Money();
+            $payIn->Fees = new Money();
             $payIn->Fees->Currency = 'EUR';
             $payIn->Fees->Amount = 5;
             $payIn->CreditedWalletId = $wallet->Id;
@@ -571,12 +571,12 @@ abstract class Base extends TestCase
     }
 
     /**
-     * @return \MangoPay\PayInPaymentDetailsCard
+     * @return PayInPaymentDetailsCard
      */
     private function getPayInPaymentDetailsCard()
     {
         if (self::$PayInPaymentDetailsCard === null) {
-            self::$PayInPaymentDetailsCard = new \MangoPay\PayInPaymentDetailsCard();
+            self::$PayInPaymentDetailsCard = new PayInPaymentDetailsCard();
             self::$PayInPaymentDetailsCard->CardType = 'CB_VISA_MASTERCARD';
             self::$PayInPaymentDetailsCard->IpAddress = "2001:0620:0000:0000:0211:24FF:FE80:C12C";
             self::$PayInPaymentDetailsCard->BrowserInfo = $this->getBrowserInfo();
@@ -586,12 +586,12 @@ abstract class Base extends TestCase
     }
 
     /**
-     * @return \MangoPay\PayInExecutionDetailsWeb
+     * @return PayInExecutionDetailsWeb
      */
     private function getPayInExecutionDetailsWeb()
     {
         if (self::$PayInExecutionDetailsWeb === null) {
-            self::$PayInExecutionDetailsWeb = new \MangoPay\PayInExecutionDetailsWeb();
+            self::$PayInExecutionDetailsWeb = new PayInExecutionDetailsWeb();
             self::$PayInExecutionDetailsWeb->ReturnURL = 'https://test.com';
             self::$PayInExecutionDetailsWeb->TemplateURL = 'https://TemplateURL.com';
             self::$PayInExecutionDetailsWeb->SecureMode = 'DEFAULT';
@@ -603,7 +603,7 @@ abstract class Base extends TestCase
 
     /**
      * Creates Pay-In direct debit direct object
-     * @return \MangoPay\PayIn
+     * @return PayIn
      */
     protected function getNewPayInDirectDebitDirect($userId = null)
     {
@@ -615,20 +615,20 @@ abstract class Base extends TestCase
         $mandate = $this->getJohnsMandate();
 
         // create pay-in CARD DIRECT
-        $payIn = new \MangoPay\PayIn();
+        $payIn = new PayIn();
         $payIn->CreditedWalletId = $wallet->Id;
         $payIn->AuthorId = $userId;
-        $payIn->DebitedFunds = new \MangoPay\Money();
+        $payIn->DebitedFunds = new Money();
         $payIn->DebitedFunds->Amount = 10000;
         $payIn->DebitedFunds->Currency = 'EUR';
-        $payIn->Fees = new \MangoPay\Money();
+        $payIn->Fees = new Money();
         $payIn->Fees->Amount = 0;
         $payIn->Fees->Currency = 'EUR';
         // payment type as CARD
         $payIn->PaymentDetails = new \MangoPay\PayInPaymentDetailsDirectDebit();
         $payIn->PaymentDetails->MandateId = $mandate->Id;
         // execution type as DIRECT
-        $payIn->ExecutionDetails = new \MangoPay\PayInExecutionDetailsDirect();
+        $payIn->ExecutionDetails = new PayInExecutionDetailsDirect();
         return $this->_api->PayIns->Create($payIn);
     }
 
@@ -661,24 +661,24 @@ abstract class Base extends TestCase
             $card = $this->_api->Cards->Get($cardRegistration->CardId);
 
             // create pay-in CARD DIRECT
-            $payIn = new \MangoPay\PayIn();
+            $payIn = new PayIn();
             $payIn->CreditedWalletId = self::$JohnsWalletWithMoney->Id;
             $payIn->AuthorId = $cardRegistration->UserId;
-            $payIn->DebitedFunds = new \MangoPay\Money();
+            $payIn->DebitedFunds = new Money();
             $payIn->DebitedFunds->Amount = $amount;
             $payIn->DebitedFunds->Currency = 'EUR';
-            $payIn->Fees = new \MangoPay\Money();
+            $payIn->Fees = new Money();
             $payIn->Fees->Amount = 0;
             $payIn->Fees->Currency = 'EUR';
 
             // payment type as CARD
-            $payIn->PaymentDetails = new \MangoPay\PayInPaymentDetailsCard();
+            $payIn->PaymentDetails = new PayInPaymentDetailsCard();
             $payIn->PaymentDetails->CardId = $card->Id;
             $payIn->PaymentDetails->IpAddress = "2001:0620:0000:0000:0211:24FF:FE80:C12C";
             $payIn->PaymentDetails->BrowserInfo = $this->getBrowserInfo();
 
             // execution type as DIRECT
-            $payIn->ExecutionDetails = new \MangoPay\PayInExecutionDetailsDirect();
+            $payIn->ExecutionDetails = new PayInExecutionDetailsDirect();
             $payIn->ExecutionDetails->SecureModeReturnURL = 'http://test.com';
             // create Pay-In
             $this->_api->PayIns->Create($payIn);
@@ -750,24 +750,24 @@ abstract class Base extends TestCase
     private function createNewPayInCardDirect($userId, $cardId, $walletId, $amount)
     {
         // create pay-in CARD DIRECT
-        $payIn = new \MangoPay\PayIn();
+        $payIn = new PayIn();
         $payIn->CreditedWalletId = $walletId;
         $payIn->AuthorId = $userId;
-        $payIn->DebitedFunds = new \MangoPay\Money();
+        $payIn->DebitedFunds = new Money();
         $payIn->DebitedFunds->Amount = $amount;
         $payIn->DebitedFunds->Currency = 'EUR';
-        $payIn->Fees = new \MangoPay\Money();
+        $payIn->Fees = new Money();
         $payIn->Fees->Amount = 0;
         $payIn->Fees->Currency = 'EUR';
 
         // payment type as CARD
-        $payIn->PaymentDetails = new \MangoPay\PayInPaymentDetailsCard();
+        $payIn->PaymentDetails = new PayInPaymentDetailsCard();
         $payIn->PaymentDetails->CardId = $cardId;
         $payIn->PaymentDetails->IpAddress = "2001:0620:0000:0000:0211:24FF:FE80:C12C";
         $payIn->PaymentDetails->BrowserInfo = $this->getBrowserInfo();
 
         // execution type as DIRECT
-        $payIn->ExecutionDetails = new \MangoPay\PayInExecutionDetailsDirect();
+        $payIn->ExecutionDetails = new PayInExecutionDetailsDirect();
         $payIn->ExecutionDetails->SecureModeReturnURL = 'http://test.com';
         // create Pay-In
         $this->_api->PayIns->Create($payIn);
@@ -800,7 +800,6 @@ abstract class Base extends TestCase
             throw new \Exception('cURL error: ' . curl_error($curlHandle));
         }
 
-        curl_close($curlHandle);
 
         return $response;
     }
@@ -836,16 +835,16 @@ abstract class Base extends TestCase
 
     /**
      * Creates self::$JohnsAccount (bank account belonging to John) if not created yet
-     * @return \MangoPay\BankAccount
+     * @return BankAccount
      */
     protected function getJohnsAccount()
     {
         if (self::$JohnsAccount === null || self::$JohnsAccount->Active == false) {
             $john = $this->getJohn();
-            $account = new \MangoPay\BankAccount();
+            $account = new BankAccount();
             $account->OwnerName = $john->FirstName . ' ' . $john->LastName;
             $account->OwnerAddress = $john->Address;
-            $account->Details = new \MangoPay\BankAccountDetailsIBAN();
+            $account->Details = new BankAccountDetailsIBAN();
             $account->Details->IBAN = 'FR7630004000031234567890143';
             $account->Details->BIC = 'BNPAFRPP';
             self::$JohnsAccount = $this->_api->Users->CreateBankAccount($john->Id, $account);
@@ -855,7 +854,7 @@ abstract class Base extends TestCase
 
     /**
      * Creates Pay-Out  Bank Wire object
-     * @return \MangoPay\PayOut
+     * @return PayOut
      */
     protected function getJohnsPayOutBankWire()
     {
@@ -864,19 +863,19 @@ abstract class Base extends TestCase
             $user = $this->getJohn();
             $account = $this->getJohnsAccount();
 
-            $payOut = new \MangoPay\PayOut();
+            $payOut = new PayOut();
             $payOut->Tag = 'DefaultTag';
             $payOut->AuthorId = $user->Id;
             $payOut->CreditedUserId = $user->Id;
-            $payOut->DebitedFunds = new \MangoPay\Money();
+            $payOut->DebitedFunds = new Money();
             $payOut->DebitedFunds->Currency = 'EUR';
             $payOut->DebitedFunds->Amount = 10;
-            $payOut->Fees = new \MangoPay\Money();
+            $payOut->Fees = new Money();
             $payOut->Fees->Currency = 'EUR';
             $payOut->Fees->Amount = 5;
 
             $payOut->DebitedWalletId = $wallet->Id;
-            $payOut->MeanOfPaymentDetails = new \MangoPay\PayOutPaymentDetailsBankWire();
+            $payOut->MeanOfPaymentDetails = new PayOutPaymentDetailsBankWire();
             $payOut->MeanOfPaymentDetails->BankAccountId = $account->Id;
             $payOut->MeanOfPaymentDetails->BankWireRef = 'Johns payment';
             $payOut->MeanOfPaymentDetails->PayoutModeRequested = 'STANDARD';
@@ -889,7 +888,7 @@ abstract class Base extends TestCase
 
     /**
      * Creates Pay-Out  Bank Wire object
-     * @return \MangoPay\PayOut
+     * @return PayOut
      */
     protected function getJohnsPayOutForCardDirect()
     {
@@ -908,19 +907,19 @@ abstract class Base extends TestCase
 
     protected function getNewPayOutDto($authorId, $walletId)
     {
-        $payOut = new \MangoPay\PayOut();
+        $payOut = new PayOut();
         $payOut->Tag = 'DefaultTag';
         $payOut->AuthorId = $authorId;
         $payOut->CreditedUserId = $authorId;
-        $payOut->DebitedFunds = new \MangoPay\Money();
+        $payOut->DebitedFunds = new Money();
         $payOut->DebitedFunds->Currency = 'EUR';
         $payOut->DebitedFunds->Amount = 10;
-        $payOut->Fees = new \MangoPay\Money();
+        $payOut->Fees = new Money();
         $payOut->Fees->Currency = 'EUR';
         $payOut->Fees->Amount = 5;
 
         $payOut->DebitedWalletId = $walletId;
-        $payOut->MeanOfPaymentDetails = new \MangoPay\PayOutPaymentDetailsBankWire();
+        $payOut->MeanOfPaymentDetails = new PayOutPaymentDetailsBankWire();
         $payOut->MeanOfPaymentDetails->BankWireRef = 'Johns payment';
         $payOut->MeanOfPaymentDetails->PayoutModeRequested = 'STANDARD';
 
@@ -929,7 +928,7 @@ abstract class Base extends TestCase
 
     /**
      * Creates Pay-In Card Direct object
-     * @return \MangoPay\PayIn
+     * @return PayIn
      */
     protected function getNewPayInCardDirect($userId = null)
     {
@@ -950,22 +949,22 @@ abstract class Base extends TestCase
         $card = $this->_api->Cards->Get($cardRegistration->CardId);
 
         // create pay-in CARD DIRECT
-        $payIn = new \MangoPay\PayIn();
+        $payIn = new PayIn();
         $payIn->CreditedWalletId = $wallet->Id;
         $payIn->AuthorId = $userId;
-        $payIn->DebitedFunds = new \MangoPay\Money();
+        $payIn->DebitedFunds = new Money();
         $payIn->DebitedFunds->Amount = 1000;
         $payIn->DebitedFunds->Currency = 'EUR';
-        $payIn->Fees = new \MangoPay\Money();
+        $payIn->Fees = new Money();
         $payIn->Fees->Amount = 0;
         $payIn->Fees->Currency = 'EUR';
         // payment type as CARD
-        $payIn->PaymentDetails = new \MangoPay\PayInPaymentDetailsCard();
+        $payIn->PaymentDetails = new PayInPaymentDetailsCard();
         $payIn->PaymentDetails->CardId = $card->Id;
         $payIn->PaymentDetails->IpAddress = "2001:0620:0000:0000:0211:24FF:FE80:C12C";
         $payIn->PaymentDetails->BrowserInfo = $this->getBrowserInfo();
         // execution type as DIRECT
-        $payIn->ExecutionDetails = new \MangoPay\PayInExecutionDetailsDirect();
+        $payIn->ExecutionDetails = new PayInExecutionDetailsDirect();
         $payIn->ExecutionDetails->SecureModeReturnURL = 'http://test.com';
         $payIn->ExecutionDetails->Culture = 'FR';
         $payIn->PaymentCategory = 'TelephoneOrder';
@@ -995,13 +994,13 @@ abstract class Base extends TestCase
         }
 
         // create pay-in MBWAY WEB
-        $payIn = new \MangoPay\PayIn();
+        $payIn = new PayIn();
         $payIn->CreditedWalletId = $wallet->Id;
         $payIn->AuthorId = $userId;
-        $payIn->DebitedFunds = new \MangoPay\Money();
+        $payIn->DebitedFunds = new Money();
         $payIn->DebitedFunds->Amount = 1000;
         $payIn->DebitedFunds->Currency = 'EUR';
-        $payIn->Fees = new \MangoPay\Money();
+        $payIn->Fees = new Money();
         $payIn->Fees->Amount = 0;
         $payIn->Fees->Currency = 'EUR';
         // payment type as CARD
@@ -1009,7 +1008,7 @@ abstract class Base extends TestCase
         $payIn->PaymentDetails->StatementDescriptor = "test";
         $payIn->PaymentDetails->Phone = "351#269458236";
         // execution type as DIRECT
-        $payIn->ExecutionDetails = new \MangoPay\PayInExecutionDetailsWeb();
+        $payIn->ExecutionDetails = new PayInExecutionDetailsWeb();
 
         $payIn->Tag = "test tag";
 
@@ -1024,13 +1023,13 @@ abstract class Base extends TestCase
             $userId = $user->Id;
         }
 
-        $payIn = new \MangoPay\PayIn();
+        $payIn = new PayIn();
         $payIn->CreditedWalletId = $wallet->Id;
         $payIn->AuthorId = $userId;
-        $payIn->DebitedFunds = new \MangoPay\Money();
+        $payIn->DebitedFunds = new Money();
         $payIn->DebitedFunds->Amount = 1000;
         $payIn->DebitedFunds->Currency = 'EUR';
-        $payIn->Fees = new \MangoPay\Money();
+        $payIn->Fees = new Money();
         $payIn->Fees->Amount = 100;
         $payIn->Fees->Currency = 'EUR';
         // payment type as CARD
@@ -1047,7 +1046,7 @@ abstract class Base extends TestCase
         $address->PostalCode = '68400';
         $address->Region = 'Europe';
 
-        $shipping = new \MangoPay\Shipping();
+        $shipping = new Shipping();
         $shipping->FirstName = 'JohnS';
         $shipping->LastName = 'DoeS';
         $shipping->Address = $address;
@@ -1055,7 +1054,7 @@ abstract class Base extends TestCase
         $payIn->PaymentDetails->Shipping = $shipping;
 
         // execution type as DIRECT
-        $payIn->ExecutionDetails = new \MangoPay\PayInExecutionDetailsDirect();
+        $payIn->ExecutionDetails = new PayInExecutionDetailsDirect();
         $payIn->ExecutionDetails->SecureModeReturnURL = "https://mangopay.com/docs/please-ignore";
         $payIn->ExecutionDetails->SecureMode = "DEFAULT";
 
@@ -1080,13 +1079,13 @@ abstract class Base extends TestCase
             $userId = $user->Id;
         }
 
-        $payIn = new \MangoPay\PayIn();
+        $payIn = new PayIn();
         $payIn->AuthorId = $userId;
         $payIn->CreditedWalletId = $wallet->Id;
-        $payIn->Fees = new \MangoPay\Money();
+        $payIn->Fees = new Money();
         $payIn->Fees->Amount = 10;
         $payIn->Fees->Currency = 'EUR';
-        $payIn->DebitedFunds = new \MangoPay\Money();
+        $payIn->DebitedFunds = new Money();
         $payIn->DebitedFunds->Amount = 1000;
         $payIn->DebitedFunds->Currency = 'EUR';
 
@@ -1095,7 +1094,7 @@ abstract class Base extends TestCase
         $payIn->PaymentDetails->StatementDescriptor = "Multibanco";
 
         // execution type as WEB
-        $payIn->ExecutionDetails = new \MangoPay\PayInExecutionDetailsWeb();
+        $payIn->ExecutionDetails = new PayInExecutionDetailsWeb();
         $payIn->ExecutionDetails->ReturnURL = "http://www.my-site.com/returnURL?transactionId=wt_8362acb9-6dbc-4660-b826-b9acb9b850b1";
 
         $payIn->Tag = "Multibanco tag";
@@ -1111,13 +1110,13 @@ abstract class Base extends TestCase
             $userId = $user->Id;
         }
 
-        $payIn = new \MangoPay\PayIn();
+        $payIn = new PayIn();
         $payIn->AuthorId = $userId;
         $payIn->CreditedWalletId = $wallet->Id;
-        $payIn->Fees = new \MangoPay\Money();
+        $payIn->Fees = new Money();
         $payIn->Fees->Amount = 20;
         $payIn->Fees->Currency = 'EUR';
-        $payIn->DebitedFunds = new \MangoPay\Money();
+        $payIn->DebitedFunds = new Money();
         $payIn->DebitedFunds->Amount = 2000;
         $payIn->DebitedFunds->Currency = 'EUR';
 
@@ -1127,7 +1126,7 @@ abstract class Base extends TestCase
         $payIn->PaymentDetails->Country = "IT";
 
         // execution type as WEB
-        $payIn->ExecutionDetails = new \MangoPay\PayInExecutionDetailsWeb();
+        $payIn->ExecutionDetails = new PayInExecutionDetailsWeb();
         $payIn->ExecutionDetails->ReturnURL = "http://www.my-site.com/returnURL?transactionId=wt_71a08458-b0cc-468d-98f7-1302591fc238";
         $payIn->ExecutionDetails->RedirectURL = "https://r3.girogate.de/ti/satispay?tx=2085817274&rs=9SdVQk52tdbjXlFGI8xkpIR4QtpWzEFy&cs=8490cfaf68932558fd710926439b1cffa446bdbd346c42fdd63ad7fa2c56d841";
 
@@ -1151,13 +1150,13 @@ abstract class Base extends TestCase
             $userId = $user->Id;
         }
 
-        $payIn = new \MangoPay\PayIn();
+        $payIn = new PayIn();
         $payIn->AuthorId = $userId;
         $payIn->CreditedWalletId = $wallet->Id;
-        $payIn->Fees = new \MangoPay\Money();
+        $payIn->Fees = new Money();
         $payIn->Fees->Amount = 30;
         $payIn->Fees->Currency = 'PLN';
-        $payIn->DebitedFunds = new \MangoPay\Money();
+        $payIn->DebitedFunds = new Money();
         $payIn->DebitedFunds->Amount = 3000;
         $payIn->DebitedFunds->Currency = 'PLN';
 
@@ -1172,7 +1171,7 @@ abstract class Base extends TestCase
         }
 
         // execution type as WEB
-        $payIn->ExecutionDetails = new \MangoPay\PayInExecutionDetailsWeb();
+        $payIn->ExecutionDetails = new PayInExecutionDetailsWeb();
         $payIn->ExecutionDetails->ReturnURL = "https://example.com?transactionId=wt_57b8f69d-cbcc-4202-9a4f-9a3f3668240b";
         $payIn->ExecutionDetails->RedirectURL = "https://r3.girogate.de/ti/dumbdummy?tx=140079495229&rs=oHkl4WvsgwtWpMptWpqWlFa90j0EzzO9&cs=e43baf1ae4a556dfb823fd304acc408580c193e04c1a9bcb26699b4185393b05";
 
@@ -1190,13 +1189,13 @@ abstract class Base extends TestCase
             $userId = $user->Id;
         }
 
-        $payIn = new \MangoPay\PayIn();
+        $payIn = new PayIn();
         $payIn->AuthorId = $userId;
         $payIn->CreditedWalletId = $wallet->Id;
-        $payIn->Fees = new \MangoPay\Money();
+        $payIn->Fees = new Money();
         $payIn->Fees->Amount = 10;
         $payIn->Fees->Currency = 'EUR';
-        $payIn->DebitedFunds = new \MangoPay\Money();
+        $payIn->DebitedFunds = new Money();
         $payIn->DebitedFunds->Amount = 990;
         $payIn->DebitedFunds->Currency = 'EUR';
 
@@ -1219,7 +1218,7 @@ abstract class Base extends TestCase
         $payIn->PaymentDetails->LineItems = [$lineItem];
 
         // execution type as WEB
-        $payIn->ExecutionDetails = new \MangoPay\PayInExecutionDetailsWeb();
+        $payIn->ExecutionDetails = new PayInExecutionDetailsWeb();
         $payIn->ExecutionDetails->ReturnURL = "http://www.my-site.com/returnURL?transactionId=wt_71a08458-b0cc-468d-98f7-1302591fc238";
 
         $address = new Address();
@@ -1247,25 +1246,25 @@ abstract class Base extends TestCase
             $userId = $user->Id;
         }
 
-        $payIn = new \MangoPay\PayIn();
+        $payIn = new PayIn();
         $payIn->PaymentType = "CARD";
         $payIn->AuthorId = $userId;
         $payIn->CreditedWalletId = $wallet->Id;
-        $payIn->Fees = new \MangoPay\Money();
+        $payIn->Fees = new Money();
         $payIn->Fees->Amount = 10;
         $payIn->Fees->Currency = 'EUR';
-        $payIn->DebitedFunds = new \MangoPay\Money();
+        $payIn->DebitedFunds = new Money();
         $payIn->DebitedFunds->Amount = 1000;
         $payIn->DebitedFunds->Currency = 'EUR';
 
-        $payIn->PaymentDetails = new \MangoPay\PayInPaymentDetailsCard();
+        $payIn->PaymentDetails = new PayInPaymentDetailsCard();
         $payIn->PaymentDetails->Bic = 'REVOLT21';
         $payIn->PaymentDetails->CardType = 'IDEAL';
         $payIn->PaymentDetails->StatementDescriptor = 'test';
 
         $payIn->ExecutionType = \MangoPay\PayInExecutionType::Web;
         // execution type as WEB
-        $payIn->ExecutionDetails = new \MangoPay\PayInExecutionDetailsWeb();
+        $payIn->ExecutionDetails = new PayInExecutionDetailsWeb();
         $payIn->ExecutionDetails->ReturnURL = "http://www.my-site.com/returnURL?transactionId=wt_71a08458-b0cc-468d-98f7-1302591fc238";
         $payIn->ExecutionDetails->Culture = "EN";
 
@@ -1282,13 +1281,13 @@ abstract class Base extends TestCase
             $userId = $user->Id;
         }
 
-        $payIn = new \MangoPay\PayIn();
+        $payIn = new PayIn();
         $payIn->AuthorId = $userId;
         $payIn->CreditedWalletId = $wallet->Id;
-        $payIn->Fees = new \MangoPay\Money();
+        $payIn->Fees = new Money();
         $payIn->Fees->Amount = 10;
         $payIn->Fees->Currency = 'EUR';
-        $payIn->DebitedFunds = new \MangoPay\Money();
+        $payIn->DebitedFunds = new Money();
         $payIn->DebitedFunds->Amount = 1000;
         $payIn->DebitedFunds->Currency = 'EUR';
 
@@ -1297,7 +1296,7 @@ abstract class Base extends TestCase
         $payIn->PaymentDetails->StatementDescriptor = 'test';
 
         // execution type as WEB
-        $payIn->ExecutionDetails = new \MangoPay\PayInExecutionDetailsWeb();
+        $payIn->ExecutionDetails = new PayInExecutionDetailsWeb();
         $payIn->ExecutionDetails->ReturnURL = "http://www.my-site.com/returnURL?transactionId=wt_71a08458-b0cc-468d-98f7-1302591fc238";
 
         $payIn->Tag = "Ideal tag";
@@ -1313,13 +1312,13 @@ abstract class Base extends TestCase
             $userId = $user->Id;
         }
 
-        $payIn = new \MangoPay\PayIn();
+        $payIn = new PayIn();
         $payIn->AuthorId = $userId;
         $payIn->CreditedWalletId = $wallet->Id;
-        $payIn->Fees = new \MangoPay\Money();
+        $payIn->Fees = new Money();
         $payIn->Fees->Amount = 10;
         $payIn->Fees->Currency = 'EUR';
-        $payIn->DebitedFunds = new \MangoPay\Money();
+        $payIn->DebitedFunds = new Money();
         $payIn->DebitedFunds->Amount = 1000;
         $payIn->DebitedFunds->Currency = 'EUR';
 
@@ -1327,7 +1326,7 @@ abstract class Base extends TestCase
         $payIn->PaymentDetails->StatementDescriptor = 'test';
 
         // execution type as WEB
-        $payIn->ExecutionDetails = new \MangoPay\PayInExecutionDetailsWeb();
+        $payIn->ExecutionDetails = new PayInExecutionDetailsWeb();
         $payIn->ExecutionDetails->ReturnURL = "http://www.my-site.com/returnURL?transactionId=wt_71a08458-b0cc-468d-98f7-1302591fc238";
 
         $payIn->Tag = "Giropay tag";
@@ -1343,13 +1342,13 @@ abstract class Base extends TestCase
             $userId = $user->Id;
         }
 
-        $payIn = new \MangoPay\PayIn();
+        $payIn = new PayIn();
         $payIn->AuthorId = $userId;
         $payIn->CreditedWalletId = $wallet->Id;
-        $payIn->Fees = new \MangoPay\Money();
+        $payIn->Fees = new Money();
         $payIn->Fees->Amount = 0;
         $payIn->Fees->Currency = 'SEK';
-        $payIn->DebitedFunds = new \MangoPay\Money();
+        $payIn->DebitedFunds = new Money();
         $payIn->DebitedFunds->Amount = 100;
         $payIn->DebitedFunds->Currency = 'SEK';
 
@@ -1357,7 +1356,7 @@ abstract class Base extends TestCase
         $payIn->PaymentDetails->StatementDescriptor = 'test';
 
         // execution type as WEB
-        $payIn->ExecutionDetails = new \MangoPay\PayInExecutionDetailsWeb();
+        $payIn->ExecutionDetails = new PayInExecutionDetailsWeb();
         $payIn->ExecutionDetails->ReturnURL = "http://www.my-site.com/returnURL?transactionId=wt_71a08458-b0cc-468d-98f7-1302591fc238";
 
         $payIn->Tag = "Swish tag";
@@ -1373,13 +1372,13 @@ abstract class Base extends TestCase
             $userId = $user->Id;
         }
 
-        $payIn = new \MangoPay\PayIn();
+        $payIn = new PayIn();
         $payIn->AuthorId = $userId;
         $payIn->CreditedWalletId = $wallet->Id;
-        $payIn->Fees = new \MangoPay\Money();
+        $payIn->Fees = new Money();
         $payIn->Fees->Amount = 0;
         $payIn->Fees->Currency = 'CHF';
-        $payIn->DebitedFunds = new \MangoPay\Money();
+        $payIn->DebitedFunds = new Money();
         $payIn->DebitedFunds->Amount = 100;
         $payIn->DebitedFunds->Currency = 'CHF';
 
@@ -1387,7 +1386,7 @@ abstract class Base extends TestCase
         $payIn->PaymentDetails->StatementDescriptor = 'test twint';
 
         // execution type as WEB
-        $payIn->ExecutionDetails = new \MangoPay\PayInExecutionDetailsWeb();
+        $payIn->ExecutionDetails = new PayInExecutionDetailsWeb();
         $payIn->ExecutionDetails->ReturnURL = "http://www.my-site.com/returnURL?test.com";
 
         $payIn->Tag = "Twint tag";
@@ -1409,13 +1408,13 @@ abstract class Base extends TestCase
             $userId = $user->Id;
         }
 
-        $payIn = new \MangoPay\PayIn();
+        $payIn = new PayIn();
         $payIn->AuthorId = $userId;
         $payIn->CreditedWalletId = $wallet->Id;
-        $payIn->Fees = new \MangoPay\Money();
+        $payIn->Fees = new Money();
         $payIn->Fees->Amount = 10;
         $payIn->Fees->Currency = 'EUR';
-        $payIn->DebitedFunds = new \MangoPay\Money();
+        $payIn->DebitedFunds = new Money();
         $payIn->DebitedFunds->Amount = 1000;
         $payIn->DebitedFunds->Currency = 'EUR';
 
@@ -1424,7 +1423,7 @@ abstract class Base extends TestCase
         $payIn->PaymentDetails->Recurring = true;
 
         // execution type as WEB
-        $payIn->ExecutionDetails = new \MangoPay\PayInExecutionDetailsWeb();
+        $payIn->ExecutionDetails = new PayInExecutionDetailsWeb();
         $payIn->ExecutionDetails->ReturnURL = "http://www.my-site.com/returnURL?transactionId=wt_71a08458-b0cc-468d-98f7-1302591fc238";
         $payIn->ExecutionDetails->Culture = 'FR';
 
@@ -1441,19 +1440,19 @@ abstract class Base extends TestCase
             $userId = $user->Id;
         }
 
-        $payIn = new \MangoPay\PayIn();
+        $payIn = new PayIn();
         $payIn->AuthorId = $userId;
         $payIn->CreditedWalletId = $wallet->Id;
-        $payIn->Fees = new \MangoPay\Money();
+        $payIn->Fees = new Money();
         $payIn->Fees->Amount = 10;
         $payIn->Fees->Currency = 'EUR';
-        $payIn->DebitedFunds = new \MangoPay\Money();
+        $payIn->DebitedFunds = new Money();
         $payIn->DebitedFunds->Amount = 1000;
         $payIn->DebitedFunds->Currency = 'EUR';
 
         $payIn->PaymentDetails = new \MangoPay\PayInPaymentDetailsBizum();
         $payIn->PaymentDetails->StatementDescriptor = 'Example123';
-        $payIn->ExecutionDetails = new \MangoPay\PayInExecutionDetailsWeb();
+        $payIn->ExecutionDetails = new PayInExecutionDetailsWeb();
 
         if ($usePhone) {
             $payIn->PaymentDetails->Phone = "+34700000000";
@@ -1475,13 +1474,13 @@ abstract class Base extends TestCase
             $userId = $user->Id;
         }
 
-        $payIn = new \MangoPay\PayIn();
+        $payIn = new PayIn();
         $payIn->AuthorId = $userId;
         $payIn->CreditedWalletId = $wallet->Id;
-        $payIn->Fees = new \MangoPay\Money();
+        $payIn->Fees = new Money();
         $payIn->Fees->Amount = 0;
         $payIn->Fees->Currency = 'EUR';
-        $payIn->DebitedFunds = new \MangoPay\Money();
+        $payIn->DebitedFunds = new Money();
         $payIn->DebitedFunds->Amount = 100;
         $payIn->DebitedFunds->Currency = 'EUR';
 
@@ -1495,7 +1494,7 @@ abstract class Base extends TestCase
         $payIn->PaymentDetails->PaymentFlow = 'WEB';
 
         // execution type as WEB
-        $payIn->ExecutionDetails = new \MangoPay\PayInExecutionDetailsWeb();
+        $payIn->ExecutionDetails = new PayInExecutionDetailsWeb();
         $payIn->ExecutionDetails->ReturnURL = 'https://www.example.com';
         $payIn->ExecutionDetails->Culture = 'EN';
 
@@ -1506,7 +1505,7 @@ abstract class Base extends TestCase
 
     /**
      * Creates Pay-In Card Direct object
-     * @return \MangoPay\PayIn
+     * @return PayIn
      */
     protected function getNewPayInCardDirect3DSecure($userId = null)
     {
@@ -1526,22 +1525,22 @@ abstract class Base extends TestCase
         $card = $this->_api->Cards->Get($cardRegistration->CardId);
 
         // create pay-in CARD DIRECT
-        $payIn = new \MangoPay\PayIn();
+        $payIn = new PayIn();
         $payIn->CreditedWalletId = $wallet->Id;
         $payIn->AuthorId = $userId;
-        $payIn->DebitedFunds = new \MangoPay\Money();
+        $payIn->DebitedFunds = new Money();
         $payIn->DebitedFunds->Amount = 1000;
         $payIn->DebitedFunds->Currency = 'EUR';
-        $payIn->Fees = new \MangoPay\Money();
+        $payIn->Fees = new Money();
         $payIn->Fees->Amount = 0;
         $payIn->Fees->Currency = 'EUR';
         // payment type as CARD
-        $payIn->PaymentDetails = new \MangoPay\PayInPaymentDetailsCard();
+        $payIn->PaymentDetails = new PayInPaymentDetailsCard();
         $payIn->PaymentDetails->CardId = $card->Id;
         $payIn->PaymentDetails->IpAddress = "2001:0620:0000:0000:0211:24FF:FE80:C12C";
         $payIn->PaymentDetails->BrowserInfo = $this->getBrowserInfo();
         // execution type as DIRECT
-        $payIn->ExecutionDetails = new \MangoPay\PayInExecutionDetailsDirect();
+        $payIn->ExecutionDetails = new PayInExecutionDetailsDirect();
         $payIn->ExecutionDetails->SecureModeReturnURL = 'http://test.com';
         $payIn->ExecutionDetails->Culture = 'FR';
 
@@ -1579,10 +1578,10 @@ abstract class Base extends TestCase
         $transfer->Tag = 'DefaultTag';
         $transfer->AuthorId = $user->Id;
         $transfer->CreditedUserId = $user->Id;
-        $transfer->DebitedFunds = new \MangoPay\Money();
+        $transfer->DebitedFunds = new Money();
         $transfer->DebitedFunds->Currency = 'EUR';
         $transfer->DebitedFunds->Amount = 100;
-        $transfer->Fees = new \MangoPay\Money();
+        $transfer->Fees = new Money();
         $transfer->Fees->Currency = 'EUR';
         $transfer->Fees->Amount = 0;
 
@@ -1605,10 +1604,10 @@ abstract class Base extends TestCase
         $transfer = new \MangoPay\Transfer();
         $transfer->AuthorId = $userId;
         $transfer->CreditedUserId = $matrixSca->Id;
-        $transfer->DebitedFunds = new \MangoPay\Money();
+        $transfer->DebitedFunds = new Money();
         $transfer->DebitedFunds->Currency = 'EUR';
         $transfer->DebitedFunds->Amount = $amount;
-        $transfer->Fees = new \MangoPay\Money();
+        $transfer->Fees = new Money();
         $transfer->Fees->Currency = 'EUR';
         $transfer->Fees->Amount = 0;
 
@@ -1631,10 +1630,10 @@ abstract class Base extends TestCase
         $refund->DebitedWalletId = $transfer->DebitedWalletId;
         $refund->CreditedWalletId = $transfer->CreditedWalletId;
         $refund->AuthorId = $user->Id;
-        $refund->DebitedFunds = new \MangoPay\Money();
+        $refund->DebitedFunds = new Money();
         $refund->DebitedFunds->Amount = $transfer->DebitedFunds->Amount;
         $refund->DebitedFunds->Currency = $transfer->DebitedFunds->Currency;
-        $refund->Fees = new \MangoPay\Money();
+        $refund->Fees = new Money();
         $refund->Fees->Amount = $transfer->Fees->Amount;
         $refund->Fees->Currency = $transfer->Fees->Currency;
 
@@ -1652,10 +1651,10 @@ abstract class Base extends TestCase
         $refund = new \MangoPay\Refund();
         $refund->CreditedWalletId = $payIn->CreditedWalletId;
         $refund->AuthorId = $user->Id;
-        $refund->DebitedFunds = new \MangoPay\Money();
+        $refund->DebitedFunds = new Money();
         $refund->DebitedFunds->Amount = $payIn->DebitedFunds->Amount;
         $refund->DebitedFunds->Currency = $payIn->DebitedFunds->Currency;
-        $refund->Fees = new \MangoPay\Money();
+        $refund->Fees = new Money();
         $refund->Fees->Amount = $payIn->Fees->Amount;
         $refund->Fees->Currency = $payIn->Fees->Currency;
 
@@ -1672,10 +1671,10 @@ abstract class Base extends TestCase
 
         $refund = new \MangoPay\Refund();
         $refund->AuthorId = $user->Id;
-        $refund->DebitedFunds = new \MangoPay\Money();
+        $refund->DebitedFunds = new Money();
         $refund->DebitedFunds->Amount = 100;
         $refund->DebitedFunds->Currency = $payIn->DebitedFunds->Currency;
-        $refund->Fees = new \MangoPay\Money();
+        $refund->Fees = new Money();
         $refund->Fees->Amount = 10;
         $refund->Fees->Currency = $payIn->Fees->Currency;
 
@@ -1719,7 +1718,7 @@ abstract class Base extends TestCase
 
         $cardPreAuthorization = new \MangoPay\CardPreAuthorization();
         $cardPreAuthorization->AuthorId = $user->Id;
-        $cardPreAuthorization->DebitedFunds = new \MangoPay\Money();
+        $cardPreAuthorization->DebitedFunds = new Money();
         $cardPreAuthorization->DebitedFunds->Currency = "EUR";
         $cardPreAuthorization->DebitedFunds->Amount = 1000;
         $cardPreAuthorization->CardId = $getCardRegistration->CardId;
@@ -1737,7 +1736,7 @@ abstract class Base extends TestCase
         $billing->FirstName = 'John';
         $billing->LastName = 'Doe';
         $billing->Address = $address;
-        $shipping = new \MangoPay\Shipping();
+        $shipping = new Shipping();
         $shipping->FirstName = 'JohnS';
         $shipping->LastName = 'DoeS';
         $shipping->Address = $address;
@@ -1750,7 +1749,7 @@ abstract class Base extends TestCase
 
     /**
      * Creates Pay-In Card Web object
-     * @return \MangoPay\PayIn
+     * @return PayIn
      */
     protected function getJohnsPayInPaypalWeb()
     {
@@ -1758,22 +1757,22 @@ abstract class Base extends TestCase
             $wallet = $this->getJohnsWallet();
             $user = $this->getJohn();
 
-            $payIn = new \MangoPay\PayIn();
+            $payIn = new PayIn();
             $payIn->AuthorId = $user->Id;
             $payIn->CreditedUserId = $user->Id;
-            $payIn->DebitedFunds = new \MangoPay\Money();
+            $payIn->DebitedFunds = new Money();
             $payIn->DebitedFunds->Currency = 'EUR';
             $payIn->DebitedFunds->Amount = 1000;
-            $payIn->Fees = new \MangoPay\Money();
+            $payIn->Fees = new Money();
             $payIn->Fees->Currency = 'EUR';
             $payIn->Fees->Amount = 5;
             $payIn->CreditedWalletId = $wallet->Id;
-            $payIn->PaymentDetails = new \MangoPay\PayInPaymentDetailsPaypal();
+            $payIn->PaymentDetails = new PayInPaymentDetailsPaypal();
             $shippingAddress = new \MangoPay\ShippingAddress();
             $shippingAddress->RecipientName = $user->FirstName . " " . $user->LastName;
             $shippingAddress->Address = $this->getNewAddress();
             $payIn->PaymentDetails->ShippingAddress = $shippingAddress;
-            $payIn->ExecutionDetails = new \MangoPay\PayInExecutionDetailsWeb();
+            $payIn->ExecutionDetails = new PayInExecutionDetailsWeb();
             $payIn->ExecutionDetails->ReturnURL = 'https://test.com';
             $payIn->ExecutionDetails->Culture = 'fr';
 
@@ -1789,19 +1788,19 @@ abstract class Base extends TestCase
             $wallet = $this->getJohnsWallet();
             $user = $this->getJohn();
 
-            $payIn = new \MangoPay\PayIn();
+            $payIn = new PayIn();
             $payIn->AuthorId = $user->Id;
 
-            $payIn->DebitedFunds = new \MangoPay\Money();
+            $payIn->DebitedFunds = new Money();
             $payIn->DebitedFunds->Currency = 'EUR';
             $payIn->DebitedFunds->Amount = 500;
 
-            $payIn->Fees = new \MangoPay\Money();
+            $payIn->Fees = new Money();
             $payIn->Fees->Currency = 'EUR';
             $payIn->Fees->Amount = 0;
 
             $payIn->CreditedWalletId = $wallet->Id;
-            $payIn->PaymentDetails = new \MangoPay\PayInPaymentDetailsPaypal();
+            $payIn->PaymentDetails = new PayInPaymentDetailsPaypal();
             $address = new Address();
             $address->AddressLine1 = 'Main Street no 5';
             $address->City = 'Paris';
@@ -1809,7 +1808,7 @@ abstract class Base extends TestCase
             $address->PostalCode = '68400';
             $address->Region = 'Europe';
 
-            $shipping = new \MangoPay\Shipping();
+            $shipping = new Shipping();
             $shipping->FirstName = 'JohnS';
             $shipping->LastName = 'DoeS';
             $shipping->Address = $address;
@@ -1818,7 +1817,7 @@ abstract class Base extends TestCase
             $payIn->PaymentDetails->StatementDescriptor = "test";
             $payIn->Tag = "test tag";
 
-            $payIn->ExecutionDetails = new \MangoPay\PayInExecutionDetailsWeb();
+            $payIn->ExecutionDetails = new PayInExecutionDetailsWeb();
             $payIn->ExecutionDetails->ReturnURL = "http://example.com";
             $payIn->ExecutionDetails->Culture = "FR";
 
@@ -2490,10 +2489,10 @@ abstract class Base extends TestCase
 
         $settlementTransfer = new \MangoPay\SettlementTransfer();
         $settlementTransfer->AuthorId = $repudiation->AuthorId;
-        $settlementTransfer->DebitedFunds = new \MangoPay\Money();
+        $settlementTransfer->DebitedFunds = new Money();
         $settlementTransfer->DebitedFunds->Amount = 1;
         $settlementTransfer->DebitedFunds->Currency = "EUR";
-        $settlementTransfer->Fees = new \MangoPay\Money();
+        $settlementTransfer->Fees = new Money();
         $settlementTransfer->Fees->Amount = 0;
         $settlementTransfer->Fees->Currency = "EUR";
 
@@ -2724,17 +2723,17 @@ abstract class Base extends TestCase
         $payIn->CardId = $cardId;
         $payIn->CreditedUserId = $user->Id;
         $payIn->CreditedWalletId = $walletId;
-        $payIn->FirstTransactionDebitedFunds = new \MangoPay\Money();
+        $payIn->FirstTransactionDebitedFunds = new Money();
         $payIn->FirstTransactionDebitedFunds->Amount = 12;
         $payIn->FirstTransactionDebitedFunds->Currency = 'EUR';
-        $payIn->FirstTransactionFees = new \MangoPay\Money();
+        $payIn->FirstTransactionFees = new Money();
         $payIn->FirstTransactionFees->Amount = 1;
         $payIn->FirstTransactionFees->Currency = 'EUR';
-        $billing = new \MangoPay\Billing();
+        $billing = new Billing();
         $billing->FirstName = 'John';
         $billing->LastName = 'Doe';
         $billing->Address = $this->getNewAddress();
-        $shipping = new \MangoPay\Shipping();
+        $shipping = new Shipping();
         $shipping->FirstName = 'John';
         $shipping->LastName = 'Doe';
         $shipping->Address = $this->getNewAddress();
@@ -2756,10 +2755,10 @@ abstract class Base extends TestCase
         $recurringPayInRegistration->AuthorId = $user->Id;
         $recurringPayInRegistration->CreditedUserId = $user->Id;
         $recurringPayInRegistration->CreditedWalletId = $walletId;
-        $recurringPayInRegistration->FirstTransactionDebitedFunds = new \MangoPay\Money();
+        $recurringPayInRegistration->FirstTransactionDebitedFunds = new Money();
         $recurringPayInRegistration->FirstTransactionDebitedFunds->Amount = 1000;
         $recurringPayInRegistration->FirstTransactionDebitedFunds->Currency = 'EUR';
-        $recurringPayInRegistration->FirstTransactionFees = new \MangoPay\Money();
+        $recurringPayInRegistration->FirstTransactionFees = new Money();
         $recurringPayInRegistration->FirstTransactionFees->Amount = 0;
         $recurringPayInRegistration->FirstTransactionFees->Currency = 'EUR';
         $recurringPayInRegistration->FreeCycles = 0;
@@ -2783,13 +2782,13 @@ abstract class Base extends TestCase
                 break;
         }
 
-        $billing = new \MangoPay\Billing();
+        $billing = new Billing();
         $billing->FirstName = 'John';
         $billing->LastName = 'Doe';
         $billing->Address = $this->getNewAddress();
         $recurringPayInRegistration->Billing = $billing;
 
-        $shipping = new \MangoPay\Shipping();
+        $shipping = new Shipping();
         $shipping->FirstName = 'John';
         $shipping->LastName = 'Doe';
         $shipping->Address = $this->getNewAddress();
@@ -2943,17 +2942,17 @@ abstract class Base extends TestCase
         $payIn = new \MangoPay\PayInRecurringRegistration();
         $payIn->AuthorId = $user->Id;
         $payIn->CreditedWalletId = $walletId;
-        $payIn->FirstTransactionDebitedFunds = new \MangoPay\Money();
+        $payIn->FirstTransactionDebitedFunds = new Money();
         $payIn->FirstTransactionDebitedFunds->Amount = 100;
         $payIn->FirstTransactionDebitedFunds->Currency = 'EUR';
-        $payIn->FirstTransactionFees = new \MangoPay\Money();
+        $payIn->FirstTransactionFees = new Money();
         $payIn->FirstTransactionFees->Amount = 0;
         $payIn->FirstTransactionFees->Currency = 'EUR';
-        $billing = new \MangoPay\Billing();
+        $billing = new Billing();
         $billing->FirstName = 'John';
         $billing->LastName = 'Doe';
         $billing->Address = $this->getNewAddress();
-        $shipping = new \MangoPay\Shipping();
+        $shipping = new Shipping();
         $shipping->FirstName = 'John';
         $shipping->LastName = 'Doe';
         $shipping->Address = $this->getNewAddress();

@@ -9,8 +9,8 @@ class ApiReports extends Libraries\ApiBase
 {
     /**
      * Creates new report request
-     * @param \MangoPay\ReportRequest $reportRequest
-     * @return \MangoPay\ReportRequest Report request instance returned from API
+     * @param ReportRequest $reportRequest
+     * @return ReportRequest Report request instance returned from API
      */
     public function Create($reportRequest, $idempotencyKey = null)
     {
@@ -33,7 +33,7 @@ class ApiReports extends Libraries\ApiBase
     /**
      * Gets report request.
      * @param string $reportRequestId Report request identifier
-     * @return \MangoPay\ReportRequest Report request instance returned from API
+     * @return ReportRequest Report request instance returned from API
      */
     public function Get($reportRequestId)
     {
@@ -42,10 +42,10 @@ class ApiReports extends Libraries\ApiBase
 
     /**
      * Gets all report requests.
-     * @param \MangoPay\Pagination $pagination Pagination object
-     * @param \MangoPay\FilterTransactions $filter Object to filter data
-     * @param \MangoPay\Sorting $sorting Object to sorting data
-     * @return \MangoPay\ReportRequest Array with report requests
+     * @param Pagination $pagination Pagination object
+     * @param FilterTransactions $filter Object to filter data
+     * @param Sorting $sorting Object to sorting data
+     * @return ReportRequest Array with report requests
      */
     public function GetAll(& $pagination = null, $filter = null, $sorting = null)
     {

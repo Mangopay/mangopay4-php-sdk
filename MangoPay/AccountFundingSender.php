@@ -15,7 +15,7 @@ class AccountFundingSender extends Libraries\Dto
     public $LastName;
 
     /**
-     * @var \MangoPay\Address
+     * @var Address
      */
     public $Address;
 

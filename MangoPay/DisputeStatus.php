@@ -7,10 +7,10 @@ namespace MangoPay;
  */
 class DisputeStatus
 {
-    const Created = "CREATED";
-    const PendingClientAction = "PENDING_CLIENT_ACTION";
-    const Submitted = "SUBMITTED";
-    const PendingBankAction = "PENDING_BANK_ACTION";
-    const ReopenedPendingClientAction = "REOPENED_PENDING_CLIENT_ACTION";
-    const Closed = "CLOSED";
+    public const Created = "CREATED";
+    public const PendingClientAction = "PENDING_CLIENT_ACTION";
+    public const Submitted = "SUBMITTED";
+    public const PendingBankAction = "PENDING_BANK_ACTION";
+    public const ReopenedPendingClientAction = "REOPENED_PENDING_CLIENT_ACTION";
+    public const Closed = "CLOSED";
 }

@@ -15,14 +15,14 @@ class UboDeclaration extends Libraries\EntityBase
     /**
      * Declaration status.
      * @var string
-     * @see \MangoPay\UboDeclarationStatus
+     * @see UboDeclarationStatus
      */
     public $Status;
 
     /**
      * List of reasons why the declaration was refused.
      * @var string
-     * @see \MangoPay\UboDeclarationRefusedOrIncompleteReasonType
+     * @see UboDeclarationRefusedOrIncompleteReasonType
      */
     public $Reason;
 

@@ -4,9 +4,9 @@ namespace MangoPay;
 
 class MandateStatus
 {
-    const Created = "CREATED";
-    const Submitted = "SUBMITTED";
-    const Active = "ACTIVE";
-    const Failed = "FAILED";
-    const Expired = "EXPIRED";
+    public const Created = "CREATED";
+    public const Submitted = "SUBMITTED";
+    public const Active = "ACTIVE";
+    public const Failed = "FAILED";
+    public const Expired = "EXPIRED";
 }

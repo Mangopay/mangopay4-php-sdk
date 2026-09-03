@@ -1,0 +1,2 @@
+variables:
+  PHP_IMAGE: 991143886857.dkr.ecr.eu-central-1.amazonaws.com/platform/golden/php:latest

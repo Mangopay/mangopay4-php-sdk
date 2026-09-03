@@ -9,8 +9,8 @@ class ApiCardPreAuthorizations extends Libraries\ApiBase
 {
     /**
      * Create new pre-authorization object
-     * @param \MangoPay\CardPreAuthorization $cardPreAuthorization PreAuthorization object to create
-     * @return \MangoPay\CardPreAuthorization PreAuthorization object returned from API
+     * @param CardPreAuthorization $cardPreAuthorization PreAuthorization object to create
+     * @return CardPreAuthorization PreAuthorization object returned from API
      */
     public function Create($cardPreAuthorization, $idempotencyKey = null)
     {
@@ -20,7 +20,7 @@ class ApiCardPreAuthorizations extends Libraries\ApiBase
     /**
      * Get pre-authorization object
      * @param string $cardPreAuthorizationId PreAuthorization identifier
-     * @return \MangoPay\CardPreAuthorization Card registration  object returned from API
+     * @return CardPreAuthorization Card registration  object returned from API
      */
     public function Get($cardPreAuthorizationId)
     {
@@ -29,8 +29,8 @@ class ApiCardPreAuthorizations extends Libraries\ApiBase
 
     /**
      * Update pre-authorization object
-     * @param \MangoPay\CardPreAuthorization $cardPreAuthorization PreAuthorization object to save
-     * @return \MangoPay\CardPreAuthorization PreAuthorization object returned from API
+     * @param CardPreAuthorization $cardPreAuthorization PreAuthorization object to save
+     * @return CardPreAuthorization PreAuthorization object returned from API
      */
     public function Update($cardPreAuthorization)
     {

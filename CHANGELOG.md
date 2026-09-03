@@ -1,3 +1,27 @@
+## [5.0.0] - 2026-09-02
+
+### Breaking Changes
+- **Minimum PHP version raised to 8.2** – The SDK now requires PHP 8.2 or newer (`^8.2`). Applications running on PHP 5.6–8.1 must upgrade their runtime before updating to this version.
+- **Dropped psr/log v1 support** – The `psr/log` dependency now requires `^2.0|^3.0`. Projects that depend on `psr/log` v1 (common in older Laravel/Symfony versions) will need to upgrade their logging stack.
+- **PHPUnit upgraded to v11** – The dev dependency moved from `>=5.7.27 <10` to `^11.0`. This only affects consumers who run the SDK test suite directly.
+- **php-cs-fixer upgraded to v3** – Moved from `^2.18` to `^3.0` with a new `.php-cs-fixer.php` config (replaces the old `.php_cs` file). Linting rules updated to PSR-12.
+
+### Changed
+- Migrated CI/CD from GitHub Actions to GitLab CI/CD.
+- Removed legacy Docker-based test environments (`php_env/` for PHP 5.6, 7.0, 8.0).
+- Removed deprecated `ReflectionProperty::setAccessible()` calls (no-op since PHP 8.1, triggers deprecations on 8.4+).
+- Removed deprecated `curl_close()` calls on CurlHandle objects (no-op since PHP 8.0).
+- PHPUnit test base class updated to use `setUp()` instead of the constructor, following modern PHPUnit conventions.
+- Modernized the test suite for PHPUnit 11 and PSR-12 compliance – imported classes via `use` statements in place of inline fully-qualified names, and applied consistent spacing/formatting across the `tests/Cases/` files.
+- Regenerated `composer.lock` against the updated dependency constraints.
+- Updated `phpunit.xml` with `<source>` configuration for coverage.
+
+### Added
+- `FilterReports::$MinBalanceAmount` – New optional filter property for report requests.
+
+### Fixed
+- `SettlementsTest` – Replaced deprecated `Pagination::$Limit` with `Pagination::$ItemsPerPage`.
+
 ## [4.5.0] - 2026-09-01
 
 ### Added

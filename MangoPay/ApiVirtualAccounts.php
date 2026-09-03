@@ -8,7 +8,7 @@ class ApiVirtualAccounts extends Libraries\ApiBase
      * Create new Virtual Account
      * @param String $walletId
      * @param VirtualAccount $virtualAccount
-     * @return \MangoPay\VirtualAccount Virtual Account object returned from API
+     * @return VirtualAccount Virtual Account object returned from API
      */
     public function Create($virtualAccount, $walletId, $idempotencyKey = null)
     {
@@ -25,7 +25,7 @@ class ApiVirtualAccounts extends Libraries\ApiBase
     /**
      * @param string $walletId
      * @param string $virtualAccountId
-     * @return \MangoPay\VirtualAccount
+     * @return VirtualAccount
      */
     public function Get($walletId, $virtualAccountId)
     {
@@ -33,9 +33,9 @@ class ApiVirtualAccounts extends Libraries\ApiBase
     }
 
     /**
-     * @param \MangoPay\Pagination $pagination Pagination object
+     * @param Pagination $pagination Pagination object
      * @param string $walletId
-     * @return \MangoPay\VirtualAccount[]
+     * @return VirtualAccount[]
      */
     public function GetAll($walletId, $pagination = null, $sorting = null)
     {
@@ -45,7 +45,7 @@ class ApiVirtualAccounts extends Libraries\ApiBase
     /**
      * @param string $walletId
      * @param string $virtualAccountId
-     * @return \MangoPay\VirtualAccount
+     * @return VirtualAccount
      */
     public function Deactivate($walletId, $virtualAccountId)
     {
@@ -54,7 +54,7 @@ class ApiVirtualAccounts extends Libraries\ApiBase
     }
 
     /**
-     * @return \MangoPay\VirtualAccountAvailabilities
+     * @return VirtualAccountAvailabilities
      */
     public function GetAvailabilities()
     {

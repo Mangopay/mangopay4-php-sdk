@@ -737,14 +737,12 @@ abstract class ApiBase
         $dependsObjects = $entity->GetDependsObjects();
 
         foreach ($responseProperties as $responseProperty) {
-            $responseProperty->setAccessible(true);
 
             $name = $responseProperty->getName();
             $value = $responseProperty->getValue($response);
 
             if ($entityReflection->hasProperty($name)) {
                 $entityProperty = $entityReflection->getProperty($name);
-                $entityProperty->setAccessible(true);
 
                 if ($entityProperty->getName() == "DeclaredUBOs") {
                     $declaredUbos = [];
@@ -804,7 +802,6 @@ abstract class ApiBase
                 if (isset($dependsObjects[$name])) {
                     $dependsObject = $dependsObjects[$name];
                     $entityDependProperty = $entityReflection->getProperty($dependsObject['_property_name']);
-                    $entityDependProperty->setAccessible(true);
                     $entityDependProperty->setValue($entity, $this->CastResponseToEntity($response, $dependsObject[$value], true));
                 }
             } else {

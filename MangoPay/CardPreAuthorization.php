@@ -17,21 +17,21 @@ class CardPreAuthorization extends Libraries\EntityBase
      * It represents the amount debited on the bank account
      * of the Author.DebitedFunds = Fees + CreditedFunds
      * (amount received on wallet)
-     * @var \MangoPay\Money
+     * @var Money
      */
     public $DebitedFunds;
 
     /**
      * Status of the PreAuthorization
      * @var string
-     * @see \MangoPay\CardPreAuthorizationStatus
+     * @see CardPreAuthorizationStatus
      */
     public $Status;
 
     /**
      * The status of the payment after the PreAuthorization
      * @var string
-     * @see \MangoPay\CardPreAuthorizationPaymentStatus
+     * @see CardPreAuthorizationPaymentStatus
      */
     public $PaymentStatus;
 
@@ -120,13 +120,13 @@ class CardPreAuthorization extends Libraries\EntityBase
 
     /**
      * Billing information
-     * @var \MangoPay\Billing
+     * @var Billing
      */
     public $Billing;
 
     /**
      * Security validation information
-     * @var \MangoPay\SecurityInfo
+     * @var SecurityInfo
      */
     public $SecurityInfo;
 
@@ -138,7 +138,7 @@ class CardPreAuthorization extends Libraries\EntityBase
 
     /**
      * RemainingFunds
-     * @var \MangoPay\Money
+     * @var Money
      */
     public $RemainingFunds;
 

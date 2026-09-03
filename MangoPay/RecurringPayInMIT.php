@@ -10,12 +10,12 @@ class RecurringPayInMIT extends Libraries\Dto
     public $RecurringPayinRegistrationId;
 
     /**
-     * @var \MangoPay\Money
+     * @var Money
      */
     public $DebitedFunds;
 
     /**
-     * @var \MangoPay\Money
+     * @var Money
      */
     public $Fees;
 

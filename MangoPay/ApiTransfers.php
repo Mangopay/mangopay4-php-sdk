@@ -9,8 +9,8 @@ class ApiTransfers extends Libraries\ApiBase
 {
     /**
      * Create new transfer
-     * @param \MangoPay\Transfer $transfer
-     * @return \MangoPay\Transfer Transfer object returned from API
+     * @param Transfer $transfer
+     * @return Transfer Transfer object returned from API
      */
     public function Create($transfer, $idempotencyKey = null)
     {
@@ -20,7 +20,7 @@ class ApiTransfers extends Libraries\ApiBase
     /**
      * Get transfer
      * @param string $transferId Transfer identifier
-     * @return \MangoPay\Transfer Transfer object returned from API
+     * @return Transfer Transfer object returned from API
      */
     public function Get($transferId)
     {
@@ -30,8 +30,8 @@ class ApiTransfers extends Libraries\ApiBase
     /**
      * Create refund for transfer object
      * @param string $transferId Transfer identifier
-     * @param \MangoPay\Refund $refund Refund object to create
-     * @return \MangoPay\Refund Object returned by REST API
+     * @param Refund $refund Refund object to create
+     * @return Refund Object returned by REST API
      */
     public function CreateRefund($transferId, $refund, $idempotencyKey = null)
     {
@@ -41,10 +41,10 @@ class ApiTransfers extends Libraries\ApiBase
     /**
      * Retrieve list of Refunds pertaining to a certain Transfer
      * @param string $transferId Transfer identifier
-     * @param \MangoPay\Pagination $pagination Pagination object
-     * @param \MangoPay\FilterRefunds $filter Filtering object
-     * @param \MangoPay\Sorting $sorting Sorting object
-     * @return \MangoPay\Refund[] List of the Transfer's Refunds
+     * @param Pagination $pagination Pagination object
+     * @param FilterRefunds $filter Filtering object
+     * @param Sorting $sorting Sorting object
+     * @return Refund[] List of the Transfer's Refunds
      */
     public function GetRefunds($transferId, & $pagination = null, $filter = null, $sorting = null)
     {

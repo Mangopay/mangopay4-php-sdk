@@ -10,22 +10,22 @@ class UboDeclarationStatus
     /**
      * When the UBO declaration was created
      */
-    const Created = 'CREATED';
+    public const Created = 'CREATED';
 
     /**
      * When validation has been requested for the UBO declaration
      */
-    const ValidationAsked = 'VALIDATION_ASKED';
+    public const ValidationAsked = 'VALIDATION_ASKED';
 
     /**
      * When the UBO declaration was validated
      */
-    const Validated = 'VALIDATED';
+    public const Validated = 'VALIDATED';
 
     /**
      * When the UBO declaration was refused
      */
-    const Refused = 'REFUSED';
+    public const Refused = 'REFUSED';
 
-    const Incomplete = 'INCOMPLETE';
+    public const Incomplete = 'INCOMPLETE';
 }

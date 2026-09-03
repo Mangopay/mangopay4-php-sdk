@@ -9,8 +9,8 @@ class ApiCardRegistrations extends Libraries\ApiBase
 {
     /**
      * Create new card registration
-     * @param \MangoPay\CardRegistration $cardRegistration Card registration object to create
-     * @return \MangoPay\CardRegistration Card registration object returned from API
+     * @param CardRegistration $cardRegistration Card registration object to create
+     * @return CardRegistration Card registration object returned from API
      */
     public function Create($cardRegistration, $idempotencyKey = null)
     {
@@ -20,7 +20,7 @@ class ApiCardRegistrations extends Libraries\ApiBase
     /**
      * Get card registration
      * @param string $cardRegistrationId Card Registration identifier
-     * @return \MangoPay\CardRegistration Card registration  object returned from API
+     * @return CardRegistration Card registration  object returned from API
      */
     public function Get($cardRegistrationId)
     {
@@ -29,8 +29,8 @@ class ApiCardRegistrations extends Libraries\ApiBase
 
     /**
      * Update card registration
-     * @param \MangoPay\CardRegistration $cardRegistration Card registration object to save
-     * @return \MangoPay\CardRegistration Card registration object returned from API
+     * @param CardRegistration $cardRegistration Card registration object to save
+     * @return CardRegistration Card registration object returned from API
      */
     public function Update($cardRegistration)
     {

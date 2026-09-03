@@ -7,9 +7,9 @@ namespace MangoPay;
  */
 class VirtualAccountStatus
 {
-    const Pending = "PENDING";
-    const Active = "ACTIVE";
-    const Failed = "FAILED";
-    const Blocked = "BLOCKED";
-    const Closed = "CLOSED";
+    public const Pending = "PENDING";
+    public const Active = "ACTIVE";
+    public const Failed = "FAILED";
+    public const Blocked = "BLOCKED";
+    public const Closed = "CLOSED";
 }

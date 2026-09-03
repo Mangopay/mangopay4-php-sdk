@@ -7,13 +7,13 @@ namespace MangoPay;
  */
 class CardPreAuthorizationPaymentStatus
 {
-    const Canceled = 'CANCELED';
-    const Expired = 'EXPIRED';
-    const Validated = 'VALIDATED';
-    const Waiting = 'WAITING';
-    const CancelRequested = 'CANCEL_REQUESTED';
-    const ToBeCompleted = 'TO_BE_COMPLETED';
-    const NoShowRequested = 'NO_SHOW_REQUESTED';
-    const NoShow = 'NO_SHOW';
-    const Failed = 'FAILED';
+    public const Canceled = 'CANCELED';
+    public const Expired = 'EXPIRED';
+    public const Validated = 'VALIDATED';
+    public const Waiting = 'WAITING';
+    public const CancelRequested = 'CANCEL_REQUESTED';
+    public const ToBeCompleted = 'TO_BE_COMPLETED';
+    public const NoShowRequested = 'NO_SHOW_REQUESTED';
+    public const NoShow = 'NO_SHOW';
+    public const Failed = 'FAILED';
 }

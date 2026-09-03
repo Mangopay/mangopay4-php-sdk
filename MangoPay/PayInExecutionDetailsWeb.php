@@ -50,7 +50,7 @@ class PayInExecutionDetailsWeb extends Libraries\Dto implements PayInExecutionDe
 
     /**
      * Billing information
-     * @var \MangoPay\Billing
+     * @var Billing
      */
     public $Billing;
 

@@ -9,7 +9,7 @@ class FilterDisputes extends FilterBase
 {
     /**
      * @var string
-     * @see \MangoPay\DisputeType
+     * @see DisputeType
      */
     public $DisputeType;
 

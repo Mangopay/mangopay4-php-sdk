@@ -7,8 +7,8 @@ namespace MangoPay\Libraries;
  */
 class RequestType
 {
-    const GET = 'GET';
-    const POST = 'POST';
-    const PUT = 'PUT';
-    const DELETE = 'DELETE';
+    public const GET = 'GET';
+    public const POST = 'POST';
+    public const PUT = 'PUT';
+    public const DELETE = 'DELETE';
 }

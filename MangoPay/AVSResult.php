@@ -7,13 +7,13 @@ namespace MangoPay;
  */
 class AVSResult
 {
-    const FULL_MATCH = "FULL_MATCH";
+    public const FULL_MATCH = "FULL_MATCH";
 
-    const ADDRESS_MATCH_ONLY = "ADDRESS_MATCH_ONLY";
+    public const ADDRESS_MATCH_ONLY = "ADDRESS_MATCH_ONLY";
 
-    const POSTAL_CODE_MATCH_ONLY = "POSTAL_CODE_MATCH_ONLY";
+    public const POSTAL_CODE_MATCH_ONLY = "POSTAL_CODE_MATCH_ONLY";
 
-    const NO_MATCH = "NO_MATCH";
+    public const NO_MATCH = "NO_MATCH";
 
-    const NO_CHECK = "NO_CHECK";
+    public const NO_CHECK = "NO_CHECK";
 }

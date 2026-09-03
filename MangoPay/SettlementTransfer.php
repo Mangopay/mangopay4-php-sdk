@@ -15,7 +15,7 @@ class SettlementTransfer extends Transfer
 
     /**
      * The funds debited from the debited wallet
-     * @var \MangoPay\Money
+     * @var Money
      */
     public $DebitedFunds;
 
@@ -27,7 +27,7 @@ class SettlementTransfer extends Transfer
      * Fees of -200 will transfer 800 from the original wallet
      * to the credit wallet, and transfer 200 from your Fees
      * wallet to your Credit wallet
-     * @var \MangoPay\Money
+     * @var Money
      */
     public $Fees;
 

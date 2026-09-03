@@ -28,7 +28,7 @@ class UsersTest extends Base
         $john = $this->getJohnSca(UserCategory::Owner, false);
         $this->assertNotNull($john->Id);
         $this->assertSame(\MangoPay\PersonType::Natural, $john->PersonType);
-//        $this->assertNotNull($john->PendingUserAction->RedirectUrl);
+        //        $this->assertNotNull($john->PendingUserAction->RedirectUrl);
         $this->assertEquals(UserCategory::Owner, $john->UserCategory);
     }
 
@@ -576,7 +576,7 @@ class UsersTest extends Base
         foreach ($aKycDocTypes as $kycDoc) {
             try {
                 $this->CreateKycDocument_TestOne($kycDoc[0], $kycDoc[1]);
-            } catch (\MangoPay\Libraries\Exception $exc) {
+            } catch (Exception $exc) {
                 $message = 'Error (Code: ' . $exc->getCode() . ', '
                     . $exc->getMessage() . ') '
                     . 'during create/get KYC Document with type: ' . $kycDoc[0];
@@ -675,7 +675,7 @@ class UsersTest extends Base
         try {
             $this->_api->Users->CreateKycPageFromFile($user->Id, $kycDocument->Id, '');
             $this->fail("This should have failed because path to file is empty");
-        } catch (\MangoPay\Libraries\Exception $exc) {
+        } catch (Exception $exc) {
             $this->assertSame('Path of file cannot be empty', $exc->getMessage());
         }
     }
@@ -691,7 +691,7 @@ class UsersTest extends Base
         try {
             $this->_api->Users->CreateKycPageFromFile($user->Id, $kycDocument->Id, 'notExistFileName.tmp');
             $this->fail("This should have failed because file is non existent");
-        } catch (\MangoPay\Libraries\Exception $exc) {
+        } catch (Exception $exc) {
             $this->assertSame('File not exist', $exc->getMessage());
         }
     }
@@ -911,7 +911,7 @@ class UsersTest extends Base
             Logs::Debug('MangoPay\ResponseException Code', $e->GetCode());
             Logs::Debug('Message', $e->GetMessage());
             Logs::Debug('Details', $e->GetErrorDetails());
-        } catch (\MangoPay\Libraries\Exception $e) {
+        } catch (Exception $e) {
             Logs::Debug('MangoPay\Exception Message', $e->GetMessage());
         }
     }

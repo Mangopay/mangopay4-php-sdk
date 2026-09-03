@@ -10,12 +10,12 @@ class Sorting
     /**
      * Fields separator in sort parameters in URL
      */
-    const SortFieldSeparator = "_";
+    public const SortFieldSeparator = "_";
 
     /**
      * Fields separator in sort parameters in URL
      */
-    const SortUrlParameterName = "Sort";
+    public const SortUrlParameterName = "Sort";
 
     /**
      * Array with fields to sort

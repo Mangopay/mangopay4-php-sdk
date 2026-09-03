@@ -61,7 +61,7 @@ class CardsTest extends Base
         $john = $this->getNewJohn();
         $cardRegistration = $this->getUpdatedCardRegistration($john->Id);
 
-        $cardValidation = new \MangoPay\CardValidation();
+        $cardValidation = new CardValidation();
         $cardValidation->Id = $cardRegistration->CardId;
         $cardValidation->Tag = "Test card validate";
         $cardValidation->IpAddress = "2001:0620:0000:0000:0211:24FF:FE80:C12C";
@@ -87,7 +87,7 @@ class CardsTest extends Base
         $john = $this->getNewJohn();
         $cardRegistration = $this->getUpdatedCardRegistration($john->Id);
 
-        $cardValidation = new \MangoPay\CardValidation();
+        $cardValidation = new CardValidation();
         $cardValidation->Id = $cardRegistration->CardId;
         $cardValidation->Tag = "Test get card validation";
         $cardValidation->IpAddress = "2001:0620:0000:0000:0211:24FF:FE80:C12C";

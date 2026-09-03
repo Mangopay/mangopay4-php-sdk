@@ -9,7 +9,7 @@ class BankingAliasIBAN extends BankingAlias
 {
     /**
      * The type of banking alias (note that only IBAN and GB is available at present)
-     * @var \MangoPay\BankingAliasType
+     * @var BankingAliasType
      */
     public $Type = BankingAliasType::IBAN;
 
@@ -33,7 +33,7 @@ class BankingAliasIBAN extends BankingAlias
 
     /**
      * LocalAccount details used for GB
-     * @var \MangoPay\LocalAccountDetailsBankingAlias
+     * @var LocalAccountDetailsBankingAlias
      */
     public $LocalAccountDetails;
 

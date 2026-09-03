@@ -4,4 +4,9 @@
             <directory>tests/Cases/</directory>
         </testsuite>
     </testsuites>
+    <source>
+        <include>
+            <directory>MangoPay</directory>
+        </include>
+    </source>
 </phpunit>

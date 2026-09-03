@@ -7,10 +7,15 @@ demos/paymentDirect/MangoPaySdkStorage.tmp.php
 
 # Ignore /vendor/ directory when using composer
 /vendor/
-composer.lock
+
+# Composer binary should be provided by CI / the dev environment, not vendored
+composer.phar
 
 .*
 !.github
-!.php_cs
+!.php-cs-fixer.php
 !.gitignore
 !.gitattributes
+!.gitlab-ci.yml
+!.gitlab-ci
+!.env.example

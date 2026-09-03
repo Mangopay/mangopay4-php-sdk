@@ -6,7 +6,7 @@ class PayInPaymentDetailsApplePay extends Libraries\Dto implements PayInPaymentD
 {
     /**
      * Payment information returned by Apple Pay payment
-     * @var \MangoPay\PaymentData
+     * @var PaymentData
      */
     public $PaymentData;
 

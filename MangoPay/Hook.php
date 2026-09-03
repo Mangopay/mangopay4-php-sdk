@@ -15,19 +15,19 @@ class Hook extends Libraries\EntityBase
 
     /**
      * @var string
-     * @see \MangoPay\HookStatus
+     * @see HookStatus
      */
     public $Status;
 
     /**
      * @var string
-     * @see \MangoPay\HookValidity
+     * @see HookValidity
      */
     public $Validity;
 
     /**
      * @var string
-     * @see \MangoPay\EventType
+     * @see EventType
      */
     public $EventType;
 

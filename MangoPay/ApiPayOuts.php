@@ -10,7 +10,7 @@ class ApiPayOuts extends Libraries\ApiBase
     /**
      * Create new pay-out
      * @param PayOut $payOut
-     * @return \MangoPay\PayOut Object returned from API
+     * @return PayOut Object returned from API
      */
     public function Create($payOut, $idempotencyKey = null)
     {
@@ -22,7 +22,7 @@ class ApiPayOuts extends Libraries\ApiBase
      * This method is used to check whether or not the destination bank is eligible for instant payout.
      * @param PayOutEligibilityRequest $payOutEligibility
      * @param $idempotencyKey
-     * @return \MangoPay\PayOutEligibilityResponse Object returned for the API
+     * @return PayOutEligibilityResponse Object returned for the API
      */
     public function CheckInstantPayoutEligibility($payOutEligibility, $idempotencyKey = null)
     {
@@ -39,7 +39,7 @@ class ApiPayOuts extends Libraries\ApiBase
     /**
      * Get pay-out object
      * @param string $payOutId PayOut identifier
-     * @return \MangoPay\PayOut Object returned from API
+     * @return PayOut Object returned from API
      */
     public function Get($payOutId)
     {
@@ -49,7 +49,7 @@ class ApiPayOuts extends Libraries\ApiBase
     /**
      * Get bankwire pay-out object
      * @param string $payOutId PayOut identifier
-     * @return \MangoPay\PayOut Object returned from API
+     * @return PayOut Object returned from API
      * @throws Libraries\Exception
      */
     public function GetBankwire($payOutId)
@@ -60,10 +60,10 @@ class ApiPayOuts extends Libraries\ApiBase
     /**
      * Returns a list of Refunds pertaining to a certain PayOut.
      * @param string $payOutId ID of the PayOut for which to retrieve Refunds
-     * @param \MangoPay\Pagination $pagination Pagination object
-     * @param \MangoPay\FilterRefunds $filter Filtering object
-     * @param \MangoPay\Sorting $sorting Sorting object
-     * @return \MangoPay\Refund[] List of Refunds for the PayOut
+     * @param Pagination $pagination Pagination object
+     * @param FilterRefunds $filter Filtering object
+     * @param Sorting $sorting Sorting object
+     * @return Refund[] List of Refunds for the PayOut
      */
     public function GetRefunds($payOutId, & $pagination = null, $filter = null, $sorting = null)
     {

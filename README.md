@@ -1,4 +1,4 @@
-MANGOPAY PHP SDK  [![mangopay2-php-sdk-cd](https://github.com/Mangopay/mangopay2-php-sdk/actions/workflows/build.yaml/badge.svg)](https://github.com/Mangopay/mangopay2-php-sdk/actions/workflows/build.yaml) [![Latest Stable Version](https://poser.pugx.org/mangopay4/php-sdk/v/stable)](https://packagist.org/packages/mangopay4/php-sdk) [![Total Downloads](https://poser.pugx.org/mangopay4/php-sdk/downloads)](https://packagist.org/packages/mangopay4/php-sdk) [![License](https://poser.pugx.org/mangopay4/php-sdk/license)](https://packagist.org/packages/mangopay4/php-sdk)
+MANGOPAY PHP SDK  [![Latest Stable Version](https://poser.pugx.org/mangopay4/php-sdk/v/stable)](https://packagist.org/packages/mangopay4/php-sdk) [![Total Downloads](https://poser.pugx.org/mangopay4/php-sdk/downloads)](https://packagist.org/packages/mangopay4/php-sdk) [![License](https://poser.pugx.org/mangopay4/php-sdk/license)](https://packagist.org/packages/mangopay4/php-sdk)
 =================================================
 
 MangopaySDK is a PHP client library to work with [Mangopay REST API](https://docs.mangopay.com/endpoints/v2.01).
@@ -12,10 +12,12 @@ Compatibility Notes
 Requirements
 -------------------------------------------------
 To use this SDK, you will need (as a minimum):
-* PHP 5.6 or newer
+* PHP 8.2 or newer
 * cURL (included and enabled in a standard PHP distribution)
 * OpenSSL (included and enabled in a standard PHP distribution)
-* [psr/log](https://github.com/php-fig/log) v1.0
+* JSON (included and enabled in a standard PHP distribution)
+* Fileinfo (included and enabled in a standard PHP distribution)
+* [psr/log](https://github.com/php-fig/log) v2.0 or v3.0
 * You do not have to use [Composer](https://getcomposer.org/), but you are strongly advised to (particularly for handling the dependency on the PSR Log library)
 
 Installation with Composer

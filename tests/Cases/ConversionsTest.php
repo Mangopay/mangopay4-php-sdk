@@ -8,6 +8,7 @@ use MangoPay\MarginsResponse;
 use MangoPay\Money;
 use MangoPay\TransactionType;
 use MangoPay\UserMargin;
+
 use function PHPUnit\Framework\assertNotNull;
 
 class ConversionsTest extends Base

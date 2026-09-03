@@ -12,7 +12,7 @@ use Psr\Log\LoggerInterface;
  */
 class RestTool
 {
-    const VERSION = '4.5.0';
+    public const VERSION = '5.0.0';
 
     /**
      * Root/parent instance that holds the OAuthToken and Configuration instance
@@ -126,7 +126,7 @@ class RestTool
      * Call request to MangoPay API
      * @param string $urlPath Part of the full path of the API URL
      * @param string $apiVersion Version of the API
-     * @param \MangoPay\Libraries\RequestType $requestType Type of request
+     * @param RequestType $requestType Type of request
      * @param array $requestData Data to send in request
      * @param string $idempotencyKey
      * @param \MangoPay\Pagination $pagination Pagination object
@@ -172,7 +172,7 @@ class RestTool
      * Perform a POST/PUT request with a multipart file
      * @param string $urlPath Part of the full path of the API URL
      * @param string $apiVersion Version of the API
-     * @param \MangoPay\Libraries\RequestType $requestType Type of request
+     * @param RequestType $requestType Type of request
      * @param string $file The file as binary string
      * @param string $fileName The file name
      * @param string $idempotencyKey Optional idempotency key for post requests

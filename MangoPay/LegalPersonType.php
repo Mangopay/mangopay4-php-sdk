@@ -7,8 +7,8 @@ namespace MangoPay;
  */
 class LegalPersonType
 {
-    const Business = 'BUSINESS';
-    const Organization = 'ORGANIZATION';
-    const Soletrader = 'SOLETRADER';
-    const Partnership = 'PARTNERSHIP';
+    public const Business = 'BUSINESS';
+    public const Organization = 'ORGANIZATION';
+    public const Soletrader = 'SOLETRADER';
+    public const Partnership = 'PARTNERSHIP';
 }

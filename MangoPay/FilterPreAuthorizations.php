@@ -15,14 +15,14 @@ class FilterPreAuthorizations extends Libraries\Dto
     /**
      * Status of the PreAuthorizations
      * @var string
-     * @see \MangoPay\CardPreAuthorizationStatus
+     * @see CardPreAuthorizationStatus
      */
     public $Status;
 
     /**
      * Status of the payment after the PreAuthorization
      * @var string
-     * @see \MangoPay\CardPreAuthorizationPaymentStatus
+     * @see CardPreAuthorizationPaymentStatus
      */
     public $PaymentStatus;
 }

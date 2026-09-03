@@ -1,38 +1,26 @@
-.PHONY: help
-help:
-	@echo "Please use \`make <target>' where <target> is one of"
-	@echo "  tag  to modify the version"
+# Project-scoped Composer config: the Nexus mirror applies ONLY to this
+# project, never to other PHP projects on the same machine.
+export COMPOSER_HOME := $(CURDIR)/.composer-home
 
-.PHONY: tag
-tag:
-	$(if $(TAG),,$(error TAG is not defined. Pass via "make tag TAG=2.5.1"))
-	@echo Tagging $(TAG)
-	sed -i "s/const VERSION = '.*';/const VERSION = '$(TAG)';/" MangoPay/Libraries/RestTool.php
-	php -l MangoPay/Libraries/RestTool.php
+# Load local secrets/config from .env if present (gitignored). The leading `-`
+# means "don't fail if the file is missing"
+-include .env
+export
 
-.PHONY: docker-test-php-56
-docker-test-php-56: ## Test on PHP 5.6
-	docker build -t php-test-env:5.6 php_env/PHP_5.6
-	docker run -it -v "${PWD}":/usr/src/mangopay2-php-sdk \
-	-w /usr/src/mangopay2-php-sdk \
-	--user $(shell id -u):$(shell id -g) \
-	php-test-env:5.6 \
-	/bin/bash -c "composer update -no --no-progress --no-suggest && vendor/bin/phpunit tests"
+# NEXUS_URL must be provided via .env or the environment (see .env.example)
+NEXUS_URL ?=
 
-.PHONY: docker-test-php-70
-docker-test-php-70: ## Test on PHP 7.0
-	docker build -t php-test-env:7.0 php_env/PHP_7.0
-	docker run -it -v "${PWD}":/usr/src/mangopay2-php-sdk \
-	-w /usr/src/mangopay2-php-sdk \
-	--user $(shell id -u):$(shell id -g) \
-	php-test-env:7.0 \
-	/bin/bash -c "composer update -no --no-progress --no-suggest && vendor/bin/phpunit tests"
+.PHONY: composer-config install test lint
 
-.PHONY: docker-test-php-80
-docker-test-php-80: ## Test on PHP 8.0
-	docker build -t php-test-env:8.0 php_env/PHP_8.0
-	docker run -it -v "${PWD}":/usr/src/mangopay2-php-sdk \
-	-w /usr/src/mangopay2-php-sdk \
-	--user $(shell id -u):$(shell id -g) \
-	php-test-env:8.0 \
-	/bin/bash -c "composer update -no --no-progress --no-suggest --ignore-platform-reqs && vendor/bin/phpunit tests"
+composer-config:
+	@test -n "$(NEXUS_URL)" || { echo "NEXUS_URL is not set."; exit 1; }
+	composer config -g repositories.packagist composer "$(NEXUS_URL)"
+
+install: composer-config
+	composer install --no-interaction --no-progress --prefer-dist
+
+test:
+	vendor/bin/phpunit
+
+lint:
+	vendor/bin/php-cs-fixer fix --dry-run --diff

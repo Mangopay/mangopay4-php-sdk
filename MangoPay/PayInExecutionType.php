@@ -7,7 +7,7 @@ namespace MangoPay;
  */
 class PayInExecutionType
 {
-    const Direct = 'DIRECT';
-    const Web = 'WEB';
-    const ExternalInstruction = 'EXTERNAL_INSTRUCTION';
+    public const Direct = 'DIRECT';
+    public const Web = 'WEB';
+    public const ExternalInstruction = 'EXTERNAL_INSTRUCTION';
 }

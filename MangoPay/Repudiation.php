@@ -15,20 +15,20 @@ class Repudiation extends Libraries\EntityBase
 
     /**
      * The funds repudiated from the wallet
-     * @var \MangoPay\Money
+     * @var Money
      */
     public $DebitedFunds;
 
     /**
     * The fees taken on the repudiation – will always be 0 at this stage
-    * @var \MangoPay\Money
+    * @var Money
     */
     public $Fees;
 
     /**
      * The amount of credited funds – since there are currently no fees,
      * this will be equal to the DebitedFunds
-     * @var \MangoPay\Money
+     * @var Money
      */
     public $CreditedFunds;
 
@@ -41,7 +41,7 @@ class Repudiation extends Libraries\EntityBase
     /**
      * The status of the transfer
      * @var string
-     * @see \MangoPay\TransactionStatus
+     * @see TransactionStatus
      */
     public $Status;
 
@@ -80,7 +80,7 @@ class Repudiation extends Libraries\EntityBase
     /**
      * The initial transaction type
      * @var string
-     * @see \MangoPay\TransactionType
+     * @see TransactionType
      */
     public $InitialTransactionType;
 

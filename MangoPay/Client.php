@@ -69,7 +69,7 @@ class Client extends Libraries\EntityBase
 
     /**
      * Categorization details of the client
-     * @var \MangoPay\PlatformCategorization
+     * @var PlatformCategorization
      */
     public $PlatformCategorization;
 
@@ -81,7 +81,7 @@ class Client extends Libraries\EntityBase
 
     /**
      * The address of the company’s headquarters
-     * @var \MangoPay\Address
+     * @var Address
      */
     public $HeadquartersAddress;
 

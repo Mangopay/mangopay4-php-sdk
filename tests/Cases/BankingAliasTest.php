@@ -22,7 +22,7 @@ class BankingAliasTest extends Base
         $bankingAliasGB = $this->getJohnsBankingAliasGB();
 
         $this->assertNotNull($bankingAliasGB->Id);
-        $this->assertTrue($bankingAliasGB->Type==BankingAliasType::GB);
+        $this->assertTrue($bankingAliasGB->Type == BankingAliasType::GB);
     }
 
     public function test_BankingAlias_Get()

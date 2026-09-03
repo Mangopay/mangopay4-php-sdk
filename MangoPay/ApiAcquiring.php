@@ -6,8 +6,8 @@ class ApiAcquiring extends Libraries\ApiBase
 {
     /**
      * Create new pay-in object
-     * @param \MangoPay\PayIn $payIn \MangoPay\PayIn object
-     * @return \MangoPay\PayIn Object returned from API
+     * @param PayIn $payIn \MangoPay\PayIn object
+     * @return PayIn Object returned from API
      */
     public function CreatePayIn($payIn, $idempotencyKey = null)
     {
@@ -64,8 +64,8 @@ class ApiAcquiring extends Libraries\ApiBase
     /**
      * Create refund for pay-in object
      * @param string $payInId Pay-in identifier
-     * @param \MangoPay\Refund $refund Refund object to create
-     * @return \MangoPay\Refund Object returned by REST API
+     * @param Refund $refund Refund object to create
+     * @return Refund Object returned by REST API
      */
     public function CreatePayInRefund($payInId, $refund, $idempotencyKey = null)
     {
@@ -82,7 +82,7 @@ class ApiAcquiring extends Libraries\ApiBase
     /**
      * Create a card validation
      * @param $cardId
-     * @return \MangoPay\CardValidation
+     * @return CardValidation
      * @throws Libraries\Exception
      */
     public function CreateCardValidation($cardId, $cardValidation, $idempotencyKey = null)

@@ -9,7 +9,7 @@ class HttpCurl extends HttpBase
 {
     /**
      * cURL handle
-     * @var resource
+     * @var \CurlHandle|null
      */
     private $_curlHandle;
 
@@ -123,7 +123,6 @@ class HttpCurl extends HttpBase
         $response = new HttpResponse();
         $response->ResponseCode = (int) curl_getinfo($this->_curlHandle, CURLINFO_HTTP_CODE);
 
-        curl_close($this->_curlHandle);
 
         $explode = explode("\r\n\r\n", $result);
 

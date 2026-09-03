@@ -15,7 +15,7 @@ class ApiDisputeDocuments extends Libraries\ApiBase
     /**
      * Gets dispute's document
      * @param string $documentId Dispute's document identifier
-     * @return \MangoPay\DisputeDocument Dispute's document object returned from API
+     * @return DisputeDocument Dispute's document object returned from API
      */
     public function Get($documentId)
     {
@@ -24,10 +24,10 @@ class ApiDisputeDocuments extends Libraries\ApiBase
 
     /**
      * Gets dispute's documents for client
-     * @param \MangoPay\Pagination $pagination Pagination object
-     * @param \MangoPay\Sorting $sorting Object to sorting data
-     * @param \MangoPay\FilterKycDocuments $filter Filtering object
-     * @return \MangoPay\DisputeDocument[] List of dispute documents returned from API
+     * @param Pagination $pagination Pagination object
+     * @param Sorting $sorting Object to sorting data
+     * @param FilterKycDocuments $filter Filtering object
+     * @return DisputeDocument[] List of dispute documents returned from API
      */
     public function GetAll(& $pagination = null, $sorting = null, $filter = null)
     {
@@ -38,8 +38,8 @@ class ApiDisputeDocuments extends Libraries\ApiBase
      * Creates temporary URLs where each page of a dispute document can be viewed.
      *
      * @param string $documentId Identification of the document whose pages to view
-     * @param \MangoPay\Pagination $pagination Pagination object
-     * @return \MangoPay\DocumentPageConsult[] Array of consults for viewing the dispute document's pages
+     * @param Pagination $pagination Pagination object
+     * @return DocumentPageConsult[] Array of consults for viewing the dispute document's pages
      */
     public function CreateDisputeDocumentConsult($documentId, & $pagination = null)
     {

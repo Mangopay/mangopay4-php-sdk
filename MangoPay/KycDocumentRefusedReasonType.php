@@ -7,17 +7,17 @@ namespace MangoPay;
  */
 class KycDocumentRefusedReasonType
 {
-    const DocumentUnreadable = 'DOCUMENT_UNREADABLE';
-    const DocumentNotAccepted = 'DOCUMENT_NOT_ACCEPTED';
-    const DocumentHasExpired = 'DOCUMENT_HAS_EXPIRED';
-    const DocumentIncomplete = 'DOCUMENT_INCOMPLETE';
-    const DocumentMissing = 'DOCUMENT_MISSING';
-    const DocumentDoesNotMatchUserData = 'DOCUMENT_DO_NOT_MATCH_USER_DATA';
-    const DocumentDoesNotMatchAccountData = 'DOCUMENT_DO_NOT_MATCH_ACCOUNT_DATA';
-    const SpecificCase = 'SPECIFIC_CASE';
-    const DocumentFalsified = 'DOCUMENT_FALSIFIED';
-    const UnderagePerson = 'UNDERAGE_PERSON';
-    const TriggerPEPS = 'TRIGGER_PEPS';
-    const TriggerSanactionLists = 'TRIGGER_SANACTION_LISTS';
-    const TriggerInterpol = 'TRIGGER_INTERPOL';
+    public const DocumentUnreadable = 'DOCUMENT_UNREADABLE';
+    public const DocumentNotAccepted = 'DOCUMENT_NOT_ACCEPTED';
+    public const DocumentHasExpired = 'DOCUMENT_HAS_EXPIRED';
+    public const DocumentIncomplete = 'DOCUMENT_INCOMPLETE';
+    public const DocumentMissing = 'DOCUMENT_MISSING';
+    public const DocumentDoesNotMatchUserData = 'DOCUMENT_DO_NOT_MATCH_USER_DATA';
+    public const DocumentDoesNotMatchAccountData = 'DOCUMENT_DO_NOT_MATCH_ACCOUNT_DATA';
+    public const SpecificCase = 'SPECIFIC_CASE';
+    public const DocumentFalsified = 'DOCUMENT_FALSIFIED';
+    public const UnderagePerson = 'UNDERAGE_PERSON';
+    public const TriggerPEPS = 'TRIGGER_PEPS';
+    public const TriggerSanactionLists = 'TRIGGER_SANACTION_LISTS';
+    public const TriggerInterpol = 'TRIGGER_INTERPOL';
 }

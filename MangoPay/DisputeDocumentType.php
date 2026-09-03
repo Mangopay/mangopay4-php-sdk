@@ -7,11 +7,11 @@ namespace MangoPay;
  */
 class DisputeDocumentType
 {
-    const DeliveryProof = "DELIVERY_PROOF";
-    const Invoice = "INVOICE";
-    const RefundProof = "REFUND_PROOF";
-    const UserCorrespondance = "USER_CORRESPONDANCE";
-    const UserAcceptanceProof = "USER_ACCEPTANCE_PROOF";
-    const ProductReplacementProof = "PRODUCT_REPLACEMENT_PROOF";
-    const Other = "OTHER";
+    public const DeliveryProof = "DELIVERY_PROOF";
+    public const Invoice = "INVOICE";
+    public const RefundProof = "REFUND_PROOF";
+    public const UserCorrespondance = "USER_CORRESPONDANCE";
+    public const UserAcceptanceProof = "USER_ACCEPTANCE_PROOF";
+    public const ProductReplacementProof = "PRODUCT_REPLACEMENT_PROOF";
+    public const Other = "OTHER";
 }

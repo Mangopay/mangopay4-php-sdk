@@ -7,8 +7,8 @@ namespace MangoPay;
  */
 class DisputeDocumentStatus
 {
-    const Created = "CREATED";
-    const ValidationAsked = "VALIDATION_ASKED";
-    const Validated = "VALIDATED";
-    const Refused = "REFUSED";
+    public const Created = "CREATED";
+    public const ValidationAsked = "VALIDATION_ASKED";
+    public const Validated = "VALIDATED";
+    public const Refused = "REFUSED";
 }

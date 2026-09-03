@@ -7,7 +7,7 @@ namespace MangoPay;
  */
 class UserCategory
 {
-    const Payer = 'PAYER';
-    const Owner = 'OWNER';
-    const Platform = 'PLATFORM';
+    public const Payer = 'PAYER';
+    public const Owner = 'OWNER';
+    public const Platform = 'PLATFORM';
 }

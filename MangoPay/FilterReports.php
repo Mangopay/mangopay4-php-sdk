@@ -253,4 +253,9 @@ class FilterReports extends FilterTransactions
      * @var string
      */
     public $MaxFeesCurrency;
+
+    /**
+     * @var int
+     */
+    public $MinBalanceAmount;
 }

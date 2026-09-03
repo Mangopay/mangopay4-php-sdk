@@ -9,13 +9,13 @@ class FilterDisputeDocuments extends FilterBase
 {
     /**
      * @var string
-     * @see \MangoPay\DisputeDocumentStatus
+     * @see DisputeDocumentStatus
      */
     public $Status;
 
     /**
      * @var string
-     * @see \MangoPay\DisputeDocumentType
+     * @see DisputeDocumentType
      */
     public $Type;
 }

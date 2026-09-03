@@ -77,7 +77,7 @@ class ReportsTest extends Base
         $reportRequest->DownloadFormat = "CSV";
         $reportRequest->Sort = "CreationDate:DESC";
         $reportRequest->Preview = false;
-        $reportRequest->Filters = new \MangoPay\FilterReports();
+        $reportRequest->Filters = new FilterReports();
         $reportRequest->Filters->MinBalanceAmount = 10;
 
         $createReportRequest = $this->_api->Reports->Create($reportRequest);

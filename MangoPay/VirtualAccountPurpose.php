@@ -4,6 +4,6 @@ namespace MangoPay;
 
 class VirtualAccountPurpose
 {
-    const Collection = "COLLECTION";
-    const UserOwned = "USER_OWNED";
+    public const Collection = "COLLECTION";
+    public const UserOwned = "USER_OWNED";
 }

@@ -23,7 +23,7 @@ class VirtualAccount extends Libraries\EntityBase
      * The type of the virtual account
      * Allowed values: `COLLECTION`, `USER_OWNED`
      * @var string
-     * @see \MangoPay\VirtualAccountPurpose
+     * @see VirtualAccountPurpose
      */
     public $VirtualAccountPurpose;
 
@@ -38,7 +38,7 @@ class VirtualAccount extends Libraries\EntityBase
      * The status of the virtual account creation
      * Allowed values: `COLLECTION`, `USER_OWNED`
      * @var string
-     * @see \MangoPay\VirtualAccountStatus
+     * @see VirtualAccountStatus
      */
     public $Status;
 
@@ -52,25 +52,25 @@ class VirtualAccount extends Libraries\EntityBase
      * The current Status of the Virtual Account
      * Allowed values: `COLLECTION`, `USER_OWNED`
      * @var string
-     * @see \MangoPay\VirtualAccountOwner
+     * @see VirtualAccountOwner
      */
     public $AccountOwner;
 
     /**
      * The current Status of the Virtual Account
-     * @var \MangoPay\LocalAccountDetails
+     * @var LocalAccountDetails
      */
     public $LocalAccountDetails;
 
     /**
      * The current Status of the Virtual Account
-     * @var \MangoPay\InternationalAccountDetails[]
+     * @var InternationalAccountDetails[]
      */
     public $InternationalAccountDetails;
 
     /**
      * The current Status of the Virtual Account
-     * @var \MangoPay\VirtualAccountCapabilities
+     * @var VirtualAccountCapabilities
      */
     public $Capabilities;
 

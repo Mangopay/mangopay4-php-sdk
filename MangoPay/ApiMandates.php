@@ -10,7 +10,7 @@ class ApiMandates extends Libraries\ApiBase
     /**
      * Create new mandate
      * @param Mandate $mandate
-     * @return \MangoPay\Mandate Mandate object returned from API
+     * @return Mandate Mandate object returned from API
      */
     public function Create($mandate, $idempotencyKey = null)
     {
@@ -20,7 +20,7 @@ class ApiMandates extends Libraries\ApiBase
     /**
      * Get mandate
      * @param string $mandateId Mandate identifier
-     * @return \MangoPay\Mandate Mandate object returned from API
+     * @return Mandate Mandate object returned from API
      */
     public function Get($mandateId)
     {
@@ -30,11 +30,11 @@ class ApiMandates extends Libraries\ApiBase
     /**
      * Cancel mandate
      * @param string $mandateId Id of mandate object to cancel
-     * @return \MangoPay\Mandate Mandate object returned from API
+     * @return Mandate Mandate object returned from API
      */
     public function Cancel($mandateId)
     {
-        $mandate = new \MangoPay\Mandate();
+        $mandate = new Mandate();
         $mandate->Id = $mandateId;
 
         return $this->SaveObject('mandates_save', $mandate, '\MangoPay\Mandate');
@@ -42,10 +42,10 @@ class ApiMandates extends Libraries\ApiBase
 
     /**
      * Get all mandates
-     * @param \MangoPay\Pagination $pagination Pagination object
-     * @param \MangoPay\FilterTransactions $filter Object to filter data
-     * @param \MangoPay\Sorting $sorting Object to sorting data
-     * @return \MangoPay\Mandate[] Array with mandates
+     * @param Pagination $pagination Pagination object
+     * @param FilterTransactions $filter Object to filter data
+     * @param Sorting $sorting Object to sorting data
+     * @return Mandate[] Array with mandates
      */
     public function GetAll(& $pagination = null, $filter = null, $sorting = null)
     {
@@ -55,10 +55,10 @@ class ApiMandates extends Libraries\ApiBase
     /**
      * Retrieves list of Transactions pertaining to a certain Mandate
      * @param string $mandateId Mandate identifier
-     * @param \MangoPay\Pagination $pagination Pagination object
-     * @param \MangoPay\FilterTransactions $filter Filtering object
-     * @param \MangoPay\Sorting $sorting Sorting object
-     * @return \MangoPay\Transaction[]
+     * @param Pagination $pagination Pagination object
+     * @param FilterTransactions $filter Filtering object
+     * @param Sorting $sorting Sorting object
+     * @return Transaction[]
      */
     public function GetTransactions($mandateId, & $pagination = null, $filter = null, $sorting = null)
     {

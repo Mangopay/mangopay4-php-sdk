@@ -10,7 +10,7 @@ class ApiIdentityVerification extends Libraries\ApiBase
     /**
      * Create new IdentityVerification
      * @param IdentityVerification $identityVerification
-     * @return \MangoPay\IdentityVerification IdentityVerification object returned from API
+     * @return IdentityVerification IdentityVerification object returned from API
      */
     public function Create($identityVerification, $userId, $idempotencyKey = null)
     {
@@ -20,7 +20,7 @@ class ApiIdentityVerification extends Libraries\ApiBase
     /**
      * Get IdentityVerification
      * @param string $id IdentityVerification identifier
-     * @return \MangoPay\IdentityVerification IdentityVerification object returned from API
+     * @return IdentityVerification IdentityVerification object returned from API
      */
     public function Get($id)
     {
@@ -30,7 +30,7 @@ class ApiIdentityVerification extends Libraries\ApiBase
     /**
      * Get all IdentityVerifications for a user
      * @param string $userId User identifier
-     * @return \MangoPay\IdentityVerification[] IdentityVerification list returned from API
+     * @return IdentityVerification[] IdentityVerification list returned from API
      */
     public function GetAll($userId, $pagination = null, $filter = null, $sorting = null)
     {
@@ -42,7 +42,7 @@ class ApiIdentityVerification extends Libraries\ApiBase
      * @param string $identityVerificationId The unique identifier of the identity verification
      * @param string $pscId The unique identifier of the PSC
      * @param Psc $psc PSC object; it can be empty or contain values to be updated
-     * @return \MangoPay\Psc Updated Psc object returned from API
+     * @return Psc Updated Psc object returned from API
      */
     public function RetryPsc($identityVerificationId, $pscId, $psc = null)
     {

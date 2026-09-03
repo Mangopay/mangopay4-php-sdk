@@ -10,7 +10,7 @@ class ApiClients extends Libraries\ApiBase
     /**
      * Get client information
      *
-     * @return \MangoPay\Client Client object returned from API
+     * @return Client Client object returned from API
      */
     public function Get()
     {
@@ -20,7 +20,7 @@ class ApiClients extends Libraries\ApiBase
     /**
      * Save client
      * @param Client $client Client object to save
-     * @return \MangoPay\Client Client object returned from API
+     * @return Client Client object returned from API
      */
     public function Update($client)
     {
@@ -37,14 +37,14 @@ class ApiClients extends Libraries\ApiBase
      * Upload a logo for client.
      * Only GIF, PNG, JPG, JPEG, BMP, PDF and DOC formats are accepted,
      * and file must be less than about 7MB
-     * @param \MangoPay\ClientLogoUpload $logoUpload ClientLogoUpload object
+     * @param ClientLogoUpload $logoUpload ClientLogoUpload object
      * @param string|null $idempotencyKey
      */
     public function UploadLogo($logoUpload, $idempotencyKey = null)
     {
         try {
             $this->CreateObject('client_upload_logo', $logoUpload, null, null, null, $idempotencyKey);
-        } catch (\MangoPay\Libraries\ResponseException $exc) {
+        } catch (Libraries\ResponseException $exc) {
             if ($exc->getCode() != 204) {
                 throw $exc;
             }
@@ -56,7 +56,7 @@ class ApiClients extends Libraries\ApiBase
      * Only GIF, PNG, JPG, JPEG, BMP, PDF and DOC formats are accepted,
      * and file must be less than about 7MB
      * @param string $file Path of file with logo
-     * @throws \MangoPay\Libraries\Exception
+     * @throws Libraries\Exception
      */
     public function UploadLogoFromFile($file, $idempotencyKey = null)
     {
@@ -66,18 +66,18 @@ class ApiClients extends Libraries\ApiBase
         }
 
         if (empty($filePath)) {
-            throw new \MangoPay\Libraries\Exception('Path of file cannot be empty');
+            throw new Libraries\Exception('Path of file cannot be empty');
         }
 
         if (!file_exists($filePath)) {
-            throw new \MangoPay\Libraries\Exception('File not exist');
+            throw new Libraries\Exception('File not exist');
         }
 
-        $logoUpload = new \MangoPay\ClientLogoUpload();
+        $logoUpload = new ClientLogoUpload();
         $logoUpload->File = base64_encode(file_get_contents($filePath));
 
         if (empty($logoUpload->File)) {
-            throw new \MangoPay\Libraries\Exception('Content of the file cannot be empty');
+            throw new Libraries\Exception('Content of the file cannot be empty');
         }
 
         $this->UploadLogo($logoUpload, $idempotencyKey);
@@ -87,14 +87,14 @@ class ApiClients extends Libraries\ApiBase
      * View your client wallets. To see your fees or credit wallets
      * for each currency set second $fundsType parameter.
      *
-     * @param \MangoPay\FundsType $fundsType FundsType enum
-     * @param \MangoPay\Sorting $sorting Sorting object
+     * @param FundsType $fundsType FundsType enum
+     * @param Sorting $sorting Sorting object
      *
-     * @return \MangoPay\Wallet[] List with your client wallets
+     * @return Wallet[] List with your client wallets
      */
     public function GetWallets($fundsType = null, $sorting = null)
     {
-        $pagination = new \MangoPay\Pagination();
+        $pagination = new Pagination();
 
         if (is_null($fundsType)) {
             return $this->GetList('client_wallets', $pagination, '\MangoPay\Wallet', null, null, $sorting);
@@ -104,27 +104,27 @@ class ApiClients extends Libraries\ApiBase
             return $this->GetList('client_wallets_credit', $pagination, '\MangoPay\Wallet', null, null, $sorting);
         }
 
-        throw new \MangoPay\Libraries\Exception('\MangoPay\FundsType object has wrong value and cannot get wallets');
+        throw new Libraries\Exception('\MangoPay\FundsType object has wrong value and cannot get wallets');
     }
 
     /**
      * View one of your client wallets (fees or credit) with a particular currency.
      *
-     * @param \MangoPay\FundsType $fundsType FundsType enum
-     * @param \MangoPay\CurrencyIso $currencyIso CurrencyIso enum
+     * @param FundsType $fundsType FundsType enum
+     * @param CurrencyIso $currencyIso CurrencyIso enum
      *
-     * @return \MangoPay\Wallet Wallet (fees or credit) with a particular currency
+     * @return Wallet Wallet (fees or credit) with a particular currency
      */
     public function GetWallet($fundsType, $currencyIso)
     {
         if (is_null($fundsType)) {
-            throw new \MangoPay\Libraries\Exception(
+            throw new Libraries\Exception(
                 'First parameter in function GetWallet in class ApiClients is required.'
             );
         }
 
         if (is_null($currencyIso)) {
-            throw new \MangoPay\Libraries\Exception(
+            throw new Libraries\Exception(
                 'Second parameter in function GetWallet in class ApiClients is required.'
             );
         }
@@ -135,7 +135,7 @@ class ApiClients extends Libraries\ApiBase
         } elseif ($fundsType == FundsType::CREDIT) {
             $methodKey = 'client_wallets_credit_currency';
         } else {
-            throw new \MangoPay\Libraries\Exception('\MangoPay\FundsType object has wrong value and cannot get wallets');
+            throw new Libraries\Exception('\MangoPay\FundsType object has wrong value and cannot get wallets');
         }
 
         return $this->GetObject($methodKey, '\MangoPay\Wallet', $currencyIso);
@@ -144,12 +144,12 @@ class ApiClients extends Libraries\ApiBase
     /**
      * View the transactions linked to your client wallets (fees and credit)
      *
-     * @param \MangoPay\FundsType $fundsType FundsType enum
-     * @param \MangoPay\CurrencyIso $currencyIso CurrencyIso enum
-     * @param \MangoPay\Pagination $pagination Pagination object
-     * @param \MangoPay\FilterTransactions $filter Object to filter data
+     * @param FundsType $fundsType FundsType enum
+     * @param CurrencyIso $currencyIso CurrencyIso enum
+     * @param Pagination $pagination Pagination object
+     * @param FilterTransactions $filter Object to filter data
      *
-     * @return \MangoPay\Transaction[] Transactions linked to your client wallets (fees and credit)
+     * @return Transaction[] Transactions linked to your client wallets (fees and credit)
      */
     public function GetWalletTransactions($fundsType = null, $currencyIso = null, & $pagination = null, $filter = null)
     {
@@ -160,13 +160,13 @@ class ApiClients extends Libraries\ApiBase
         } elseif ($fundsType == FundsType::CREDIT) {
             $methodKey = 'client_wallets_transactions_credit_currency';
         } else {
-            throw new \MangoPay\Libraries\Exception(
+            throw new Libraries\Exception(
                 '\MangoPay\FundsType object has wrong value.'
             );
         }
 
         if (!is_null($fundsType) && is_null($currencyIso)) {
-            throw new \MangoPay\Libraries\Exception(
+            throw new Libraries\Exception(
                 'If FundsType is defined the second parameter (currency) is required.'
             );
         }
@@ -187,8 +187,8 @@ class ApiClients extends Libraries\ApiBase
     /**
      * This endpoint allows the platform to make a Direct Bank Wire PayIn, instead of a Settlement Transfer
      * to their Repudiation Wallet in order to settle the negative balance due to a LOST dispute.
-     * @param \MangoPay\PayIn $payIn \MangoPay\PayIn object
-     * @return \MangoPay\PayIn Object returned from API
+     * @param PayIn $payIn \MangoPay\PayIn object
+     * @return PayIn Object returned from API
      */
     public function CreateBankWireDirectPayIn($payIn, $idempotencyKey = null)
     {

@@ -10,10 +10,10 @@ class ApiBankAccounts extends Libraries\ApiBase
     /**
      * Retrieves a list of Transactions pertaining to a certain Bank Account
      * @param string $bankAccountId Bank Account identifier
-     * @param \MangoPay\Pagination $pagination Pagination object
-     * @param \MangoPay\FilterTransactions $filter Filtering object
-     * @param \MangoPay\Sorting $sorting Sorting object
-     * @throws \MangoPay\Libraries\Exception
+     * @param Pagination $pagination Pagination object
+     * @param FilterTransactions $filter Filtering object
+     * @param Sorting $sorting Sorting object
+     * @throws Libraries\Exception
      */
     public function GetTransactions($bankAccountId, & $pagination = null, $filter = null, $sorting = null)
     {

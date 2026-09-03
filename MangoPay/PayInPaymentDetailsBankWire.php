@@ -9,19 +9,19 @@ class PayInPaymentDetailsBankWire extends Libraries\Dto implements PayInPaymentD
 {
     /**
      * Declared debited funds
-     * @var \MangoPay\Money
+     * @var Money
      */
     public $DeclaredDebitedFunds;
 
     /**
      * Declared fees
-     * @var \MangoPay\Money
+     * @var Money
      */
     public $DeclaredFees;
 
     /**
      * Bank account details
-     * @var \MangoPay\BankAccount
+     * @var BankAccount
      */
     public $BankAccount;
 

@@ -9,7 +9,7 @@ class AuthorizationTokenManager extends ApiBase
 {
     /**
      * Storage object
-     * @var \MangoPay\Libraries\IStorageStrategy
+     * @var IStorageStrategy
      */
     private $_storageStrategy;
 
@@ -24,7 +24,7 @@ class AuthorizationTokenManager extends ApiBase
      * Gets the current authorization token.
      * In the very first call, this method creates a new token before returning.
      * If currently stored token is expired, this method creates a new one.
-     * @return \MangoPay\Libraries\OAuthToken Valid OAuthToken instance.
+     * @return OAuthToken Valid OAuthToken instance.
      */
     public function GetToken($autenticationKey)
     {
@@ -40,7 +40,7 @@ class AuthorizationTokenManager extends ApiBase
     /**
      * Stores authorization token passed as an argument in the underlying
      * storage strategy implementation.
-     * @param \MangoPay\Libraries\OAuthToken $token Token instance to be stored.
+     * @param OAuthToken $token Token instance to be stored.
      */
     public function StoreToken($token)
     {
@@ -52,7 +52,7 @@ class AuthorizationTokenManager extends ApiBase
      * By default, the DefaultStorageStrategy instance is used.
      * There is no need to explicitly call this method until some more complex
      * storage implementation is needed.
-     * @param \MangoPay\Libraries\IStorageStrategy $customStorageStrategy IStorageStrategy interface implementation.
+     * @param IStorageStrategy $customStorageStrategy IStorageStrategy interface implementation.
      */
     public function RegisterCustomStorageStrategy($customStorageStrategy)
     {

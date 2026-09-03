@@ -73,7 +73,7 @@ class PayInPaymentDetailsCard extends Libraries\Dto implements PayInPaymentDetai
     public $PreferredCardNetwork;
 
     /**
-     * @var \MangoPay\AccountFunding
+     * @var AccountFunding
      */
     public $AccountFunding;
 

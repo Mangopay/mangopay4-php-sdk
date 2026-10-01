@@ -2,10 +2,7 @@
 
 namespace MangoPay;
 
-/**
- * @deprecated in favor of ExtendedPreauthorizationStatus
- */
-final class DepositStatus
+final class ExtendedPreauthorizationStatus
 {
     public const Created = 'CREATED';
     public const Succeeded = 'SUCCEEDED';

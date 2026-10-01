@@ -2,10 +2,7 @@
 
 namespace MangoPay;
 
-/**
- * @deprecated in favor of PayPalExtendedPreauthorization
- */
-class PayPalDepositPreauthorization extends Deposit
+class PayPalExtendedPreauthorization extends ExtendedPreauthorization
 {
     /**
      * @var string

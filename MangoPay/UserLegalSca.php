@@ -74,6 +74,11 @@ class UserLegalSca extends User
     public $ScaContext;
 
     /**
+     * @var string
+     */
+    public $ProfilingAttemptReference;
+
+    /**
      * Construct
      */
     public function __construct($id = null)

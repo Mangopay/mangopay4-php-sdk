@@ -314,6 +314,7 @@ class ApiPayIns extends Libraries\ApiBase
      * @param CreatePreAuthorizedDepositPayIn $payIn PayIn object to create
      * @param string $idempotencyKey Optional idempotency key
      * @return PayIn Deposit object returned from API
+     * @deprecated in favor of 'CreatePayInExtendedPreauthorized'
      */
     public function CreatePayInDepositPreauthorizedWithoutComplement(CreatePreAuthorizedDepositPayIn $payIn, $idempotencyKey = null)
     {
@@ -391,6 +392,24 @@ class ApiPayIns extends Libraries\ApiBase
     {
         return $this->CreateObject(
             'payins_deposit_preauthorized_complement',
+            $payIn,
+            '\MangoPay\PayIn',
+            null,
+            null,
+            $idempotencyKey
+        );
+    }
+
+    /**
+     * Create an Extended Preauthorized PayIn
+     * @param CreatePreAuthorizedExtendedPayIn $payIn PayIn object to create
+     * @param string $idempotencyKey Optional idempotency key
+     * @return PayIn Object returned from API
+     */
+    public function CreatePayInExtendedPreauthorized(CreatePreAuthorizedExtendedPayIn $payIn, $idempotencyKey = null)
+    {
+        return $this->CreateObject(
+            'payins_extended_preauthorized_create',
             $payIn,
             '\MangoPay\PayIn',
             null,

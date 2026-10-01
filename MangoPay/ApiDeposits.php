@@ -4,6 +4,8 @@ namespace MangoPay;
 
 /**
  * Class to management MangoPay API for users
+ *
+ * @deprecated in favor of ApiExtendedPreauthorizations
  */
 class ApiDeposits extends Libraries\ApiBase
 {

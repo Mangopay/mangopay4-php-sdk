@@ -3,6 +3,7 @@
 namespace MangoPay\Tests\Cases;
 
 use MangoPay\CardValidation;
+use MangoPay\CreatePreAuthorizedExtendedPayIn;
 use MangoPay\CustomFees;
 use MangoPay\IdentityVerification;
 use MangoPay\Libraries\ResponseException;
@@ -96,6 +97,62 @@ class IdempotencyTest extends Base
         $this->getJohnsCardPreAuthorization($key);
 
         $this->assertIdempotencyResource($key, '\MangoPay\CardPreAuthorization');
+    }
+
+    public function test_GetIdempotencyKey_ExtendedPreauthorizationCreate()
+    {
+        $key = md5(uniqid());
+        $user = $this->getJohn();
+        $cardRegistration = $this->getUpdatedCardRegistration($user->Id);
+        $this->_api->ExtendedPreauthorizations->Create(
+            $this->getNewExtendedPreauthorization($cardRegistration->CardId, $user->Id),
+            $key
+        );
+
+        $this->assertIdempotencyResource($key, '\MangoPay\ExtendedPreauthorization');
+    }
+
+    public function test_GetIdempotencyKey_PayPalExtendedPreauthorizationCreate()
+    {
+        $key = md5(uniqid());
+        $user = $this->getJohn();
+        $this->_api->ExtendedPreauthorizations->CreatePayPalExtendedPreauthorization(
+            $this->getNewPayPalExtendedPreauthorization($user->Id),
+            $key
+        );
+
+        $this->assertIdempotencyResource($key, '\MangoPay\PayPalExtendedPreauthorization');
+    }
+
+    public function test_GetIdempotencyKey_PayinsExtendedPreauthorizedCreate()
+    {
+        $key = md5(uniqid());
+        $user = $this->getJohn();
+        $cardRegistration = $this->getUpdatedCardRegistration($user->Id);
+        $extendedPreauthorization = $this->_api->ExtendedPreauthorizations->Create(
+            $this->getNewExtendedPreauthorization($cardRegistration->CardId, $user->Id)
+        );
+        $wallet = $this->getJohnsWallet();
+
+        $dto = new CreatePreAuthorizedExtendedPayIn();
+        $dto->ExtendedPreauthorizationId = $extendedPreauthorization->Id;
+        $dto->AuthorId = $user->Id;
+        $dto->CreditedWalletId = $wallet->Id;
+
+        $debitedFunds = new Money();
+        $debitedFunds->Amount = 1000;
+        $debitedFunds->Currency = "EUR";
+
+        $fees = new Money();
+        $fees->Amount = 0;
+        $fees->Currency = "EUR";
+
+        $dto->DebitedFunds = $debitedFunds;
+        $dto->Fees = $fees;
+
+        $this->_api->PayIns->CreatePayInExtendedPreauthorized($dto, $key);
+
+        $this->assertIdempotencyResource($key, '\MangoPay\PayIn');
     }
 
     public function test_GetIdempotencyKey_CardregistrationCreate()

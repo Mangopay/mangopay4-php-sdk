@@ -89,8 +89,15 @@ class Transaction extends Libraries\EntityBase
     /**
      * Deposit Id
      * @var string
+     * @deprecated in favor of $ExtendedPreauthorizationId
      */
     public $DepositId;
+
+    /**
+     * Extended Preauthorization Id
+     * @var string
+     */
+    public $ExtendedPreauthorizationId;
 
     /**
      * Get array with mapping which property is object and what type of object

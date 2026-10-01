@@ -166,4 +166,24 @@ class EventType
     public const SplitAvailable = "SPLIT_AVAILABLE";
     public const SplitRejected = "SPLIT_REJECTED";
     public const SplitReversed = "SPLIT_REVERSED";
+
+    public const ExtendedPreAuthorizationCreated = "EXTENDED_PREAUTHORIZATION_CREATED";
+    public const ExtendedPreAuthorizationFailed = "EXTENDED_PREAUTHORIZATION_FAILED";
+    public const ExtendedPreAuthorizationPaymentValidated = "EXTENDED_PREAUTHORIZATION_PAYMENT_VALIDATED";
+    public const ExtendedPreAuthorizationPaymentWaiting = "EXTENDED_PREAUTHORIZATION_PAYMENT_WAITING";
+    public const ExtendedPreAuthorizationPaymentFailed = "EXTENDED_PREAUTHORIZATION_PAYMENT_FAILED";
+    public const ExtendedPreAuthorizationPaymentExpired = "EXTENDED_PREAUTHORIZATION_PAYMENT_EXPIRED";
+    public const ExtendedPreAuthorizationPaymentCancelRequested = "EXTENDED_PREAUTHORIZATION_PAYMENT_CANCEL_REQUESTED";
+    public const ExtendedPreAuthorizationPaymentCanceled = "EXTENDED_PREAUTHORIZATION_PAYMENT_CANCELED";
+
+    public const SettlementCreated = "SETTLEMENT_CREATED";
+    public const SettlementUploaded = "SETTLEMENT_UPLOADED";
+    public const SettlementPendingUpload = "SETTLEMENT_PENDING_UPLOAD";
+    public const SettlementPendingFundsReception = "SETTLEMENT_PENDING_FUNDS_RECEPTION";
+    public const SettlementReconciled = "SETTLEMENT_RECONCILED";
+    public const SettlementPartiallyMatched = "SETTLEMENT_PARTIALLY_MATCHED";
+    public const SettlementUnmatched = "SETTLEMENT_UNMATCHED";
+    public const SettlementInsufficientFunds = "SETTLEMENT_INSUFFICIENT_FUNDS";
+    public const SettlementCancelled = "SETTLEMENT_CANCELLED";
+    public const SettlementFailed = "SETTLEMENT_FAILED";
 }

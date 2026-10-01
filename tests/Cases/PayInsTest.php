@@ -5,6 +5,7 @@ namespace MangoPay\Tests\Cases;
 use MangoPay\AuthenticationResult;
 use MangoPay\Billing;
 use MangoPay\BrowserInfo;
+use MangoPay\CreatePreAuthorizedExtendedPayIn;
 use MangoPay\CurrencyIso;
 use MangoPay\DebitedBankAccount;
 use MangoPay\FilterSupportedBanks;
@@ -1653,5 +1654,42 @@ class PayInsTest extends Base
         $this->assertNotNull($response);
         $this->assertNotEmpty($response);
         $this->assertContains("Mangopay", $response);
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function test_PayIns_CreatePayInExtendedPreauthorized()
+    {
+        $user = $this->getJohn();
+        $cardRegistration = $this->getUpdatedCardRegistration($user->Id);
+        $extendedPreauthorization = $this->_api->ExtendedPreauthorizations->Create(
+            $this->getNewExtendedPreauthorization($cardRegistration->CardId, $user->Id)
+        );
+        $wallet = $this->getJohnsWallet();
+
+        $dto = new CreatePreAuthorizedExtendedPayIn();
+        $dto->ExtendedPreauthorizationId = $extendedPreauthorization->Id;
+        $dto->AuthorId = $user->Id;
+        $dto->CreditedWalletId = $wallet->Id;
+
+        $debitedFunds = new Money();
+        $debitedFunds->Amount = 1000;
+        $debitedFunds->Currency = "EUR";
+
+        $fees = new Money();
+        $fees->Amount = 0;
+        $fees->Currency = "EUR";
+
+        $dto->DebitedFunds = $debitedFunds;
+        $dto->Fees = $fees;
+
+        $payIn = $this->_api->PayIns->CreatePayInExtendedPreauthorized($dto);
+
+        $this->assertNotNull($payIn);
+        $this->assertInstanceOf('\MangoPay\PayIn', $payIn);
+        $this->assertNotNull($payIn->Id);
+        $this->assertEquals($user->Id, $payIn->AuthorId);
+        $this->assertEquals($wallet->Id, $payIn->CreditedWalletId);
     }
 }

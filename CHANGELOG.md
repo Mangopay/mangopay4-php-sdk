@@ -1,3 +1,20 @@
+## [5.1.0] - 2026-10-01
+
+### Added
+- **Extended preauthorizations** – New `ApiExtendedPreauthorizations` API (exposed as `$api->ExtendedPreauthorizations`) that mirrors the existing deposits API. It provides `Create()`, `CreatePayPalExtendedPreauthorization()`, `Get()`, `Update()`, `GetAllForUser()`, `GetAllForCard()`, and `GetTransactions()`, backed by the new `/extended-preauthorizations` endpoints. New `ExtendedPreauthorization`, `PayPalExtendedPreauthorization`, and `CreatePreAuthorizedExtendedPayIn` entities and an `ExtendedPreauthorizationStatus` enum (`CREATED`, `SUCCEEDED`, `FAILED`) were added. `Get()`, `Update()`, and `GetAllForUser()` return a `PayPalExtendedPreauthorization` when the underlying preauthorization was created via PayPal, otherwise an `ExtendedPreauthorization`.
+- **Extended preauthorized PayIn** – New method `ApiPayIns::CreatePayInExtendedPreauthorized(CreatePreAuthorizedExtendedPayIn $payIn)` (POST `/payins/extended-preauthorized/direct/full-capture`) to create a PayIn from an extended preauthorization.
+- **`Transaction::$ExtendedPreauthorizationId`** – New property on `Transaction`, replacing the now-deprecated `$DepositId`.
+- **Extended preauthorization event types** – New `EventType` constants: `EXTENDED_PREAUTHORIZATION_CREATED`, `EXTENDED_PREAUTHORIZATION_FAILED`, `EXTENDED_PREAUTHORIZATION_PAYMENT_VALIDATED`, `EXTENDED_PREAUTHORIZATION_PAYMENT_WAITING`, `EXTENDED_PREAUTHORIZATION_PAYMENT_FAILED`, `EXTENDED_PREAUTHORIZATION_PAYMENT_EXPIRED`, `EXTENDED_PREAUTHORIZATION_PAYMENT_CANCEL_REQUESTED`, and `EXTENDED_PREAUTHORIZATION_PAYMENT_CANCELED`.
+- **Settlement event types** – New `EventType` constants: `SETTLEMENT_CREATED`, `SETTLEMENT_UPLOADED`, `SETTLEMENT_PENDING_UPLOAD`, `SETTLEMENT_PENDING_FUNDS_RECEPTION`, `SETTLEMENT_RECONCILED`, `SETTLEMENT_PARTIALLY_MATCHED`, `SETTLEMENT_UNMATCHED`, `SETTLEMENT_INSUFFICIENT_FUNDS`, `SETTLEMENT_CANCELLED`, and `SETTLEMENT_FAILED`.
+- **`ProfilingAttemptReference` on users** – New optional `ProfilingAttemptReference` property on `UserNaturalSca` and `UserLegalSca`.
+
+### Deprecated
+- **Deposits in favor of extended preauthorizations** – Extended preauthorizations are a mirror of deposits, and deposits are now deprecated in their favor. The following are deprecated and will be removed in a future major version:
+  - `ApiDeposits` (`$api->Deposits`) → use `ApiExtendedPreauthorizations` (`$api->ExtendedPreauthorizations`).
+  - `DepositStatus` → use `ExtendedPreauthorizationStatus`.
+  - `Transaction::$DepositId` → use `Transaction::$ExtendedPreauthorizationId`.
+  - `ApiPayIns::CreatePayInDepositPreauthorizedWithoutComplement()` → use `ApiPayIns::CreatePayInExtendedPreauthorized()`.
+
 ## [5.0.0] - 2026-09-02
 
 ### Breaking Changes

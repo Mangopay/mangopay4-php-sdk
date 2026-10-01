@@ -14,6 +14,8 @@ use MangoPay\CreateCardPreAuthorizedDepositPayIn;
 use MangoPay\CreateClientWalletsInstantConversion;
 use MangoPay\CreateClientWalletsQuotedConversion;
 use MangoPay\CreateDeposit;
+use MangoPay\ExtendedPreauthorization;
+use MangoPay\PayPalExtendedPreauthorization;
 use MangoPay\CreateInstantConversion;
 use MangoPay\CreatePayPalPreAuthorizedDepositPayIn;
 use MangoPay\CreatePreAuthorizedDepositPayIn;
@@ -2328,6 +2330,81 @@ abstract class Base extends TestCase
         $deposit->Reference = "1234";
 
         return $deposit;
+    }
+
+    protected function getNewExtendedPreauthorization($cardId, $authorId)
+    {
+        $extendedPreauthorization = new ExtendedPreauthorization();
+
+        $extendedPreauthorization->AuthorId = $authorId;
+        $extendedPreauthorization->CardId = $cardId;
+
+        $extendedPreauthorization->DebitedFunds = new Money();
+        $extendedPreauthorization->DebitedFunds->Currency = 'EUR';
+        $extendedPreauthorization->DebitedFunds->Amount = 1000;
+
+        $extendedPreauthorization->SecureModeReturnURL = "http://mangopay-sandbox-test.com";
+        $extendedPreauthorization->StatementDescriptor = "lorem";
+        $extendedPreauthorization->Culture = "FR";
+        $extendedPreauthorization->IpAddress = "2001:0620:0000:0000:0211:24FF:FE80:C12C";
+        $extendedPreauthorization->BrowserInfo = $this->getBrowserInfo();
+
+        $address = new Address();
+        $address->AddressLine1 = 'Main Street no 5';
+        $address->City = 'Paris';
+        $address->Country = 'FR';
+        $address->PostalCode = '68400';
+        $address->Region = 'Europe';
+
+        $billing = new Billing();
+        $billing->FirstName = 'John';
+        $billing->LastName = 'Doe';
+        $billing->Address = $address;
+
+        $extendedPreauthorization->Billing = $billing;
+        $extendedPreauthorization->Shipping = $billing;
+
+        return $extendedPreauthorization;
+    }
+
+    protected function getNewPayPalExtendedPreauthorization($authorId)
+    {
+        $extendedPreauthorization = new PayPalExtendedPreauthorization();
+
+        $extendedPreauthorization->AuthorId = $authorId;
+
+        $extendedPreauthorization->DebitedFunds = new Money();
+        $extendedPreauthorization->DebitedFunds->Currency = 'EUR';
+        $extendedPreauthorization->DebitedFunds->Amount = 1000;
+
+        $extendedPreauthorization->ReturnURL = "https://mangopay-sandbox-test.com";
+
+        $address = new Address();
+        $address->AddressLine1 = 'Main Street no 5';
+        $address->City = 'Paris';
+        $address->Country = 'FR';
+        $address->PostalCode = '68400';
+        $address->Region = 'Europe';
+
+        $shipping = new Shipping();
+        $shipping->FirstName = 'John';
+        $shipping->LastName = 'Doe';
+        $shipping->Address = $address;
+
+        $extendedPreauthorization->Shipping = $shipping;
+        $extendedPreauthorization->ShippingPreference = ShippingPreference::SET_PROVIDED_ADDRESS;
+
+        $lineItem = new LineItem();
+        $lineItem->Name = 'running shoes';
+        $lineItem->Quantity = 1;
+        $lineItem->UnitAmount = 1000;
+        $lineItem->TaxAmount = 0;
+        $lineItem->Description = "seller1 ID";
+
+        $extendedPreauthorization->LineItems = [$lineItem];
+        $extendedPreauthorization->Reference = "1234";
+
+        return $extendedPreauthorization;
     }
 
     protected function getNewPayInIntentAuthorization($idempotencyKey = null)

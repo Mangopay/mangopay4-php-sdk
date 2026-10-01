@@ -2,6 +2,9 @@
 
 namespace MangoPay;
 
+/**
+ * @deprecated in favor of ExtendedPreauthorization, which is used for both update and return
+ */
 class UpdateDeposit extends Libraries\Dto
 {
     /**

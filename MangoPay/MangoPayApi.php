@@ -199,8 +199,15 @@ class MangoPayApi
     /**
      * Provides Deposit methods
      * @var ApiDeposits
+     * @deprecated in favor of $ExtendedPreauthorizations
      */
     public $Deposits;
+
+    /**
+     * Provides Extended Preauthorization methods
+     * @var ApiExtendedPreauthorizations
+     */
+    public $ExtendedPreauthorizations;
 
     /**
      * Provides Instant conversion API methods
@@ -274,6 +281,7 @@ class MangoPayApi
         $this->Repudiations = new ApiRepudiations($this);
         $this->Regulatory = new ApiRegulatory($this);
         $this->Deposits = new ApiDeposits($this);
+        $this->ExtendedPreauthorizations = new ApiExtendedPreauthorizations($this);
         $this->Conversions = new ApiConversions($this);
         $this->VirtualAccounts = new ApiVirtualAccounts($this);
         $this->IdentityVerifications = new ApiIdentityVerification($this);

@@ -10,9 +10,9 @@ stages:
 
 include:
   - local: .gitlab-ci/variables.yml
-  - component: gitlab.com/mangopay/mangopay-sdk/mangopay-sdk-ci-components/trivy@v1.2.0
+  - component: gitlab.com/mangopay/mangopay-sdk/mangopay-sdk-ci-components/trivy@v1.4.0
   - local: .gitlab-ci/jobs/quality/lint.yml
-  - component: gitlab.com/mangopay/mangopay-sdk/mangopay-sdk-ci-components/sonarqube@v1.2.0
+  - component: gitlab.com/mangopay/mangopay-sdk/mangopay-sdk-ci-components/sonarqube@v1.4.0
     inputs:
       coverage_path: coverage.xml
   - local: .gitlab-ci/jobs/test/test.yml

@@ -2,10 +2,7 @@
 
 namespace MangoPay;
 
-/**
- * @deprecated in favor of ExtendedPreauthorization
- */
-class Deposit extends Libraries\EntityBase
+class ExtendedPreauthorization extends Libraries\EntityBase
 {
     /**
      * @var string
@@ -19,7 +16,7 @@ class Deposit extends Libraries\EntityBase
 
     /**
      * @var string
-     * @see DepositStatus
+     * @see ExtendedPreauthorizationStatus
      */
     public $Status;
 
@@ -122,7 +119,7 @@ class Deposit extends Libraries\EntityBase
 
     /**
      * Information of the card
-     * @var object
+     * @var CardInfo
      */
     public $CardInfo;
 
@@ -152,6 +149,7 @@ class Deposit extends Libraries\EntityBase
         $subObjects['Shipping'] = '\MangoPay\Shipping';
         $subObjects['AuthenticationResult'] = '\MangoPay\AuthenticationResult';
         $subObjects['FlowDescriptor'] = '\MangoPay\FlowDescriptor';
+        $subObjects['CardInfo'] = '\MangoPay\CardInfo';
 
         return $subObjects;
     }

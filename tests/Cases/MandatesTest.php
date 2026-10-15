@@ -3,6 +3,7 @@
 namespace MangoPay\Tests\Cases;
 
 use MangoPay\MandateStatus;
+use MangoPay\UserCategory;
 
 /**
  * Tests basic methods for mandates
@@ -52,6 +53,29 @@ class MandatesTest extends Base
         $mandates = $this->_api->Mandates->GetAll($pagination);
 
         $this->assertTrue(count($mandates) > 0);
+    }
+
+    public function test_Mandates_GetForRecipient()
+    {
+        $john = $this->getJohnSca(UserCategory::Owner, false);
+        $recipient = $this->_api->Recipients->Create($this->getNewRecipientObject(), $john->Id);
+
+        $mandateCreated = $this->createMandateForRecipient($recipient->Id);
+
+        // fetch the created mandate and ensure it carries the RecipientId
+        $fetched = $this->_api->Mandates->Get($mandateCreated->Id);
+        $this->assertNotNull($fetched);
+        $this->assertNotNull($fetched->RecipientId);
+        $this->assertEquals($recipient->Id, $fetched->RecipientId);
+
+        $pagination = new \MangoPay\Pagination(1, 1);
+        $mandates = $this->_api->Users->GetMandatesForRecipient($recipient->UserId, $recipient->Id, $pagination);
+
+        $this->assertNotNull($mandates);
+        $this->assertTrue(count($mandates) > 0);
+        $this->assertNotNull($mandates[0]);
+        $this->assertNotEmpty($mandates[0]->Id);
+        $this->assertEquals($mandateCreated->Id, $mandates[0]->Id);
     }
 
     public function test_Mandate_GetTransactions()

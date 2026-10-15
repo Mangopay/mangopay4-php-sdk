@@ -375,6 +375,21 @@ class ApiUsers extends Libraries\ApiBase
     }
 
     /**
+     * Get mandates for user and recipient
+     * @param string $userId User Id
+     * @param string $recipientId Recipient Id
+     * @param Pagination $pagination Pagination object
+     * @param FilterTransactions $filter Object to filter data
+     * @param Sorting $sorting Object to sorting data
+     *
+     * @return Mandate[] Array with mandate entities
+     */
+    public function GetMandatesForRecipient($userId, $recipientId, & $pagination = null, $filter = null, $sorting = null)
+    {
+        return $this->GetList('users_allrecipient_mandates', $pagination, 'MangoPay\Mandate', $userId, $filter, $sorting, $recipientId);
+    }
+
+    /**
      * Save KYC document
      * @param string $userId User Id
      * @param KycDocument $kycDocument Document to save

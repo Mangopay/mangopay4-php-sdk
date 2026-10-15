@@ -1,3 +1,12 @@
+## [5.2.0] - 2026-10-15
+
+### Added
+- **List PayIn Intents** – New method `ApiPayIns::GetPayInIntents($pagination, $filter, $sorting)` (GET `/payins/intents`) returning the list of `PayInIntent` instances. A new `FilterPayInIntents` DTO (`Status`, `ExternalProviderName`, `Currency`) was added to filter the results.
+- **List Intent splits** – New method `ApiPayIns::GetPayInIntentSplits($pagination, $filter, $sorting)` (GET `/payins/intents/splits`) returning the list of `PayInIntentSplit` instances. A new `FilterPayInIntentSplits` DTO (`Status`, `ExternalProviderName`, `Currency`) was added to filter the results.
+- **List settlements** – New method `ApiSettlements::GetSettlements($pagination, $filter, $sorting)` (GET `/payins/intents/settlements`) returning the list of `Settlement` instances. A new `FilterSettlements` DTO (`Status`, `ExternalProviderName`, `Currency`) was added to filter the results.
+- **Mandates for a recipient** – New method `ApiUsers::GetMandatesForRecipient($userId, $recipientId, $pagination, $filter, $sorting)` (GET `/users/{UserId}/recipients/{RecipientId}/mandates`) returning the list of `Mandate` instances for a user and recipient.
+- **`Mandate::$RecipientId`** – New property on `Mandate` carrying the unique identifier of the `Recipient` object the mandate is based on. Platforms integrating for the first time should use this instead of `BankAccountId`.
+
 ## [5.1.0] - 2026-10-01
 
 ### Added

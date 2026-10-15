@@ -41,6 +41,20 @@ class ApiSettlements extends Libraries\ApiBase
     }
 
     /**
+     * Get the list of settlements
+     *
+     * @param Pagination $pagination Pagination object (optional - default page 1 / size 10)
+     * @param FilterSettlements $filter Filter on CreationDate (BeforeDate / AfterDate) and Status (optional)
+     * @param Sorting $sorting Sorting object (optional)
+     * @return Settlement[] List of Settlement instances returned from API
+     * @throws Libraries\Exception
+     */
+    public function GetSettlements($pagination = null, $filter = null, $sorting = null)
+    {
+        return $this->GetList('settlement_get_all', $pagination, '\MangoPay\Settlement', null, $filter, $sorting);
+    }
+
+    /**
      * Generate a new pre-signed URL to replace the file of an existing Settlement
      *
      * @param Settlement $settlement Settlement object containing 'fileName' (the name of your file, which can be

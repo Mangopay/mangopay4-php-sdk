@@ -14,6 +14,18 @@ class Mandate extends Libraries\EntityBase
     public $BankAccountId;
 
     /**
+     * The unique identifier of the Recipient object on which the mandate is based.
+     * This property should be used by platforms integrating for the first time (and not the BankAccountId).
+     *
+     * Warning: For the SEPA scheme, the Recipient's PayoutMethodType must be LocalBankTransfer or
+     * InternationalBankTransfer with an EUR account (other currencies are refused).
+     * For the Bacs scheme, the Recipient's PayoutMethodType must be LocalBankTransfer with
+     * a GBP account (InternationalBankTransfer is not supported for Bacs).
+     * @var string
+     */
+    public $RecipientId;
+
+    /**
      * The type of mandate – it will be « SEPA » or « BACS »
      * but will only be completed once the mandate has been submitted
      * @var string

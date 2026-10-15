@@ -1348,6 +1348,25 @@ class PayInsTest extends Base
         $this->assertEquals('intent tag', $fetched->Tag);
     }
 
+    public function test_GetPayInIntents()
+    {
+        $this->getNewPayInIntentAuthorization();
+
+        $intents = $this->_api->PayIns->GetPayInIntents();
+        $this->assertNotNull($intents);
+        $this->assertNotEmpty($intents);
+    }
+
+    public function test_GetPayInIntentsWithPagination()
+    {
+        $this->getNewPayInIntentAuthorization();
+
+        $pagination = new Pagination(1, 1);
+        $intents = $this->_api->PayIns->GetPayInIntents($pagination, null, null);
+        $this->assertNotNull($intents);
+        $this->assertEquals(1, sizeof($intents));
+    }
+
     public function test_CancelPayInIntent()
     {
         $intent = $this->getNewPayInIntentAuthorization();
@@ -1402,6 +1421,27 @@ class PayInsTest extends Base
         $fetched =  $this->_api->PayIns->GetPayInIntentSplit($intent->Id, $split->Id);
         $this->assertEquals($split->Status, $fetched->Status);
         $this->assertNotNull($split->Tag);
+    }
+
+    public function test_GetPayInIntentSplits()
+    {
+        $intent = $this->getNewPayInIntentAuthorization();
+        $this->createNewSplits($intent);
+
+        $fetched = $this->_api->PayIns->GetPayInIntentSplits();
+        $this->assertNotNull($fetched);
+        $this->assertNotEmpty($fetched);
+    }
+
+    public function test_GetPayInIntentSplitsWithPagination()
+    {
+        $intent = $this->getNewPayInIntentAuthorization();
+        $this->createNewSplits($intent);
+
+        $pagination = new Pagination(1, 1);
+        $fetched = $this->_api->PayIns->GetPayInIntentSplits($pagination, null, null);
+        $this->assertNotNull($fetched);
+        $this->assertEquals(1, sizeof($fetched));
     }
 
     public function test_UpdatePayInIntentSplit()

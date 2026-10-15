@@ -499,6 +499,18 @@ class ApiPayIns extends Libraries\ApiBase
     }
 
     /**
+     * Get the list of PayInIntents
+     * @param Pagination $pagination Pagination object (optional - default page 1 / size 10)
+     * @param FilterPayInIntents $filter Filter on CreationDate (BeforeDate / AfterDate) and Status (optional)
+     * @param Sorting $sorting Sorting object (optional)
+     * @return PayInIntent[] List of PayInIntent instances returned from API
+     */
+    public function GetPayInIntents($pagination = null, $filter = null, $sorting = null)
+    {
+        return $this->GetList('payins_intent_get_all', $pagination, '\MangoPay\PayInIntent', null, $filter, $sorting);
+    }
+
+    /**
      * Cancel a pay in intent
      * @param string $intentId The identifier of the PayInIntent
      * @param PayInIntent $details Intent details
@@ -572,7 +584,19 @@ class ApiPayIns extends Libraries\ApiBase
     }
 
     /**
-     * Get split
+     * Get the list of Intent splits
+     * @param Pagination $pagination Pagination object (optional - default page 1 / size 10)
+     * @param FilterPayInIntentSplits $filter Filter on CreationDate (BeforeDate / AfterDate) and Status (optional)
+     * @param Sorting $sorting Sorting object (optional)
+     * @return PayInIntentSplit[] List of PayInIntentSplit instances returned from API
+     */
+    public function GetPayInIntentSplits($pagination = null, $filter = null, $sorting = null)
+    {
+        return $this->GetList('payins_intent_get_splits', $pagination, '\MangoPay\PayInIntentSplit', null, $filter, $sorting);
+    }
+
+    /**
+     * Get a Split
      * @param string $intentId The identifier of the PayInIntent
      * @param string $splitId The identifier of the Split
      * @return PayInIntentSplit Object returned from API

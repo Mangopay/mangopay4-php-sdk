@@ -31,6 +31,25 @@ class SettlementsTest extends Base
         self::assertEquals("PENDING_UPLOAD", $fetched->Status);
     }
 
+    public function test_GetSettlements()
+    {
+        $this->createNewSettlement();
+
+        $settlements = $this->_api->Settlements->GetSettlements();
+        self::assertNotNull($settlements);
+        self::assertNotEmpty($settlements);
+    }
+
+    public function test_GetSettlementsWithPagination()
+    {
+        $this->createNewSettlement();
+
+        $pagination = new Pagination(1, 1);
+        $settlements = $this->_api->Settlements->GetSettlements($pagination, null, null);
+        self::assertNotNull($settlements);
+        self::assertEquals(1, sizeof($settlements));
+    }
+
     public function test_Settlements_GenerateNewUploadUrl()
     {
         $created = $this->createNewSettlement();

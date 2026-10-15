@@ -836,6 +836,24 @@ abstract class Base extends TestCase
     }
 
     /**
+     * Creates a mandate based on a recipient
+     * @param string $recipientId Recipient identifier
+     * @return \MangoPay\Mandate
+     */
+    protected function createMandateForRecipient($recipientId)
+    {
+        // The recipient created by getNewRecipientObject() is a LocalBankTransfer GBP account,
+        // which satisfies the Bacs scheme requirement for recipient-based mandates.
+        $mandate = new \MangoPay\Mandate();
+        $mandate->RecipientId = $recipientId;
+        $mandate->ReturnURL = "http://test.test";
+        $mandate->Culture = "EN";
+        $mandate->Scheme = "BACS";
+
+        return $this->_api->Mandates->Create($mandate);
+    }
+
+    /**
      * Creates self::$JohnsAccount (bank account belonging to John) if not created yet
      * @return BankAccount
      */

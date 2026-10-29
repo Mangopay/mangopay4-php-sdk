@@ -197,6 +197,7 @@ class DisputesTest extends Base
 
     public function test_Disputes_ResubmitDispute()
     {
+        $this->markTestSkipped("Manual dispute creation needed");
         $this->init();
 
         $toTestDispute = null;
@@ -238,6 +239,7 @@ class DisputesTest extends Base
 
     public function test_Disputes_CloseDispute()
     {
+        $this->markTestSkipped("Manual dispute creation needed");
         $this->init();
 
         $disputeForTest = null;
@@ -320,6 +322,7 @@ class DisputesTest extends Base
 
     public function test_Disputes_ContestDispute()
     {
+        $this->markTestSkipped("Manual dispute creation needed");
         $this->init();
 
         $notContestedDispute = null;
@@ -434,6 +437,7 @@ class DisputesTest extends Base
 
     public function test_Disputes_CreateSettlementTransfer()
     {
+        $this->markTestSkipped("Manual dispute creation needed");
         $this->init();
 
         $disputeForTest = null;

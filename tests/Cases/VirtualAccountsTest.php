@@ -22,7 +22,7 @@ class VirtualAccountsTest extends Base
     public function test_VirtualAccount_Create()
     {
         $virtualAccount = $this->getNewVirtualAccount();
-        $wallet = $this->getJohnsWallet();
+        $wallet = $this->getJohnsOwnerWallet();
 
         $this->assertNotNull($virtualAccount);
         $this->assertEquals($virtualAccount->WalletId, $wallet->Id);
@@ -41,7 +41,7 @@ class VirtualAccountsTest extends Base
     public function test_VirtualAccount_Get()
     {
         $virtualAccount = $this->getNewVirtualAccount();
-        $wallet = $this->getJohnsWallet();
+        $wallet = $this->getJohnsOwnerWallet();
         $fetchedVirtualAccount = $this->_api->VirtualAccounts->Get($wallet->Id, $virtualAccount->Id);
 
         $this->assertNotNull($fetchedVirtualAccount);
@@ -51,7 +51,7 @@ class VirtualAccountsTest extends Base
     public function test_VirtualAccount_GetAll()
     {
         $this->getNewVirtualAccount();
-        $wallet = $this->getJohnsWallet();
+        $wallet = $this->getJohnsOwnerWallet();
 
         $virtualAccounts = $this->_api->VirtualAccounts->GetAll($wallet->Id);
 
@@ -74,7 +74,7 @@ class VirtualAccountsTest extends Base
     public function test_VirtualAccount_Deactivate()
     {
         $virtualAccount = $this->getNewVirtualAccount();
-        $wallet = $this->getJohnsWallet();
+        $wallet = $this->getJohnsOwnerWallet();
         $deactivatedVirtualAccount = $this->_api->VirtualAccounts->Deactivate($wallet->Id, $virtualAccount->Id);
 
         $this->assertNotTrue($deactivatedVirtualAccount->Active);

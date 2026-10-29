@@ -203,7 +203,7 @@ class DepositTest extends Base
         $user = $this->getJohn();
         $cardRegistration = $this->getUpdatedCardRegistration($user->Id);
         $deposit = $this->_api->Deposits->Create($this->getNewDeposit($cardRegistration->CardId, $user->Id));
-        $wallet = $this->getJohnsWallet();
+        $wallet = $this->getJohnsOwnerWallet();
 
         $dto = new CreateCardPreAuthorizedDepositPayIn();
         $dto->DepositId = $deposit->Id;

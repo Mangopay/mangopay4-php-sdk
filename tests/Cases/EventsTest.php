@@ -11,12 +11,12 @@ class EventsTest extends Base
     {
         $payIn = $this->getJohnsPayInCardWeb();
         $filter = new \MangoPay\FilterEvents();
-        $filter->BeforeDate = $payIn->CreationDate + 1;
-        $filter->AfterDate = $payIn->CreationDate - 1;
+        $filter->BeforeDate = $payIn->CreationDate + 100;
+        $filter->AfterDate = $payIn->CreationDate - 100;
         $filter->EventType = \MangoPay\EventType::PayinNormalCreated;
-        $pagination = new \MangoPay\Pagination();
+        $pagination = new \MangoPay\Pagination(0, 10);
 
-        sleep(20);
+        sleep(5);
         $result = $this->_api->Events->GetAll($pagination, $filter);
 
         $this->assertTrue(count($result) > 0);

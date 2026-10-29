@@ -10,7 +10,7 @@ class WalletsTest extends Base
     public function test_Wallets_Create()
     {
         $john = $this->getJohn();
-        $wallet = $this->getJohnsWallet();
+        $wallet = $this->getJohnsOwnerWallet();
 
         $this->assertNotNull($wallet->Id);
         $this->assertTrue(in_array($john->Id, $wallet->Owners));
@@ -19,7 +19,7 @@ class WalletsTest extends Base
     public function test_Wallets_Get()
     {
         $john = $this->getJohn();
-        $wallet = $this->getJohnsWallet();
+        $wallet = $this->getJohnsOwnerWallet();
 
         $getWallet = $this->_api->Wallets->Get($wallet->Id);
 
@@ -48,7 +48,7 @@ class WalletsTest extends Base
 
     public function test_Wallets_Save()
     {
-        $wallet = $this->getJohnsWallet();
+        $wallet = $this->getJohnsOwnerWallet();
         $wallet->Description = 'New description to test';
 
         $saveWallet = $this->_api->Wallets->Update($wallet);
@@ -60,7 +60,7 @@ class WalletsTest extends Base
     public function test_Wallets_Transactions()
     {
         $john = $this->getJohn();
-        $wallet = $this->getJohnsWallet();
+        $wallet = $this->getJohnsOwnerWallet();
         self::$JohnsPayInCardWeb = null;
         $payIn = $this->getJohnsPayInCardWeb();
         sleep(5);
@@ -109,7 +109,7 @@ class WalletsTest extends Base
     public function test_Wallets_Transactions_Filter()
     {
         $john = $this->getJohn();
-        $wallet = $this->getJohnsWallet();
+        $wallet = $this->getJohnsOwnerWallet();
         self::$JohnsPayInCardWeb = null;
         $payIn = $this->getJohnsPayInCardWeb();
 
@@ -128,7 +128,7 @@ class WalletsTest extends Base
 
     public function test_Wallets_Transactions_SortByCreationDate()
     {
-        $wallet = $this->getJohnsWallet();
+        $wallet = $this->getJohnsOwnerWallet();
         // create 2 pay-in objects
         self::$JohnsPayInCardWeb = null;
         $this->getJohnsPayInCardWeb();

@@ -193,7 +193,7 @@ class ExtendedPreauthorizationTest extends Base
         $extendedPreauthorization = $this->_api->ExtendedPreauthorizations->Create(
             $this->getNewExtendedPreauthorization($cardRegistration->CardId, $user->Id)
         );
-        $wallet = $this->getJohnsWallet();
+        $wallet = $this->getJohnsOwnerWallet();
 
         $dto = new CreatePreAuthorizedExtendedPayIn();
         $dto->ExtendedPreauthorizationId = $extendedPreauthorization->Id;

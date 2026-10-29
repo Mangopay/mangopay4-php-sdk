@@ -12,8 +12,8 @@ use MangoPay\Tests\Cases\Base;
 class IdentityVerificationTest extends Base
 {
     public static $identityVerification;
-    private static $idvIdWithPscs = "idnver_01KZXBHDH1DWC887PW6T46NVTV";
-    private static $pscId = "psc_x_01KZXBT5F8FGGSK9JXGCYMNWRP";
+    private static $idvIdWithPscs = "idnver_01M5EKZPQJRF8RFAMBGCD4JE43";
+    private static $pscId = "psc_x_01M5EM2FFD1A2T0TKRQAZV6M6V";
 
     public function test_IdentityVerification_Create()
     {
@@ -94,6 +94,7 @@ class IdentityVerificationTest extends Base
             $identityVerificationCreate = new IdentityVerification();
             $identityVerificationCreate->ReturnUrl = "https://example.com";
             $identityVerificationCreate->Tag = "Created by the PHP SDK";
+            $identityVerificationCreate->SessionLanguage = "en-US";
             self::$identityVerification = $this->_api->IdentityVerifications->Create($identityVerificationCreate, $john->Id);
         }
         return self::$identityVerification;

@@ -49,6 +49,17 @@ class IdentityVerification extends Libraries\EntityBase
      */
     public $PSCs;
 
+    /**
+     * @var string
+     *
+     * The initial language of the hosted identity verification session.
+     * If not sent, then the session takes the language of the user’s browser (if supported), otherwise English.
+     * The user can change the language in the session.
+     *
+     * This parameter is not returned in the API response, but it adds the lng query parameter to the HostedUrl value.
+     */
+    public $SessionLanguage;
+
     public function GetSubObjects()
     {
         $subObjects = parent::GetSubObjects();

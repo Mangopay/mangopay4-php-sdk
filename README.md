@@ -68,6 +68,17 @@ Tests are placed under `/path/to/your-project/tests/`.
 The `/tests/suites/all.php` suite runs ALL tests.
 You can also use any of `/tests/cases/*.php` to run a single test case.
 
+### Running the tests
+
+The tests run against the Mangopay Sandbox and read their credentials from environment variables rather than hardcoded values. Export the following before running the test suite:
+
+| Variable | Description |
+| --- | --- |
+| `MANGOPAY_CLIENT_ID` | Sandbox `ClientId` used by the test suite. |
+| `MANGOPAY_CLIENT_PASSWORD` | API key associated with `MANGOPAY_CLIENT_ID`. |
+
+The tests fail fast with a clear message if any of these are missing.
+
 
 Contacts
 -------------------------------------------------

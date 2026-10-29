@@ -79,4 +79,30 @@ class TokensTest extends Base
         $this->assertEquals($token1->access_token, $token2->access_token);
         $this->assertEquals($token1->token_type, $token2->token_type);
     }
+
+    public function test_isolateTokensBetweenEnvironments()
+    {
+        $secondClientId = self::requireEnv('MANGOPAY_CLIENT_ID_2');
+        $secondClientPassword = self::requireEnv('MANGOPAY_CLIENT_PASSWORD_2');
+
+        $firstClientId = $this->_api->Config->ClientId;
+        $firstClientPassword = $this->_api->Config->ClientPassword;
+        $authHlp = new \MangoPay\Libraries\AuthenticationHelper($this->_api);
+
+        $token1 = $this->_api->OAuthTokenManager->GetToken($authHlp->GetAutenticationKey());
+
+        $this->_api->Config->ClientId = $secondClientId;
+        $this->_api->Config->ClientPassword = $secondClientPassword;
+        $token2 = $this->_api->OAuthTokenManager->GetToken($authHlp->GetAutenticationKey());
+
+        $this->assertNotEquals($token1->access_token, $token2->access_token);
+        $this->assertNotEquals($token1->autentication_key, $token2->autentication_key);
+
+        $this->_api->Config->ClientId = $firstClientId;
+        $this->_api->Config->ClientPassword = $firstClientPassword;
+        $token3 = $this->_api->OAuthTokenManager->GetToken($authHlp->GetAutenticationKey());
+
+        $this->assertEquals($token1->autentication_key, $token3->autentication_key);
+        $this->assertNotEquals($token2->access_token, $token3->access_token);
+    }
 }

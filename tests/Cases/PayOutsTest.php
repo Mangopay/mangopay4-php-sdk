@@ -24,7 +24,7 @@ class PayOutsTest extends Base
     public function test_PayOut_Create_WithRecipientId()
     {
         $john = $this->getJohn();
-        $wallet = $this->getJohnsWallet();
+        $wallet = $this->getJohnsOwnerWallet();
 
         $recipientDto = $this->getNewRecipientObject();
         $localBankTransfer = [];

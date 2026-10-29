@@ -68,12 +68,12 @@ class PayInsTest extends Base
 
     public function test_PayIns_Create_CardDirect()
     {
-        $johnWallet = $this->getJohnsWalletWithMoney();
+        $johnWallet = $this->getJohnsPayerWallet();
         $beforeWallet = $this->_api->Wallets->Get($johnWallet->Id);
 
         $payIn = $this->getNewPayInCardDirect();
         $wallet = $this->_api->Wallets->Get($johnWallet->Id);
-        $user = $this->getJohn();
+        $user = $this->getJohnPayer();
 
         $this->assertNotNull($payIn->Id);
         $this->assertEquals($wallet->Id, $payIn->CreditedWalletId);
@@ -118,7 +118,7 @@ class PayInsTest extends Base
     public function test_PayIns_CreateRefund_CardDirect()
     {
         $payIn = $this->getNewPayInCardDirect();
-        $wallet = $this->getJohnsWalletWithMoney();
+        $wallet = $this->getJohnsPayerWallet();
         $walletBefore = $this->_api->Wallets->Get($wallet->Id);
 
         $refund = $this->getNewRefundForPayIn($payIn);
@@ -135,7 +135,7 @@ class PayInsTest extends Base
     public function test_PayIns_CreatePartialRefund_CardDirect()
     {
         $payIn = $this->getNewPayInCardDirect();
-        $wallet = $this->getJohnsWalletWithMoney();
+        $wallet = $this->getJohnsPayerWallet();
         $walletBefore = $this->_api->Wallets->Get($wallet->Id);
 
         $refund = $this->getPartialRefundForPayIn($payIn);
@@ -151,7 +151,7 @@ class PayInsTest extends Base
     public function test_PayIns_PreAuthorizedDirect()
     {
         $cardPreAuthorization = $this->getJohnsCardPreAuthorization();
-        $wallet = $this->getJohnsWalletWithMoney();
+        $wallet = $this->getJohnsOwnerWalletWithMoney();
         $user = $this->getJohn();
         // create pay-in PRE-AUTHORIZED DIRECT
         $payIn = new \MangoPay\PayIn();
@@ -192,12 +192,11 @@ class PayInsTest extends Base
 
     public function test_PayIns_BankWireDirect_Create()
     {
-        $wallet = $this->getJohnsWallet();
-        $user = $this->getJohn();
+        $wallet = $this->getPredefinedJohnsOwnerScaWallet();
         // create pay-in BANKWIRE DIRECT
         $payIn = new \MangoPay\PayIn();
         $payIn->CreditedWalletId = $wallet->Id;
-        $payIn->AuthorId = $user->Id;
+        $payIn->AuthorId = $this::PREDEFINED_USER_NATURAL_OWNER_ACTIVE_REGULAR_SCA;
         // payment type as CARD
         $payIn->PaymentDetails = new PayInPaymentDetailsBankWire();
         $payIn->PaymentDetails->DeclaredDebitedFunds = new Money();
@@ -219,7 +218,7 @@ class PayInsTest extends Base
         $this->assertInstanceOf('\MangoPay\Money', $createPayIn->PaymentDetails->DeclaredFees);
         $this->assertEquals(PayInExecutionType::Direct, $createPayIn->ExecutionType);
         $this->assertInstanceOf('\MangoPay\PayInExecutionDetailsDirect', $createPayIn->ExecutionDetails);
-        $this->assertEquals($user->Id, $createPayIn->AuthorId);
+        $this->assertEquals($this::PREDEFINED_USER_NATURAL_OWNER_ACTIVE_REGULAR_SCA, $createPayIn->AuthorId);
         $this->assertEquals(PayInStatus::Created, $createPayIn->Status);
         $this->assertEquals('PAYIN', $createPayIn->Type);
         $this->assertNotNull($createPayIn->PaymentDetails->WireReference);
@@ -231,12 +230,11 @@ class PayInsTest extends Base
 
     public function test_PayIns_BankWireDirect_Get()
     {
-        $wallet = $this->getJohnsWallet();
-        $user = $this->getJohn();
+        $wallet = $this->getPredefinedJohnsOwnerScaWallet();
         // create pay-in BANKWIRE DIRECT
         $payIn = new \MangoPay\PayIn();
         $payIn->CreditedWalletId = $wallet->Id;
-        $payIn->AuthorId = $user->Id;
+        $payIn->AuthorId = $this::PREDEFINED_USER_NATURAL_OWNER_ACTIVE_REGULAR_SCA;
         // payment type as CARD
         $payIn->PaymentDetails = new PayInPaymentDetailsBankWire();
         $payIn->PaymentDetails->DeclaredDebitedFunds = new Money();
@@ -257,7 +255,7 @@ class PayInsTest extends Base
         $this->assertInstanceOf('\MangoPay\Money', $getPayIn->PaymentDetails->DeclaredFees);
         $this->assertEquals(PayInExecutionType::Direct, $getPayIn->ExecutionType);
         $this->assertInstanceOf('\MangoPay\PayInExecutionDetailsDirect', $getPayIn->ExecutionDetails);
-        $this->assertEquals($user->Id, $getPayIn->AuthorId);
+        $this->assertEquals($this::PREDEFINED_USER_NATURAL_OWNER_ACTIVE_REGULAR_SCA, $getPayIn->AuthorId);
         $this->assertEquals('PAYIN', $getPayIn->Type);
         $this->assertNotNull($getPayIn->PaymentDetails->WireReference);
         $this->assertInstanceOf('\MangoPay\BankAccount', $getPayIn->PaymentDetails->BankAccount);
@@ -268,12 +266,11 @@ class PayInsTest extends Base
 
     public function test_PayIns_DirectDeDirectDebitWeb_Create()
     {
-        $wallet = $this->getJohnsWallet();
-        $user = $this->getJohn();
+        $wallet = $this->getPredefinedJohnsOwnerScaWallet();
         // create pay-in DIRECT DEBIT WEB
         $payIn = new \MangoPay\PayIn();
         $payIn->CreditedWalletId = $wallet->Id;
-        $payIn->AuthorId = $user->Id;
+        $payIn->AuthorId = $this::PREDEFINED_USER_NATURAL_OWNER_ACTIVE_REGULAR_SCA;
         $payIn->DebitedFunds = new Money();
         $payIn->DebitedFunds->Amount = 10000;
         $payIn->DebitedFunds->Currency = 'EUR';
@@ -298,7 +295,7 @@ class PayInsTest extends Base
         $this->assertEquals(PayInExecutionType::Web, $createPayIn->ExecutionType);
         $this->assertInstanceOf('\MangoPay\PayInExecutionDetailsWeb', $createPayIn->ExecutionDetails);
         $this->assertEquals("FR", $createPayIn->ExecutionDetails->Culture);
-        $this->assertEquals($user->Id, $createPayIn->AuthorId);
+        $this->assertEquals($this::PREDEFINED_USER_NATURAL_OWNER_ACTIVE_REGULAR_SCA, $createPayIn->AuthorId);
         $this->assertEquals(PayInStatus::Created, $createPayIn->Status);
         $this->assertEquals('PAYIN', $createPayIn->Type);
         $this->assertInstanceOf('\MangoPay\Money', $createPayIn->DebitedFunds);
@@ -317,12 +314,11 @@ class PayInsTest extends Base
 
     public function test_PayIns_Create_DirectDebitDirect()
     {
-        $johnWallet = $this->getJohnsWalletWithMoney();
+        $johnWallet = $this->getPredefinedJohnsOwnerScaWallet();
 
         $payIn = $this->getNewPayInDirectDebitDirect();
 
         $wallet = $this->_api->Wallets->Get($johnWallet->Id);
-        $user = $this->getJohn();
         $this->assertNotNull($payIn->Id);
         $this->assertEquals($wallet->Id, $payIn->CreditedWalletId);
         $this->assertEquals('DIRECT_DEBIT', $payIn->PaymentType);
@@ -332,7 +328,7 @@ class PayInsTest extends Base
         $this->assertInstanceOf('\MangoPay\Money', $payIn->DebitedFunds);
         $this->assertInstanceOf('\MangoPay\Money', $payIn->CreditedFunds);
         $this->assertInstanceOf('\MangoPay\Money', $payIn->Fees);
-        $this->assertEquals($user->Id, $payIn->AuthorId);
+        $this->assertEquals($this::PREDEFINED_USER_NATURAL_OWNER_ACTIVE_REGULAR_SCA, $payIn->AuthorId);
         $this->assertEquals('FAILED', $payIn->Status);
         $this->assertEquals('PAYIN', $payIn->Type);
         $this->assertNotNull($payIn->FlowDescriptor);
@@ -448,6 +444,7 @@ class PayInsTest extends Base
 
     public function test_get_bank_wire_external_instructions_iban()
     {
+        $this->markTestSkipped("Expired payin id");
         $payIn = $this->_api->PayIns->Get("payin_m_01JK6199ED4VGBP98ABRJVDS9D");
 
         $this->assertTrue($payIn->PaymentType == PayInPaymentType::BankWire);
@@ -479,7 +476,7 @@ class PayInsTest extends Base
     public function test_PayIns_Apple_Pay_Create()
     {
         $this->markTestSkipped('Problems with Apple Pay');
-        $wallet = $this->getJohnsWallet();
+        $wallet = $this->getJohnsOwnerWallet();
         $user = $this->getJohn();
         // create Apple Pay direct pay-in
         $applePayPayIn = new \MangoPay\PayIn();
@@ -518,7 +515,7 @@ class PayInsTest extends Base
 
     public function test_Create_Recurring_Payment()
     {
-        self::$JohnsWalletWithMoney = null;// Reset the cache value
+        self::$JohnsPayerWalletWithMoney = null;// Reset the cache value
 
         $result = $this->getRecurringPayin();
 
@@ -532,7 +529,7 @@ class PayInsTest extends Base
 
     public function test_Get_Recurring_Payment()
     {
-        self::$JohnsWalletWithMoney = null;// Reset the cache value
+        self::$JohnsPayerWalletWithMoney = null;// Reset the cache value
 
         $result = $this->getRecurringPayin();
         $this->assertNotNull($result);
@@ -549,7 +546,7 @@ class PayInsTest extends Base
 
     public function test_Update_Recurring_Payment()
     {
-        self::$JohnsWalletWithMoney = null;// Reset the cache value
+        self::$JohnsPayerWalletWithMoney = null;// Reset the cache value
 
         $result = $this->getRecurringPayin();
         $this->assertNotNull($result);
@@ -663,12 +660,12 @@ class PayInsTest extends Base
 
     public function test_Create_Recurring_PayIn_CIT_With_Debited_Funds_And_Fees()
     {
-        self::$JohnsWalletWithMoney = null;// Reset the cache value
+        self::$JohnsPayerWalletWithMoney = null;// Reset the cache value
 
-        $values = $this->getJohnsWalletWithMoneyAndCardId(1000);
+        $values = $this->getJohnsPayerWalletWithMoneyAndCardId(1000);
         $walletId = $values["walletId"];
         $cardId = $values["cardId"];
-        $user = $this->getJohn();
+        $user = $this->getJohnPayer();
 
         $payIn = new \MangoPay\PayInRecurringRegistration();
         $payIn->AuthorId = $user->Id;
@@ -742,7 +739,7 @@ class PayInsTest extends Base
 
     public function test_Create_Recurring_Paypal_PayIn_MIT()
     {
-        self::$JohnsWalletWithMoney = null;// Reset the cache value
+        self::$JohnsPayerWalletWithMoney = null;// Reset the cache value
 
         $registration = $this->getRecurringPayinRegistrationPaypal();
 
@@ -836,7 +833,7 @@ class PayInsTest extends Base
         $this->markTestIncomplete(
             "Cannot test Google Pay"
         );
-        $wallet = $this->getJohnsWallet();
+        $wallet = $this->getJohnsOwnerWallet();
         $user = $this->getJohn();
 
         // create Google Pay direct pay-in
@@ -877,12 +874,12 @@ class PayInsTest extends Base
 
     public function test_ExampleOf3DSecureV2_1()
     {
-        $johnWallet = $this->getJohnsWalletWithMoney();
+        $johnWallet = $this->getJohnsPayerWallet();
         $beforeWallet = $this->_api->Wallets->Get($johnWallet->Id);
 
         $payIn = $this->getNewPayInCardDirect3DSecure();
         $wallet = $this->_api->Wallets->Get($johnWallet->Id);
-        $user = $this->getJohn();
+        $user = $this->getJohnPayer();
 
         $this->assertNotNull($payIn->Id);
         $this->assertEquals($wallet->Id, $payIn->CreditedWalletId);
@@ -1706,7 +1703,7 @@ class PayInsTest extends Base
         $extendedPreauthorization = $this->_api->ExtendedPreauthorizations->Create(
             $this->getNewExtendedPreauthorization($cardRegistration->CardId, $user->Id)
         );
-        $wallet = $this->getJohnsWallet();
+        $wallet = $this->getJohnsOwnerWallet();
 
         $dto = new CreatePreAuthorizedExtendedPayIn();
         $dto->ExtendedPreauthorizationId = $extendedPreauthorization->Id;

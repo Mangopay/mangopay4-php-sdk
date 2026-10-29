@@ -710,7 +710,7 @@ class UsersTest extends Base
 
     public function test_Users_AllTransactions()
     {
-        $john = $this->getJohn();
+        $john = $this->getJohnPayer();
         $payIn = $this->getNewPayInCardDirect();
         sleep(5);
         $pagination = new \MangoPay\Pagination(1, 1);
@@ -791,7 +791,7 @@ class UsersTest extends Base
     public function test_Users_AllWallets()
     {
         $john = $this->getJohn();
-        $this->getJohnsWallet();
+        $this->getJohnsOwnerWallet();
         $pagination = new \MangoPay\Pagination(1, 1);
 
         $wallets = $this->_api->Users->GetWallets($john->Id, $pagination);
@@ -826,9 +826,9 @@ class UsersTest extends Base
     public function test_Users_AllWallets_SortByCreationDate()
     {
         $john = $this->getJohn();
-        $this->getJohnsWallet();
-        self::$JohnsWallet = null;
-        $this->getJohnsWallet();
+        $this->getJohnsOwnerWallet();
+        self::$JohnsOwnerWallet = null;
+        $this->getJohnsOwnerWallet();
         $pagination = new \MangoPay\Pagination(1, 20);
         $sorting = new \MangoPay\Sorting();
         $sorting->AddField("CreationDate", \MangoPay\SortDirection::DESC);
@@ -926,7 +926,7 @@ class UsersTest extends Base
 
     public function test_get_user_block_regulatory_with_kyc_information()
     {
-        $regulatory = $this->_api->Users->GetRegulatory('user_m_01M114G394FJCE0QZJP97QADYZ');
+        $regulatory = $this->_api->Users->GetRegulatory($this::PREDEFINED_USER_NATURAL_OWNER_ACTIVE_REGULAR_SCA);
 
         $this->assertNotNull($regulatory);
         $this->assertNotNull($regulatory->KycInformation);
@@ -992,8 +992,7 @@ class UsersTest extends Base
 
     public function test_Users_get_sca_status()
     {
-        $activeUserId = "user_m_01JKZW095BFB2TRQMCZ8GE7M8D";
-        $scaStatus = $this->_api->Users->GetScaStatus($activeUserId);
+        $scaStatus = $this->_api->Users->GetScaStatus($this::PREDEFINED_USER_NATURAL_OWNER_ACTIVE_LIGHT_SCA);
 
         $this->assertNotNull($scaStatus);
         $this->assertNotNull($scaStatus->ConsentScope->ContactInformationUpdate);

@@ -11,7 +11,7 @@ class RefundsTest extends Base
     {
         $transfer = $this->getNewTransfer();
         $refund = $this->getNewRefundForTransfer($transfer);
-        $user = $this->getJohn();
+        $user = $this->getJohnPayer();
 
         $getRefund = $this->_api->Refunds->Get($refund->Id);
 
@@ -26,7 +26,7 @@ class RefundsTest extends Base
     {
         $payIn = $this->getNewPayInCardDirect();
         $refund = $this->getNewRefundForPayIn($payIn);
-        $user = $this->getJohn();
+        $user = $this->getJohnPayer();
 
         $getRefund = $this->_api->Refunds->Get($refund->Id);
 

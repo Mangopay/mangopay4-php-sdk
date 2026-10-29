@@ -13,27 +13,33 @@ class TransfersTest extends Base
 {
     public function test_Transfers_Create()
     {
-        $john = $this->getJohn();
+        $john = $this->getJohnPayer();
 
         $transfer = $this->getNewTransfer();
         $creditedWallet = $this->_api->Wallets->Get($transfer->CreditedWalletId);
 
         $this->assertNotNull($transfer->Id);
         $this->assertEquals($john->Id, $transfer->AuthorId);
-        $this->assertEquals($john->Id, $transfer->CreditedUserId);
+        $this->assertEquals($this::PREDEFINED_USER_NATURAL_OWNER_PENDING_USER_ACTION_REGULAR_LEGACY, $transfer->CreditedUserId);
         $this->assertEquals(100, $creditedWallet->Balance->Amount);
+
+        $getTransfer = $this->_api->Transfers->Get($transfer->Id);
+
+        $this->assertSame($transfer->Id, $getTransfer->Id);
+        $this->assertEquals($john->Id, $getTransfer->AuthorId);
+        $this->assertEquals($this::PREDEFINED_USER_NATURAL_OWNER_PENDING_USER_ACTION_REGULAR_LEGACY, $transfer->CreditedUserId);
+        $this->assertIdenticalInputProps($transfer, $getTransfer);
     }
 
     public function test_Transfers_Create_Sca()
     {
-        $user = $this->getJohnSca("OWNER", false);
+        $user = $this->getJohnPayer();
         $walletWithMoney = $this->getNewWalletWithMoney($user->Id, 10000);
         $transferUserPresent = $this->getNewTransferSca($user->Id, 3001, 'USER_PRESENT', $walletWithMoney->Id);
         $transferUserPresentLowAmount = $this->getNewTransferSca($user->Id, 20, 'USER_PRESENT', $walletWithMoney->Id);
         $transferUserNotPresent = $this->getNewTransferSca($user->Id, 3001, 'USER_NOT_PRESENT', $walletWithMoney->Id);
 
         $this->assertEquals(TransactionStatus::Succeeded, $transferUserPresent->Status);
-        //        $this->assertNotNull($transferUserPresent->PendingUserAction);
 
         $this->assertEquals(TransactionStatus::Succeeded, $transferUserPresentLowAmount->Status);
         $this->assertNull($transferUserPresentLowAmount->PendingUserAction);
@@ -42,23 +48,10 @@ class TransfersTest extends Base
         $this->assertNull($transferUserNotPresent->PendingUserAction);
     }
 
-    public function test_Transfers_Get()
-    {
-        $john = $this->getJohn();
-        $transfer = $this->getNewTransfer();
-
-        $getTransfer = $this->_api->Transfers->Get($transfer->Id);
-
-        $this->assertSame($transfer->Id, $getTransfer->Id);
-        $this->assertEquals($john->Id, $getTransfer->AuthorId);
-        $this->assertEquals($john->Id, $getTransfer->CreditedUserId);
-        $this->assertIdenticalInputProps($transfer, $getTransfer);
-    }
-
     public function test_Transfers_CreateRefund()
     {
         $transfer = $this->getNewTransfer();
-        $wallet = $this->getJohnsWalletWithMoney();
+        $wallet = $this->getJohnsPayerWalletWithMoney();
         $walletBefore = $this->_api->Wallets->Get($wallet->Id);
 
         $refund = $this->getNewRefundForTransfer($transfer);
@@ -87,8 +80,8 @@ class TransfersTest extends Base
     public function test_Transfer_Create()
     {
         $john = $this->getJohn();
-        $debitedWallet = $this->getJohnsWalletWithMoney();
-        $creditedWallet = $this->getJohnsWallet();
+        $debitedWallet = $this->getJohnsOwnerWalletWithMoney();
+        $creditedWallet = $this->getJohnsOwnerWallet();
         $transfer = new Transfer();
         $transfer->AuthorId = $john->Id;
         $transfer->CreditedUserId = $john->Id;

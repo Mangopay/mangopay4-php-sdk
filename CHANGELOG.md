@@ -1,3 +1,11 @@
+## [5.3.0] - 2026-10-28
+
+### Added
+- **`IdentityVerification::$SessionLanguage`** – New optional property on `IdentityVerification` to set the initial language of the hosted identity verification session. If not sent, the session uses the language of the user's browser (if supported), otherwise English. The user can change the language in the session. This parameter is not returned in the API response, but it adds the `lng` query parameter to the `HostedUrl` value.
+
+### Changed - `clientId` and `clientPassword` configuration for tests
+- The sandbox credentials are now set as environment variables in the tests. The tests will not start if the variables are not set.
+
 ## [5.2.0] - 2026-10-15
 
 ### Added

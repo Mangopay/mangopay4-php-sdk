@@ -182,6 +182,7 @@ abstract class ApiBase
         'users_getemoney_month' => ['/users/%s/emoney/%s/%s', RequestType::GET],
         'users_block_status' => ['/users/%s/blockStatus', RequestType::GET],
         'users_block_status_regulatory' => ['/users/%s/Regulatory', RequestType::GET],
+        'users_get_pscs' => ['/users/%s/pscs', RequestType::GET],
         'users_categorizenaturals_sca' => ['/sca/users/natural/%s/category', RequestType::PUT],
         'users_categorizelegals_sca' => ['/sca/users/legal/%s/category', RequestType::PUT],
         'users_close_natural' => ['/users/natural/%s', RequestType::DELETE],

@@ -30,6 +30,7 @@ use MangoPay\LegalPersonType;
 use MangoPay\LegalRepresentative;
 use MangoPay\Libraries\Exception;
 use MangoPay\LineItem;
+use MangoPay\MarketplaceData;
 use MangoPay\Money;
 use MangoPay\PayIn;
 use MangoPay\PayInExecutionDetailsDirect;
@@ -82,6 +83,9 @@ abstract class Base extends TestCase
     public const PREDEFINED_USER_NATURAL_OWNER_PENDING_USER_ACTION_REGULAR_LEGACY = "user_m_01M5FDC0ZMBTC25EC9C5B9A939";
     // created for PREDEFINED_USER_NATURAL_OWNER_ACTIVE_REGULAR_SCA
     public const PREDEFINED_ACTIVE_RECIPIENT = "rec_01M5HSFT7SN9EMETSG472ASPBH";
+    // legal user with PSCs, and the identity verification session they belong to
+    public const PREDEFINED_USER_LEGAL_WITH_PSCS = "user_m_01M5EKZP5MHN81D46AFR4KNPZY";
+    public const PREDEFINED_IDV_WITH_PSCS = "idnver_01M5EKZPQJRF8RFAMBGCD4JE43";
 
     /**
      * Test user (natural) - access by getJohn()
@@ -1136,6 +1140,55 @@ abstract class Base extends TestCase
         $billing->Address = $address;
         $payIn->ExecutionDetails->Billing = $billing;
         $payIn->ExecutionDetails->Requested3DSVersion = "V1";
+
+        return $this->_api->PayIns->Create($payIn);
+    }
+
+    protected function getNewPayInCardDirectWithMarketplaceData($userId = null)
+    {
+        $wallet = $this->getJohnsPayerWalletWithMoney();
+        if (is_null($userId)) {
+            $user = $this->getJohnPayer();
+            $userId = $user->Id;
+        }
+
+        $cardRegistration = new \MangoPay\CardRegistration();
+        $cardRegistration->UserId = $userId;
+        $cardRegistration->Currency = 'EUR';
+        $cardRegistration = $this->_api->CardRegistrations->Create($cardRegistration);
+        $cardRegistration->RegistrationData = $this->getPaylineCorrectRegistrationData($cardRegistration);
+        $cardRegistration->CardHolderName = "John Silver";
+        $cardRegistration = $this->_api->CardRegistrations->Update($cardRegistration);
+
+        $card = $this->_api->Cards->Get($cardRegistration->CardId);
+
+        // create pay-in CARD DIRECT
+        $payIn = new PayIn();
+        $payIn->CreditedWalletId = $wallet->Id;
+        $payIn->AuthorId = $userId;
+        $payIn->DebitedFunds = new Money();
+        $payIn->DebitedFunds->Amount = 1000;
+        $payIn->DebitedFunds->Currency = 'EUR';
+        $payIn->Fees = new Money();
+        $payIn->Fees->Amount = 0;
+        $payIn->Fees->Currency = 'EUR';
+        // payment type as CARD
+        $payIn->PaymentDetails = new PayInPaymentDetailsCard();
+        $payIn->PaymentDetails->CardId = $card->Id;
+        $payIn->PaymentDetails->IpAddress = "2001:0620:0000:0000:0211:24FF:FE80:C12C";
+        $payIn->PaymentDetails->BrowserInfo = $this->getBrowserInfo();
+
+        // declarative marketplace data (Visa Marketplace reporting)
+        $marketplaceData = new MarketplaceData();
+        $marketplaceData->ForeignRetailerIndicator = true;
+        $marketplaceData->ForeignRetailerAmount = new Money();
+        $marketplaceData->ForeignRetailerAmount->Amount = 500;
+        $marketplaceData->ForeignRetailerAmount->Currency = 'EUR';
+        $payIn->PaymentDetails->MarketplaceData = $marketplaceData;
+
+        // execution type as DIRECT
+        $payIn->ExecutionDetails = new PayInExecutionDetailsDirect();
+        $payIn->ExecutionDetails->SecureModeReturnURL = 'http://test.com';
 
         return $this->_api->PayIns->Create($payIn);
     }

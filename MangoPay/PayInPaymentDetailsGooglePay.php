@@ -45,12 +45,20 @@ class PayInPaymentDetailsGooglePay extends Libraries\Dto implements PayInPayment
      */
     public $ReturnURL;
 
+    /**
+     * Declarative marketplace information used to comply with
+     * Visa Marketplace reporting.
+     * @var MarketplaceData
+     */
+    public $MarketplaceData;
+
     public function GetSubObjects()
     {
         $subObjects = parent::GetSubObjects();
 
         $subObjects['BrowserInfo'] = '\MangoPay\BrowserInfo';
         $subObjects['Shipping'] = '\MangoPay\Shipping';
+        $subObjects['MarketplaceData'] = '\MangoPay\MarketplaceData';
 
         return $subObjects;
     }

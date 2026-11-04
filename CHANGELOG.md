@@ -1,3 +1,9 @@
+## [5.4.0] - 2026-11-04
+
+### Added
+- **List PSCs of a legal user** – New method `ApiUsers::GetPscs($userId, $pagination)` (GET `/users/{UserId}/pscs`) returning the list of `Psc` instances for a user. The `Psc` entity now also exposes `MainSessionId`.
+- **Marketplace data** – New `MarketplaceData` DTO (`ForeignRetailerIndicator`, `ForeignRetailerAmount`) carrying the declarative information used to comply with Visa Marketplace reporting. The optional `MarketplaceData` property was added to `PayInPaymentDetailsCard`, `PayInPaymentDetailsApplePay`, `PayInPaymentDetailsGooglePay`, `CardPreAuthorization`, `CreatePreAuthorizedDepositPayIn`, `CreateCardPreAuthorizedDepositPayIn`, `CreatePreAuthorizedExtendedPayIn`, `RecurringPayInCIT`, and `RecurringPayInMIT`.
+
 ## [5.3.0] - 2026-10-28
 
 ### Added

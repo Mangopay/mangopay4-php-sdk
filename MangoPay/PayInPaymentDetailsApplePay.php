@@ -17,11 +17,19 @@ class PayInPaymentDetailsApplePay extends Libraries\Dto implements PayInPaymentD
      */
     public $StatementDescriptor;
 
+    /**
+     * Declarative marketplace information used to comply with
+     * Visa Marketplace reporting.
+     * @var MarketplaceData
+     */
+    public $MarketplaceData;
+
     public function GetSubObjects()
     {
         $subObjects = parent::GetSubObjects();
 
         $subObjects['PaymentData'] = '\MangoPay\PaymentData';
+        $subObjects['MarketplaceData'] = '\MangoPay\MarketplaceData';
 
         return $subObjects;
     }

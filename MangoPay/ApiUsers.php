@@ -553,6 +553,18 @@ class ApiUsers extends Libraries\ApiBase
     }
 
     /**
+     * List the PSCs of a User
+     * @param string $userId User identifier
+     * @param Pagination $pagination Pagination object
+     * @param Sorting $sorting Object to sorting data
+     * @return Psc[] List of PSCs returned from API
+     */
+    public function GetPscs($userId, & $pagination = null)
+    {
+        return $this->GetList('users_get_pscs', $pagination, 'MangoPay\Psc', $userId);
+    }
+
+    /**
      * This call allows you to check the validity of the format
      * of a piece of user data, and to retrieve the validation rules applied to it.
      * @param $companyNumberDetails

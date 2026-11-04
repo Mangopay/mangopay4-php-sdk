@@ -934,6 +934,27 @@ class UsersTest extends Base
         $this->assertNotNull($regulatory->KycInformation->KycRenewalDeadline);
     }
 
+    public function test_get_pscs_for_legal_user()
+    {
+        $pscs = $this->_api->Users->GetPscs($this::PREDEFINED_USER_LEGAL_WITH_PSCS);
+
+        $this->assertNotNull($pscs);
+        $this->assertNotEmpty($pscs);
+        $this->assertEquals($this::PREDEFINED_IDV_WITH_PSCS, $pscs[0]->MainSessionId);
+    }
+
+    public function test_get_pscs_fails_for_natural_user()
+    {
+        $user = $this->getJohn();
+
+        try {
+            $this->_api->Users->GetPscs($user->Id);
+            $this->fail('GetPscs() should throw an exception when called with a natural user id');
+        } catch (ResponseException $e) {
+            $this->assertEquals(400, $e->GetCode());
+        }
+    }
+
     public function test_validate_the_format_of_user_data()
     {
         $companyNumberDetails = new \MangoPay\CompanyNumberDetails();

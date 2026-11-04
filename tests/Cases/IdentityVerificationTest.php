@@ -12,7 +12,6 @@ use MangoPay\Tests\Cases\Base;
 class IdentityVerificationTest extends Base
 {
     public static $identityVerification;
-    private static $idvIdWithPscs = "idnver_01M5EKZPQJRF8RFAMBGCD4JE43";
     private static $pscId = "psc_x_01M5EM2FFD1A2T0TKRQAZV6M6V";
 
     public function test_IdentityVerification_Create()
@@ -48,7 +47,7 @@ class IdentityVerificationTest extends Base
 
     public function test_IdentityVerification_GetWithPscs()
     {
-        $fetched = $this->_api->IdentityVerifications->Get(self::$idvIdWithPscs);
+        $fetched = $this->_api->IdentityVerifications->Get(self::PREDEFINED_IDV_WITH_PSCS);
 
         self::assertNotNull($fetched);
         self::assertNotNull($fetched->PSCs);
@@ -60,7 +59,7 @@ class IdentityVerificationTest extends Base
     {
         $this->markTestSkipped("PSC must be manually invalidated before testing");
 
-        $psc = $this->_api->IdentityVerifications->RetryPsc(self::$idvIdWithPscs, self::$pscId, new Psc());
+        $psc = $this->_api->IdentityVerifications->RetryPsc(self::PREDEFINED_IDV_WITH_PSCS, self::$pscId, new Psc());
 
         self::assertNotNull($psc);
         self::assertNotNull($psc->HostedUrl);
@@ -78,7 +77,7 @@ class IdentityVerificationTest extends Base
         $pscUpdate->FirstName = $firstName;
         $pscUpdate->LastName = $lastName;
 
-        $psc = $this->_api->IdentityVerifications->RetryPsc(self::$idvIdWithPscs, self::$pscId, $pscUpdate);
+        $psc = $this->_api->IdentityVerifications->RetryPsc(self::PREDEFINED_IDV_WITH_PSCS, self::$pscId, $pscUpdate);
 
         self::assertNotNull($psc);
         self::assertNotNull($psc->HostedUrl);

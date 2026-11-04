@@ -35,6 +35,13 @@ class CreatePreAuthorizedExtendedPayIn extends Libraries\EntityBase
     public $Tag;
 
     /**
+     * Declarative marketplace information used to comply with
+     * Visa Marketplace reporting.
+     * @var MarketplaceData
+     */
+    public $MarketplaceData;
+
+    /**
      * Get array with mapping which property is object and what type of object
      * @return array
      */
@@ -43,6 +50,7 @@ class CreatePreAuthorizedExtendedPayIn extends Libraries\EntityBase
         $subObjects = parent::GetSubObjects();
         $subObjects['DebitedFunds'] = '\MangoPay\Money';
         $subObjects['Fees'] = '\MangoPay\Money';
+        $subObjects['MarketplaceData'] = '\MangoPay\MarketplaceData';
 
         return $subObjects;
     }

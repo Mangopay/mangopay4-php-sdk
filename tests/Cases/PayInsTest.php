@@ -11,6 +11,7 @@ use MangoPay\DebitedBankAccount;
 use MangoPay\FilterSupportedBanks;
 use MangoPay\Libraries\Exception;
 use MangoPay\LineItem;
+use MangoPay\MarketplaceData;
 use MangoPay\Money;
 use MangoPay\Pagination;
 use MangoPay\PayInExecutionType;
@@ -96,6 +97,34 @@ class PayInsTest extends Base
         $this->assertNotNull($payIn->PaymentDetails->CardInfo);
         $this->assertNotNull($payIn->PaymentDetails->CardInfo->BIN);
         $this->assertNotNull($payIn->PaymentDetails->CardInfo->Type);
+    }
+
+    public function test_PayIns_Create_CardDirect_WithMarketplaceData()
+    {
+        $payIn = $this->getNewPayInCardDirectWithMarketplaceData();
+
+        $this->assertNotNull($payIn->Id);
+        $this->assertEquals(PayInPaymentType::Card, $payIn->PaymentType);
+        $this->assertInstanceOf('\MangoPay\PayInPaymentDetailsCard', $payIn->PaymentDetails);
+        $this->assertEquals(PayInStatus::Succeeded, $payIn->Status);
+    }
+
+    public function test_PayIns_MarketplaceData_IsSerialized()
+    {
+        $marketplaceData = new MarketplaceData();
+        $marketplaceData->ForeignRetailerIndicator = true;
+        $marketplaceData->ForeignRetailerAmount = new Money();
+        $marketplaceData->ForeignRetailerAmount->Amount = 4500;
+        $marketplaceData->ForeignRetailerAmount->Currency = 'EUR';
+
+        $serialized = json_decode(json_encode($marketplaceData), true);
+
+        $this->assertTrue($serialized['ForeignRetailerIndicator']);
+        $this->assertEquals(4500, $serialized['ForeignRetailerAmount']['Amount']);
+        $this->assertEquals('EUR', $serialized['ForeignRetailerAmount']['Currency']);
+
+        $subObjects = $marketplaceData->GetSubObjects();
+        $this->assertEquals('\MangoPay\Money', $subObjects['ForeignRetailerAmount']);
     }
 
     public function test_PayIns_Get_CardDirect()

@@ -7,6 +7,11 @@ class Psc extends Libraries\EntityBase
     /**
      * @var string
      */
+    public $MainSessionId;
+
+    /**
+     * @var string
+     */
     public $FirstName;
 
     /**

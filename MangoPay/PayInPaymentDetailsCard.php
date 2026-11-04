@@ -77,12 +77,20 @@ class PayInPaymentDetailsCard extends Libraries\Dto implements PayInPaymentDetai
      */
     public $AccountFunding;
 
+    /**
+     * Declarative marketplace information used to comply with
+     * Visa Marketplace reporting.
+     * @var MarketplaceData
+     */
+    public $MarketplaceData;
+
     public function GetSubObjects()
     {
         $subObjects = parent::GetSubObjects();
         $subObjects['BrowserInfo'] = '\MangoPay\BrowserInfo';
         $subObjects['Shipping'] = '\MangoPay\Shipping';
         $subObjects['AccountFunding'] = '\MangoPay\AccountFunding';
+        $subObjects['MarketplaceData'] = '\MangoPay\MarketplaceData';
 
         return $subObjects;
     }

@@ -1,0 +1,83 @@
+{
+  "Id": "payin_wf_01M6SFNAY50ZW6NP2AMKYB8N0G",
+  "Tag": null,
+  "Status": "SUCCEEDED",
+  "Type": "PAYIN",
+  "Nature": "REGULAR",
+  "PaymentType": "BANK_WIRE",
+  "ExecutionType": "EXTERNAL_INSTRUCTION",
+  "CreationDate": 1794004134,
+  "ExecutionDate": 1794004135,
+  "ResultCode": "000000",
+  "ResultMessage": "Success",
+  "AuthorId": "user_m_01M6RJMFFBCEKKQMVAAM6DKVFV",
+  "CreditedUserId": "user_m_01M6RJMFFBCEKKQMVAAM6DKVFV",
+  "CreditedWalletId": "wlt_m_01M6RJRX7E5C8EGM8SH49WJPYS",
+  "DebitedWalletId": null,
+  "VirtualAccountId": "wltbank_01M6RQFNJH8BV6KK80VKBKCF09",
+  "BankingAliasId": "wltbank_01M6RQFNJH8BV6KK80VKBKCF09",
+  "DeclaredDebitedFunds": null,
+  "DeclaredFees": null,
+  "DebitedFunds": {
+    "Currency": "EUR",
+    "Amount": 100000
+  },
+  "CreditedFunds": {
+    "Currency": "EUR",
+    "Amount": 100000
+  },
+  "Fees": {
+    "Currency": "EUR",
+    "Amount": 0
+  },
+  "WireReference": "MGqe0u9b94 Wire Reference 123",
+  "BankAccount": null,
+  "DebitedBankAccount": {
+    "IBAN": "DE89370400440532013000",
+    "BIC": "COBADEFFXXX",
+    "AccountNumber": null,
+    "Country": null,
+    "OwnerName": "Tom Donaldson",
+    "Type": "IBAN"
+  },
+  "CreditedAccount": null,
+  "DebitedAccount": {
+    "AccountOwner": "Tom Donaldson",
+    "BankAccount": "DE89370400440532013000",
+    "BankCode": "COBADEFFXXX",
+    "AddressLine1": null,
+    "AddressLine2": null,
+    "AddressLine3": null
+  },
+  "PendingAction": null,
+  "ReconciliationDetails": {
+    "MatchedFunds": null,
+    "ReceivedFunds": null,
+    "ReceivedWireReference": "MGqe0u9b94 Wire Reference 123"
+  },
+  "TransactionDetails": [
+    {
+      "BankTransactionDomainCode": "PMNT",
+      "BankTransactionDomainFamilyCode": "RCDT",
+      "BankTransactionDomainSubFamilyCode": null,
+      "References": [
+        {
+          "Type": "EndToEndId",
+          "Value": null
+        }
+      ],
+      "DebtorName": "Tom Donaldson",
+      "DebtorAccount": "DE89370400440532013000",
+      "DebtorAgent": "COBADEFFXXX",
+      "DebtorAddressLine1": null,
+      "DebtorAddressLine2": null,
+      "DebtorAddressLine3": null,
+      "RemittanceInformationLine1": "MGqe0u9b94",
+      "RemittanceInformationLine2": "Wire",
+      "RemittanceInformationLine3": "Reference",
+      "RemittanceInformationLine4": "123"
+    }
+  ],
+  "OperationId": null,
+  "FlowDescriptor": null
+}

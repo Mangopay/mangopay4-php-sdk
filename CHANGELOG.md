@@ -1,3 +1,21 @@
+## [5.5.0] - 2026-11-18
+
+### Added
+- **Unified Bank Wire PayIn object** – `PayInPaymentDetailsBankWire` now maps the harmonized bank wire pay-in response returned for both pre-declared (`DIRECT`) pay-ins and pay-ins to a Virtual Account (`EXTERNAL_INSTRUCTION`). The response is backwards compatible with the legacy objects. New properties:
+  - `VirtualAccountId` – replaces `BankingAliasId` (the same value is returned in both).
+  - `CreditedAccount` – new `CreditedAccount` DTO with `LocalAccountDetails` (`CreditedAccountLocalDetails`) and `InternationalAccountDetails` (`CreditedAccountInternationalDetails`), each with an `AccountAddress` (`StreetName`, `PostCode`, `TownName`, `CountrySubDivision`, `Country`). The local `Account` depends on the account's country, so it is returned as a generic object to be read dynamically.
+  - `DebitedAccount` – new `DebitedAccount` DTO (`AccountOwner`, `BankAccount`, `BankCode`, `AddressLine1`–`AddressLine3`), replacing `DebitedBankAccount`.
+  - `PendingAction` – new `PayInPendingAction` DTO (`Action`, `ActionDetails` as `PayInPendingActionDetail[]`, `ExpiryDate`).
+  - `ReconciliationDetails` – new `ReconciliationDetails` DTO (`MatchedFunds`, `ReceivedFunds`, `ReceivedWireReference`).
+  - `TransactionDetails` – array of the new `PayInTransactionDetailsBankWire` DTO (bank transaction domain codes, `References` as `PayInReferences[]`, debtor information, and remittance information lines). This is now also returned for Virtual Account pay-ins.
+  - `DebitedBankAccount`, `OperationId`, and `FlowDescriptor` (both returned `null` for now).
+- **Bank wire simulation endpoints (Sandbox only)** – New `ApiSimulation` API (exposed as `$api->Simulations`):
+  - `SimulateBankWirePayIn($payInId, BankWirePayInSimulation $simulation)` (POST `/simulation/payins/bankwire/{PayInId}`) – accepts (`ACCEPT`) or rejects (`REJECT`) a pre-declared bank wire pay-in that has the status `CREATED`.
+  - `SimulateBankWireFunding(BankWireFundingSimulation $simulation)` (POST `/simulation/payins/bankwire/funding`) – simulates an incoming bank wire to a Virtual Account. New `BankWireFundingSimulation`, `BankWireFundingSimulationCreditor`, and `BankWireFundingSimulationTransactionDetails` DTOs were added.
+
+### Changed
+- Updated dev dependencies in `composer.lock` (Symfony components used by tooling).
+
 ## [5.4.0] - 2026-11-04
 
 ### Added

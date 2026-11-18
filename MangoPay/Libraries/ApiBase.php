@@ -337,7 +337,10 @@ abstract class ApiBase
         'acquiring_payins_paypal_data_collection_create' => ['/acquiring/payins/payment-methods/paypal/data-collection', RequestType::POST],
         'acquiring_payins_paypal_data_collection_get' => ['/acquiring/payins/payment-methods/paypal/data-collection/%s', RequestType::GET],
         'acquiring_payins_createrefunds' => ['/acquiring/payins/%s/refunds', RequestType::POST],
-        'acquiring_card_validate' => ['/acquiring/cards/%s/validation', RequestType::POST]
+        'acquiring_card_validate' => ['/acquiring/cards/%s/validation', RequestType::POST],
+
+        'simulation_payins_bankwire_funding' => ['/simulation/payins/bankwire/funding', RequestType::POST],
+        'simulation_payins_bankwire' => ['/simulation/payins/bankwire/%s', RequestType::POST]
     ];
 
     /**

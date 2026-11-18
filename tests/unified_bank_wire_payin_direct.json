@@ -1,0 +1,125 @@
+{
+  "Id": "payin_wf_01M6SG3VK4DCBDT6S19H0T22RQ",
+  "Tag": "Created using Mangopay API Postman Collection",
+  "Status": "SUCCEEDED",
+  "Type": "PAYIN",
+  "Nature": "REGULAR",
+  "PaymentType": "BANK_WIRE",
+  "ExecutionType": "DIRECT",
+  "CreationDate": 1794004610,
+  "ExecutionDate": 1794004621,
+  "ResultCode": "000000",
+  "ResultMessage": "Success",
+  "AuthorId": "user_m_01M6RNSGQGD2X653B8WRXEMTBC",
+  "CreditedUserId": "user_m_01M6RJMFFBCEKKQMVAAM6DKVFV",
+  "CreditedWalletId": "wlt_m_01M6RJRX7E5C8EGM8SH49WJPYS",
+  "DebitedWalletId": null,
+  "VirtualAccountId": null,
+  "BankingAliasId": null,
+  "DeclaredDebitedFunds": {
+    "Currency": "EUR",
+    "Amount": 200000
+  },
+  "DeclaredFees": {
+    "Currency": "EUR",
+    "Amount": 0
+  },
+  "DebitedFunds": {
+    "Currency": "EUR",
+    "Amount": 200000
+  },
+  "CreditedFunds": {
+    "Currency": "EUR",
+    "Amount": 200000
+  },
+  "Fees": {
+    "Currency": "EUR",
+    "Amount": 0
+  },
+  "WireReference": "MG4liawppe",
+  "BankAccount": {
+    "OwnerAddress": {
+      "AddressLine1": "2 Avenue Amélie",
+      "AddressLine2": null,
+      "City": "Luxembourg",
+      "Region": null,
+      "PostalCode": "L-1125",
+      "Country": "LU"
+    },
+    "Type": "IBAN",
+    "OwnerName": "MANGOPAY SA",
+    "IBAN": "FR7630056009271234567890182",
+    "BIC": "CCFRFRPPXXX"
+  },
+  "DebitedBankAccount": {
+    "IBAN": "GB33BUKB20201555555555",
+    "BIC": "BUKBGB22XXX",
+    "AccountNumber": null,
+    "Country": null,
+    "OwnerName": "John Doe",
+    "Type": "IBAN"
+  },
+  "CreditedAccount": {
+    "LocalAccountDetails": null,
+    "InternationalAccountDetails": {
+      "AccountOwner": "MANGOPAY SA",
+      "BankName": null,
+      "Account": {
+        "Iban": "FR7630056009271234567890182",
+        "Bic": "CCFRFRPPXXX"
+      },
+      "Address": {
+        "StreetName": "2 Avenue Amélie",
+        "PostCode": "L-1125",
+        "TownName": "Luxembourg",
+        "CountrySubDivision": null,
+        "Country": "LU"
+      }
+    }
+  },
+  "DebitedAccount": {
+    "AccountOwner": "John Doe",
+    "BankAccount": "GB33BUKB20201555555555",
+    "BankCode": "BUKBGB22XXX",
+    "AddressLine1": "135 Rue de Nantes",
+    "AddressLine2": "Paris",
+    "AddressLine3": "75006 - FR"
+  },
+  "PendingAction": null,
+  "ReconciliationDetails": {
+    "MatchedFunds": {
+      "Currency": "EUR",
+      "Amount": 200000
+    },
+    "ReceivedFunds": {
+      "Currency": "EUR",
+      "Amount": 200000
+    },
+    "ReceivedWireReference": "MG4liawppe"
+  },
+  "TransactionDetails": [
+    {
+      "BankTransactionDomainCode": "PMNT",
+      "BankTransactionDomainFamilyCode": "RCDT",
+      "BankTransactionDomainSubFamilyCode": null,
+      "References": [
+        {
+          "Type": "EndToEndId",
+          "Value": "AAB.123.EU.ABC-00012345"
+        }
+      ],
+      "DebtorName": "John Doe",
+      "DebtorAccount": "GB33BUKB20201555555555",
+      "DebtorAgent": "BUKBGB22XXX",
+      "DebtorAddressLine1": "135 Rue de Nantes",
+      "DebtorAddressLine2": "Paris",
+      "DebtorAddressLine3": "75006 - FR",
+      "RemittanceInformationLine1": "MG4liawppe",
+      "RemittanceInformationLine2": null,
+      "RemittanceInformationLine3": null,
+      "RemittanceInformationLine4": null
+    }
+  ],
+  "OperationId": null,
+  "FlowDescriptor": null
+}

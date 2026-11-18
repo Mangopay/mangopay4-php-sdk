@@ -246,6 +246,12 @@ class MangoPayApi
     public $Acquiring;
 
     /**
+     * Provides Sandbox simulation methods
+     * @var ApiSimulation
+     */
+    public $Simulations;
+
+    /**
      * Constructor
      */
     public function __construct()
@@ -289,6 +295,7 @@ class MangoPayApi
         $this->ReportsV2 = new ApiReportsV2($this);
         $this->Settlements = new ApiSettlements($this);
         $this->Acquiring = new ApiAcquiring($this);
+        $this->Simulations = new ApiSimulation($this);
 
         // Setting default NullLogger
         $this->logger = new NullLogger();

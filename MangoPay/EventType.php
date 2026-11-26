@@ -142,6 +142,9 @@ class EventType
     public const ScaViewAccountInformationConsentRevoked = "SCA_VIEW_ACCOUNT_INFORMATION_CONSENT_REVOKED";
     public const ScaEmailVerified = "SCA_EMAIL_VERIFIED";
     public const ScaPhoneNumberVerified = "SCA_PHONE_NUMBER_VERIFIED";
+    public const ScaResetSucceeded = "SCA_RESET_SUCCEEDED";
+    public const ScaResetFailed = "SCA_RESET_FAILED";
+    public const ScaResetExpired = "SCA_RESET_EXPIRED";
 
     public const UserCategoryUpdatedToOwner = "USER_CATEGORY_UPDATED_TO_OWNER";
     public const UserCategoryUpdatedToPayer = "USER_CATEGORY_UPDATED_TO_PAYER";

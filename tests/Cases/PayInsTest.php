@@ -18,6 +18,7 @@ use MangoPay\PayInExecutionType;
 use MangoPay\PayInIntent;
 use MangoPay\PayInIntentExternalData;
 use MangoPay\PayInIntentLineItem;
+use MangoPay\PayInIntentSeller;
 use MangoPay\PayInIntentSplit;
 use MangoPay\PayInPaymentDetailsBankWire;
 use MangoPay\PayInPaymentType;
@@ -1372,6 +1373,53 @@ class PayInsTest extends Base
         $this->assertNotNull($intent->Status);
         $this->assertEquals($intent->Status, $fetched->Status);
         $this->assertEquals('intent tag', $fetched->Tag);
+    }
+
+    public function test_UpdatePayInIntent()
+    {
+        $intent = $this->getNewPayInIntentAuthorization();
+        $existingLineItem = $intent->LineItems[0];
+
+        $externalData = new PayInIntentExternalData();
+        $externalData->ExternalProcessingDate = 1749471780;
+        $externalData->ExternalProviderReference = strval(round(microtime(true) * 1000));
+        $externalData->ExternalMerchantReference = "Order-updated";
+        $externalData->ExternalProviderName = "Stripe";
+        $externalData->ExternalProviderPaymentMethod = "PAYPAL";
+
+        $seller = new PayInIntentSeller();
+        $seller->AuthorId = $existingLineItem->Seller->AuthorId;
+        $seller->WalletId = $existingLineItem->Seller->WalletId;
+        $seller->TransferDate = 1749471780;
+
+        $lineItem = new PayInIntentLineItem();
+        $lineItem->Id = $existingLineItem->Id;
+        $lineItem->Seller = $seller;
+        $lineItem->Sku = "item-updated";
+        $lineItem->Name = "item-name-updated";
+        $lineItem->Description = "item-description-updated";
+        $lineItem->Category = "PHYSICAL_GOODS";
+        $lineItem->ShippingAddress = $this->getNewAddress();
+
+        $toUpdate = new PayInIntent();
+        $toUpdate->Id = $intent->Id;
+        $toUpdate->Tag = "updated intent tag";
+        $toUpdate->ExternalData = $externalData;
+        $toUpdate->LineItems = [$lineItem];
+
+        $updated = $this->_api->PayIns->UpdatePayInIntent($toUpdate);
+
+        $this->assertInstanceOf('\MangoPay\PayInIntent', $updated);
+        $this->assertEquals($intent->Id, $updated->Id);
+        $this->assertEquals("AUTHORIZED", $updated->Status);
+        $this->assertEquals("updated intent tag", $updated->Tag);
+        $this->assertEquals("Order-updated", $updated->ExternalData->ExternalMerchantReference);
+        $this->assertInstanceOf('\MangoPay\PayInIntentLineItem', $updated->LineItems[0]);
+        $this->assertEquals("item-updated", $updated->LineItems[0]->Sku);
+        $this->assertEquals("item-name-updated", $updated->LineItems[0]->Name);
+        $this->assertEquals("item-description-updated", $updated->LineItems[0]->Description);
+        $this->assertEquals("PHYSICAL_GOODS", $updated->LineItems[0]->Category);
+        $this->assertEquals("City", $updated->LineItems[0]->ShippingAddress->City);
     }
 
     public function test_GetPayInIntents()

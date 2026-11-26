@@ -24,4 +24,5 @@ class DisputeReasonType
     public const CanceledReoccuringTransaction = "CANCELED_REOCCURING_TRANSACTION";
     public const RefundNotProcessed = "REFUND_NOT_PROCESSED";
     public const CounterfeitProduct = "COUNTERFEIT_PRODUCT";
+    public const CustomerDispute = "CUSTOMER_DISPUTE";
 }

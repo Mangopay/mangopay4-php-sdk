@@ -1,3 +1,13 @@
+## [5.6.0] - 2026-11-26
+
+### Added
+- **Update a PayIn Intent** – New method `ApiPayIns::UpdatePayInIntent(PayInIntent $intent)` (PUT `/payins/intents/{IntentId}`, API V3.0) to update an intent.
+- **SCA reset event types** – New `EventType` constants `ScaResetSucceeded`, `ScaResetFailed` and `ScaResetExpired` (`SCA_RESET_SUCCEEDED`, `SCA_RESET_FAILED`, `SCA_RESET_EXPIRED`).
+- **Customer dispute reason type** – New `DisputeReasonType` constant `CustomerDispute` (`CUSTOMER_DISPUTE`).
+
+### Fixed
+- **Case-insensitive `Link` header parsing** – The `Link` response header is now read regardless of its casing (e.g. `link`, as sent over HTTP/2 or by proxies), so `Pagination->Links` is populated in those cases too. The header must be at the start of the line, so other headers containing `Link:` are no longer picked up by mistake. The format of `Pagination->Links` is unchanged.
+
 ## [5.5.0] - 2026-11-18
 
 ### Added

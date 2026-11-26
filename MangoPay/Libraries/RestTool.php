@@ -12,7 +12,7 @@ use Psr\Log\LoggerInterface;
  */
 class RestTool
 {
-    public const VERSION = '5.5.0';
+    public const VERSION = '5.6.0';
 
     /**
      * Root/parent instance that holds the OAuthToken and Configuration instance
@@ -329,8 +329,8 @@ class RestTool
             if (strpos($lowercaseHeader, 'x-number-of-items:') !== false) {
                 $this->_pagination->TotalItems = (int)trim(str_replace('x-number-of-items:', '', $lowercaseHeader));
             }
-            if (strpos($header, 'Link: ') !== false) {
-                $strLinks = trim(str_replace('Link:', '', $header));
+            if (stripos($header, 'Link:') === 0) {
+                $strLinks = trim(substr($header, strlen('Link:')));
                 $arrayLinks = explode(',', $strLinks);
                 if ($arrayLinks !== false) {
                     $this->_pagination->Links = [];

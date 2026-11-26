@@ -499,6 +499,29 @@ class ApiPayIns extends Libraries\ApiBase
     }
 
     /**
+     * Update a PayInIntent (only allowed when the intent status is AUTHORIZED)
+     *
+     * Editable properties: Tag, ExternalData and, for existing LineItems (identified by Id):
+     * Seller (AuthorId, WalletId, TransferDate, FeesAmount), Sku, Name, Description, Category, ShippingAddress.
+     * Adding or removing line items is not supported.
+     *
+     * @param PayInIntent $intent \MangoPay\PayInIntent object containing the Id and the properties to be updated
+     * @return PayInIntent Object returned from API
+     * @throws Exception If the entity is not a PayInIntent or has no Id
+     */
+    public function UpdatePayInIntent($intent)
+    {
+        if (!is_a($intent, 'MangoPay\PayInIntent')) {
+            throw new Exception('Wrong entity class for pay in intent');
+        }
+        if (empty($intent->Id)) {
+            throw new Exception('The PayInIntent must have the Id set');
+        }
+
+        return $this->SaveObject('payins_intent_update', $intent, '\MangoPay\PayInIntent');
+    }
+
+    /**
      * Get the list of PayInIntents
      * @param Pagination $pagination Pagination object (optional - default page 1 / size 10)
      * @param FilterPayInIntents $filter Filter on CreationDate (BeforeDate / AfterDate) and Status (optional)
